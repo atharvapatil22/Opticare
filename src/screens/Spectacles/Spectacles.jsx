@@ -1,10 +1,26 @@
 import { View, Text, StyleSheet, TextInput } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { grey1 } from "../../constants";
 import TempButton from "../../components/TempButton";
+import { supabase } from "../../supabase/client";
 
 const Spectacles = () => {
   const [searchValue, setSearchValue] = useState("");
+  const [specs, setSpecs] = useState([]);
+
+  useEffect(() => {
+    fetchSpecs();
+  }, []);
+
+  const fetchSpecs = async () => {
+    const { data, error } = await supabase.from("spectacles").select("name");
+    if (error) {
+      // api_error
+      console.log("api_error");
+    } else {
+      setSpecs(data);
+    }
+  };
 
   return (
     <View style={{ backgroundColor: "#F5F8FA" }}>
