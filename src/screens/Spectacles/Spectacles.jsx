@@ -11,7 +11,7 @@ import { grey1, grey3 } from "../../constants";
 import TempButton from "../../components/TempButton";
 import { supabase } from "../../supabase/client";
 
-const Spectacles = () => {
+const Spectacles = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [specs, setSpecs] = useState([]);
 
@@ -68,7 +68,13 @@ const Spectacles = () => {
         />
         <TempButton text="SEARCH" variant="aqua" />
         <TempButton text="Filters" variant="white" />
-        <TempButton text="+ ADD NEW" variant="aqua" />
+        <TempButton
+          text="+ ADD NEW"
+          variant="aqua"
+          onPress={() => {
+            navigation.navigate("Add Spectacles");
+          }}
+        />
       </View>
       <ScrollView style={{ width: "100%", height: "100%" }}>
         <View style={styles.grid_container}>

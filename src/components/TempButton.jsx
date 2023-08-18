@@ -2,7 +2,7 @@ import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { aqua1, grey1 } from "../constants";
 
-const TempButton = ({ text, variant }) => {
+const TempButton = ({ text, variant, onPress }) => {
   return (
     <TouchableOpacity
       style={{
@@ -13,6 +13,7 @@ const TempButton = ({ text, variant }) => {
         borderColor: variant === "white" ? grey1 : "transparent",
         backgroundColor: variant === "aqua" ? aqua1 : "white",
       }}
+      onPress={onPress}
     >
       <Text
         style={{ fontSize: 18, color: variant === "aqua" ? "white" : "black" }}

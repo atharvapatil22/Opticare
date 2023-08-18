@@ -1,3 +1,4 @@
+import "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { useEffect } from "react";
 import * as ScreenOrientation from "expo-screen-orientation";
