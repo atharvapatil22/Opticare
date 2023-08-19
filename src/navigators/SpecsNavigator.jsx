@@ -8,7 +8,7 @@ function SpecsNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Spectacles" component={Spectacles} />
-      <Stack.Screen name="Add Spectacles" component={SpecsStepper} />
+      <Stack.Screen name="SpecsStepper" component={SpecsStepper} />
     </Stack.Navigator>
   );
 }

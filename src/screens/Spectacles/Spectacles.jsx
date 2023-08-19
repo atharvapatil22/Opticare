@@ -72,7 +72,7 @@ const Spectacles = ({ navigation }) => {
           text="+ ADD NEW"
           variant="aqua"
           onPress={() => {
-            navigation.navigate("Add Spectacles");
+            navigation.navigate("SpecsStepper");
           }}
         />
       </View>
