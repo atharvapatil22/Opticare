@@ -4,25 +4,31 @@ import {
   StyleSheet,
   TextInput,
   Dimensions,
-  ScrollView,
   Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import { gradient_end, gradient_start, grey1, grey3 } from "../../constants";
+import {
+  aqua1,
+  gradient_end,
+  gradient_start,
+  grey1,
+  grey3,
+} from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
+import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 
 const SpecsStepper = ({ navigation }) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const steps = {
-    1: "Primary Details",
-    2: "Product Images",
-    3: "Technical Information",
-    4: "Link Lenses",
-    5: "Sales & Taxes",
-  };
+  const [currentStep, setCurrentStep] = useState(0);
+  const steps = [
+    "Primary Details",
+    "Product Images",
+    "Technical Information",
+    "Link Lenses",
+    "Sales & Taxes",
+  ];
 
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
@@ -58,9 +64,9 @@ const SpecsStepper = ({ navigation }) => {
   const handleClearForm = () => {
     console.log("clear form");
     switch (currentStep) {
-      case 1:
+      case 0:
         break;
-      case 2:
+      case 1:
         setProductImages([]);
         break;
       default:
@@ -71,7 +77,7 @@ const SpecsStepper = ({ navigation }) => {
   const handleProceed = () => {
     // __handle validations for each step
     switch (currentStep) {
-      case 1:
+      case 0:
         let temp = {
           product_id: productId,
           product_name: productName,
@@ -80,14 +86,14 @@ const SpecsStepper = ({ navigation }) => {
         };
         setNewSpecs(temp);
         console.log("Saved Step 1: ", temp);
-        setCurrentStep(2);
+        setCurrentStep(currentStep + 1);
         break;
-      case 2:
+      case 1:
         temp = newSpecs;
         temp["product_images"] = productImages;
         setNewSpecs(temp);
         console.log("Saved Step 2: ", temp);
-        setCurrentStep(3);
+        setCurrentStep(currentStep + 1);
         break;
       default:
         break;
@@ -98,6 +104,27 @@ const SpecsStepper = ({ navigation }) => {
     return (
       <View style={{ backgroundColor: "aqua", width: "100%", height: 80 }}>
         <Text>Current Step{currentStep}</Text>
+      </View>
+    );
+  };
+
+  const FormButtons = () => {
+    return (
+      <View style={styles.form_buttons}>
+        <Button
+          text="BACK"
+          variant="white"
+          onPress={() => {
+            setCurrentStep(currentStep - 1);
+          }}
+          disabled={currentStep === 0}
+        />
+        <Button
+          text="CLEAR ALL"
+          variant="light_cyan"
+          onPress={handleClearForm}
+        />
+        <Button text="SAVE & PROCEED" variant="aqua" onPress={handleProceed} />
       </View>
     );
   };
@@ -115,156 +142,145 @@ const SpecsStepper = ({ navigation }) => {
           elevation: 2,
         }}
       >
-        <StepperGraphic />
-        <ScrollView
-          contentContainerStyle={{
-            paddingHorizontal: "3%",
-            paddingVertical: 14,
-            paddingBottom: 350,
-            alignItems: "center",
-          }}
-        >
-          <Text style={styles.form_title}>{steps[currentStep]}</Text>
-          {currentStep === 1 ? (
-            // STEP 1
-            <View style={styles.form_container}>
-              <View style={styles.form_field}>
-                <Text style={styles.form_label}>Product ID</Text>
-                <TextInput
-                  style={styles.text_field}
-                  onChangeText={setProductId}
-                  value={productId}
-                />
-              </View>
-              <View style={styles.form_field}>
-                <Text style={styles.form_label}>Product Name</Text>
-                <TextInput
-                  style={styles.text_field}
-                  onChangeText={setProductName}
-                  value={productName}
-                />
-              </View>
-              <View style={styles.form_field}>
-                <Text style={styles.form_label}>Brand Name</Text>
-                <TextInput
-                  style={styles.text_field}
-                  onChangeText={setBrandName}
-                  value={brandName}
-                />
-              </View>
-              <View style={styles.form_field}>
-                <Text style={styles.form_label}>Gender</Text>
-                <SelectList
-                  search={false}
-                  setSelected={(val) => setGender(val)}
-                  data={[
-                    { key: "1", value: "Unisex" },
-                    { key: "2", value: "Male" },
-                    { key: "3", value: "Female" },
-                  ]}
-                  defaultOption={{ key: "1", value: "Unisex" }}
-                  save="value"
-                  boxStyles={{ borderColor: grey1 }}
-                  dropdownStyles={{ borderColor: grey1 }}
-                />
-              </View>
-            </View>
-          ) : currentStep === 2 ? (
-            // STEP 2
-            <>
-              {productImages.length === 0 ? (
-                <View style={{ alignItems: "center" }}>
-                  <Button
-                    text={"UPLOAD IMAGES"}
-                    variant={"light_cyan"}
-                    onPress={handleUploadImage}
-                    style={{ width: "50%", marginTop: 80 }}
-                  />
-                  <Text style={{ fontSize: 18, marginTop: 50 }}>
-                    Please upload 1 or more images for the product
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: grey3,
-                      marginTop: 25,
-                      marginBottom: 80,
-                    }}
-                  >
-                    Note: Images must be uploaded in 16:9 aspect ratio.
-                  </Text>
-                </View>
-              ) : (
-                <View style={{ flexDirection: "row" }}>
-                  <View style={{ width: "20%" }}>
-                    <Button
-                      text={"UPLOAD IMAGES"}
-                      variant={"light_cyan"}
-                      onPress={handleUploadImage}
-                      style={{}}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        color: "black",
-                        marginTop: 25,
-                        paddingRight: 4,
-                      }}
-                    >
-                      Note: Images must be uploaded in 16:9 aspect ratio.
-                    </Text>
-                  </View>
-
-                  <View
-                    style={{
-                      flexWrap: "wrap",
-                      flex: 1,
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                      paddingHorizontal: "3%",
-                    }}
-                  >
-                    {productImages.length !== 0 &&
-                      productImages.map((img, index) => (
-                        <Image
-                          key={index}
-                          source={{ uri: img.uri }}
-                          style={styles.form_image}
+        <View style={{ flex: 1 }}>
+          <ProgressSteps
+            // progressBarColor={aqua1}
+            completedStepIconColor={aqua1}
+            activeStepIconBorderColor={aqua1}
+            completedProgressBarColor={aqua1}
+            activeLabelColor={"black"}
+            activeLabelFontSize={18}
+            labelFontSize={18}
+            activeStep={currentStep}
+          >
+            {steps.map((step) => (
+              <ProgressStep label={step} removeBtnRow>
+                <View style={styles.step_container}>
+                  <Text style={styles.form_title}>{steps[currentStep]}</Text>
+                  {currentStep === 0 ? (
+                    <View style={styles.form_container}>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Product ID</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setProductId}
+                          value={productId}
                         />
-                      ))}
-                  </View>
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Product Name</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setProductName}
+                          value={productName}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Brand Name</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setBrandName}
+                          value={brandName}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Gender</Text>
+                        <SelectList
+                          search={false}
+                          setSelected={(val) => setGender(val)}
+                          data={[
+                            { key: "1", value: "Unisex" },
+                            { key: "2", value: "Male" },
+                            { key: "3", value: "Female" },
+                          ]}
+                          defaultOption={{ key: "1", value: "Unisex" }}
+                          save="value"
+                          boxStyles={{ borderColor: grey1 }}
+                          dropdownStyles={{ borderColor: grey1 }}
+                        />
+                      </View>
+                    </View>
+                  ) : currentStep === 1 ? (
+                    <>
+                      {productImages.length === 0 ? (
+                        <View style={{ alignItems: "center" }}>
+                          <Button
+                            text={"UPLOAD IMAGES"}
+                            variant={"light_cyan"}
+                            onPress={handleUploadImage}
+                            style={{ width: "50%", marginTop: 80 }}
+                          />
+                          <Text style={{ fontSize: 18, marginTop: 50 }}>
+                            Please upload 1 or more images for the product
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              color: grey3,
+                              marginTop: 25,
+                              marginBottom: 80,
+                            }}
+                          >
+                            Note: Images must be uploaded in 16:9 aspect ratio.
+                          </Text>
+                        </View>
+                      ) : (
+                        <View style={{ flexDirection: "row" }}>
+                          <View style={{ width: "20%" }}>
+                            <Button
+                              text={"UPLOAD IMAGES"}
+                              variant={"light_cyan"}
+                              onPress={handleUploadImage}
+                              style={{}}
+                            />
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: "black",
+                                marginTop: 25,
+                                paddingRight: 4,
+                              }}
+                            >
+                              Note: Images must be uploaded in 16:9 aspect
+                              ratio.
+                            </Text>
+                          </View>
+
+                          <View
+                            style={{
+                              flexWrap: "wrap",
+                              flex: 1,
+                              flexDirection: "row",
+                              justifyContent: "space-between",
+                              width: "100%",
+                              paddingHorizontal: "3%",
+                            }}
+                          >
+                            {productImages.length !== 0 &&
+                              productImages.map((img, index) => (
+                                <Image
+                                  key={index}
+                                  source={{ uri: img.uri }}
+                                  style={styles.form_image}
+                                />
+                              ))}
+                          </View>
+                        </View>
+                      )}
+                    </>
+                  ) : currentStep === 2 ? (
+                    <View></View>
+                  ) : (
+                    <>
+                      <Text>Invalid Step</Text>
+                    </>
+                  )}
+                  <FormButtons />
                 </View>
-              )}
-            </>
-          ) : currentStep === 3 ? (
-            // STEP 3
-            <View></View>
-          ) : (
-            // STEP 4
-            <View></View>
-          )}
-          <View style={styles.form_buttons}>
-            <Button
-              text="BACK"
-              variant="white"
-              onPress={() => {
-                setCurrentStep(currentStep - 1);
-              }}
-              disabled={currentStep === 1}
-            />
-            <Button
-              text="CLEAR ALL"
-              variant="light_cyan"
-              onPress={handleClearForm}
-            />
-            <Button
-              text="SAVE & PROCEED"
-              variant="aqua"
-              onPress={handleProceed}
-            />
-          </View>
-        </ScrollView>
+              </ProgressStep>
+            ))}
+          </ProgressSteps>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -313,5 +329,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderWidth: 1,
     borderColor: grey3,
+  },
+  step_container: {
+    paddingHorizontal: "3%",
+    paddingVertical: 14,
+    paddingBottom: 350,
+    alignItems: "center",
+    borderTopWidth: 1,
+    borderColor: grey1,
   },
 });
