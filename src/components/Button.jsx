@@ -2,7 +2,7 @@ import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { aqua1, grey1, light_cyan } from "../constants";
 
-const Button = ({ text, variant, onPress, rounded, disabled }) => {
+const Button = ({ text, variant, onPress, rounded, disabled, style }) => {
   return (
     <TouchableOpacity
       style={{
@@ -17,6 +17,7 @@ const Button = ({ text, variant, onPress, rounded, disabled }) => {
             : variant === "light_cyan"
             ? light_cyan
             : "white",
+        ...style,
       }}
       onPress={() => {
         if (!disabled) onPress();

@@ -5,12 +5,14 @@ import {
   TextInput,
   Dimensions,
   ScrollView,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { gradient_end, gradient_start, grey1, grey3 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
+import * as ImagePicker from "expo-image-picker";
 
 const SpecsStepper = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -27,6 +29,8 @@ const SpecsStepper = ({ navigation }) => {
   const [brandName, setBrandName] = useState("");
   const [gender, setGender] = useState("Unisex");
 
+  const [productImages, setProductImages] = useState([]);
+
   const [newSpecs, setNewSpecs] = useState(null);
 
   useEffect(() => {
@@ -35,8 +39,33 @@ const SpecsStepper = ({ navigation }) => {
     });
   }, []);
 
+  const handleUploadImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [16, 9],
+      quality: 1,
+      allowsMultipleSelection: true,
+    });
+
+    // console.log(result);
+
+    if (!result.canceled) {
+      setProductImages(productImages.concat(result.assets));
+    }
+  };
+
   const handleClearForm = () => {
     console.log("clear form");
+    switch (currentStep) {
+      case 1:
+        break;
+      case 2:
+        setProductImages([]);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleProceed = () => {
@@ -52,7 +81,13 @@ const SpecsStepper = ({ navigation }) => {
         setNewSpecs(temp);
         console.log("Saved Step 1: ", temp);
         setCurrentStep(2);
-
+        break;
+      case 2:
+        temp = newSpecs;
+        temp["product_images"] = productImages;
+        setNewSpecs(temp);
+        console.log("Saved Step 2: ", temp);
+        setCurrentStep(3);
         break;
       default:
         break;
@@ -134,8 +169,79 @@ const SpecsStepper = ({ navigation }) => {
                 />
               </View>
             </View>
-          ) : (
+          ) : currentStep === 2 ? (
             // STEP 2
+            <>
+              {productImages.length === 0 ? (
+                <View style={{ alignItems: "center" }}>
+                  <Button
+                    text={"UPLOAD IMAGES"}
+                    variant={"light_cyan"}
+                    onPress={handleUploadImage}
+                    style={{ width: "50%", marginTop: 80 }}
+                  />
+                  <Text style={{ fontSize: 18, marginTop: 50 }}>
+                    Please upload 1 or more images for the product
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      color: grey3,
+                      marginTop: 25,
+                      marginBottom: 80,
+                    }}
+                  >
+                    Note: Images must be uploaded in 16:9 aspect ratio.
+                  </Text>
+                </View>
+              ) : (
+                <View style={{ flexDirection: "row" }}>
+                  <View style={{ width: "20%" }}>
+                    <Button
+                      text={"UPLOAD IMAGES"}
+                      variant={"light_cyan"}
+                      onPress={handleUploadImage}
+                      style={{}}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        color: "black",
+                        marginTop: 25,
+                        paddingRight: 4,
+                      }}
+                    >
+                      Note: Images must be uploaded in 16:9 aspect ratio.
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flexWrap: "wrap",
+                      flex: 1,
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      paddingHorizontal: "3%",
+                    }}
+                  >
+                    {productImages.length !== 0 &&
+                      productImages.map((img, index) => (
+                        <Image
+                          key={index}
+                          source={{ uri: img.uri }}
+                          style={styles.form_image}
+                        />
+                      ))}
+                  </View>
+                </View>
+              )}
+            </>
+          ) : currentStep === 3 ? (
+            // STEP 3
+            <View></View>
+          ) : (
+            // STEP 4
             <View></View>
           )}
           <View style={styles.form_buttons}>
@@ -199,5 +305,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 30,
     width: "50%",
+  },
+  form_image: {
+    width: "48%",
+    height: "25.3%",
+    aspectRatio: "16/9",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: grey3,
   },
 });
