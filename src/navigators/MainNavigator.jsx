@@ -11,7 +11,7 @@ const MainNavigator = () => {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Spectacles" component={SpecsNavigator} />
+      <Tab.Screen name="SpecsNavigator" component={SpecsNavigator} />
       <Tab.Screen name="Sunglasses" component={Sunglasses} />
       <Tab.Screen name="Lenses" component={Lenses} />
       <Tab.Screen name="Accessories" component={Accessories} />
