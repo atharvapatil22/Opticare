@@ -30,12 +30,24 @@ const SpecsStepper = ({ navigation }) => {
     "Sales & Taxes",
   ];
 
+  // Step 1
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
   const [brandName, setBrandName] = useState("");
   const [gender, setGender] = useState("Unisex");
-
+  // Step 2
   const [productImages, setProductImages] = useState([]);
+  // Step 3
+  const [color, setColor] = useState("");
+  const [material, setMaterial] = useState("");
+  const [weight, setWeight] = useState(null);
+  const [width, setWidth] = useState(null);
+  const [dimensions, setDimensions] = useState("");
+  const [warranty, setWarranty] = useState(1);
+  const [stock, setStock] = useState("0");
+  // Step 5
+  const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("0");
 
   const [newSpecs, setNewSpecs] = useState(null);
 
@@ -95,17 +107,35 @@ const SpecsStepper = ({ navigation }) => {
         console.log("Saved Step 2: ", temp);
         setCurrentStep(currentStep + 1);
         break;
+      case 2:
+        temp = {
+          color: color,
+          material: material,
+          weight: weight,
+          width: width,
+          dimensions: dimensions,
+          warranty: warranty,
+          stock: stock,
+        };
+        setNewSpecs({ ...newSpecs, ...temp });
+        console.log("Saved Step 3: ", { ...newSpecs, ...temp });
+        setCurrentStep(currentStep + 1);
+        break;
+      case 3:
+        console.log("Saved Step 4: ");
+        setCurrentStep(currentStep + 1);
+        break;
+      case 4:
+        temp = {
+          price: price,
+          discount: discount,
+        };
+        setNewSpecs({ ...newSpecs, ...temp });
+        console.log("Saved Step 5: ", { ...newSpecs, ...temp });
+        break;
       default:
         break;
     }
-  };
-
-  const StepperGraphic = () => {
-    return (
-      <View style={{ backgroundColor: "aqua", width: "100%", height: 80 }}>
-        <Text>Current Step{currentStep}</Text>
-      </View>
-    );
   };
 
   const FormButtons = () => {
@@ -124,7 +154,11 @@ const SpecsStepper = ({ navigation }) => {
           variant="light_cyan"
           onPress={handleClearForm}
         />
-        <Button text="SAVE & PROCEED" variant="aqua" onPress={handleProceed} />
+        <Button
+          text={currentStep === steps.length - 1 ? "SUBMIT" : "SAVE & PROCEED"}
+          variant="aqua"
+          onPress={handleProceed}
+        />
       </View>
     );
   };
@@ -269,7 +303,110 @@ const SpecsStepper = ({ navigation }) => {
                       )}
                     </>
                   ) : currentStep === 2 ? (
-                    <View></View>
+                    <View style={styles.form_container}>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Frame Color</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setColor}
+                          value={color}
+                        />
+                      </View>
+
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Material</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setMaterial}
+                          value={material}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Weight (in grams)</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setWeight}
+                          value={weight}
+                          keyboardType="number-pad"
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Width (in cms)</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setWidth}
+                          value={width}
+                          keyboardType="number-pad"
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Dimensions</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setDimensions}
+                          value={dimensions}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Product Warranty</Text>
+                        <SelectList
+                          search={false}
+                          setSelected={(val) => setWarranty(val)}
+                          data={[
+                            { key: "1", value: "1 Year" },
+                            { key: "2", value: "2 Years" },
+                            { key: "3", value: "3 Years" },
+                          ]}
+                          defaultOption={{ key: "1", value: "1 Year" }}
+                          save="key"
+                          boxStyles={{ borderColor: grey1 }}
+                          dropdownStyles={{ borderColor: grey1 }}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Product Stock</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setStock}
+                          value={stock}
+                        />
+                      </View>
+                    </View>
+                  ) : currentStep === 3 ? (
+                    <View style={{}}>
+                      <Text style={styles.form_label}>Available Lenses</Text>
+                      <SelectList
+                        search={false}
+                        setSelected={(val) => setWarranty(val)}
+                        data={[]}
+                        // defaultOption={{ key: "1", value: "1 Year" }}
+                        placeholder="No lenses Available"
+                        save="key"
+                        boxStyles={{ borderColor: grey1 }}
+                        dropdownStyles={{ borderColor: grey1 }}
+                      />
+                    </View>
+                  ) : currentStep === 4 ? (
+                    <View style={styles.form_container}>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Price</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setPrice}
+                          value={price}
+                          keyboardType="numeric"
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Discount (in %)</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setDiscount}
+                          value={discount}
+                          keyboardType="numeric"
+                        />
+                      </View>
+                    </View>
                   ) : (
                     <>
                       <Text>Invalid Step</Text>
