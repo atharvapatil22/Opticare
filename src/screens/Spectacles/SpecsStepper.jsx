@@ -1,8 +1,16 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Dimensions,
+  ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { gradient_end, gradient_start, grey1, grey3 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
+import Button from "../../components/Button";
 
 const SpecsStepper = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -19,11 +27,37 @@ const SpecsStepper = ({ navigation }) => {
   const [brandName, setBrandName] = useState("");
   const [gender, setGender] = useState("Unisex");
 
+  const [newSpecs, setNewSpecs] = useState(null);
+
   useEffect(() => {
     navigation.setOptions({
       title: true ? "Add New Spectacles" : "Edit Spectacles",
     });
   }, []);
+
+  const handleClearForm = () => {
+    console.log("clear form");
+  };
+
+  const handleProceed = () => {
+    // __handle validations for each step
+    switch (currentStep) {
+      case 1:
+        let temp = {
+          product_id: productId,
+          product_name: productName,
+          brand_name: brandName,
+          gender: gender,
+        };
+        setNewSpecs(temp);
+        console.log("Saved Step 1: ", temp);
+        setCurrentStep(2);
+
+        break;
+      default:
+        break;
+    }
+  };
 
   const StepperGraphic = () => {
     return (
@@ -47,7 +81,14 @@ const SpecsStepper = ({ navigation }) => {
         }}
       >
         <StepperGraphic />
-        <View style={{ paddingHorizontal: "3%", paddingVertical: 14 }}>
+        <ScrollView
+          contentContainerStyle={{
+            paddingHorizontal: "3%",
+            paddingVertical: 14,
+            paddingBottom: 350,
+            alignItems: "center",
+          }}
+        >
           <Text style={styles.form_title}>{steps[currentStep]}</Text>
           {currentStep === 1 ? (
             // STEP 1
@@ -97,7 +138,27 @@ const SpecsStepper = ({ navigation }) => {
             // STEP 2
             <View></View>
           )}
-        </View>
+          <View style={styles.form_buttons}>
+            <Button
+              text="BACK"
+              variant="white"
+              onPress={() => {
+                setCurrentStep(currentStep - 1);
+              }}
+              disabled={currentStep === 1}
+            />
+            <Button
+              text="CLEAR ALL"
+              variant="light_cyan"
+              onPress={handleClearForm}
+            />
+            <Button
+              text="SAVE & PROCEED"
+              variant="aqua"
+              onPress={handleProceed}
+            />
+          </View>
+        </ScrollView>
       </View>
     </LinearGradient>
   );
@@ -105,10 +166,11 @@ const SpecsStepper = ({ navigation }) => {
 
 export default SpecsStepper;
 
+const windowHeight = Dimensions.get("window").height;
+
 const styles = StyleSheet.create({
   gradient_container: {
-    backgroundColor: "red",
-    height: "100%",
+    height: windowHeight * 0.8,
     width: "100%",
     paddingHorizontal: "10%",
     paddingVertical: "2%",
@@ -132,4 +194,10 @@ const styles = StyleSheet.create({
     borderColor: grey1,
   },
   form_label: { color: "black", fontSize: 18, marginBottom: 5 },
+  form_buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 30,
+    width: "50%",
+  },
 });

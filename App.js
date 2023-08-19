@@ -13,7 +13,7 @@ export default function App() {
 
   async function lockScreenOrientation() {
     await ScreenOrientation.lockAsync(
-      ScreenOrientation.OrientationLock.LANDSCAPE_RIGHT
+      ScreenOrientation.OrientationLock.LANDSCAPE_LEFT
     );
   }
 

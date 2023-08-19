@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { grey1, grey3 } from "../../constants";
-import TempButton from "../../components/TempButton";
+import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 
 const Spectacles = ({ navigation }) => {
@@ -66,14 +66,15 @@ const Spectacles = ({ navigation }) => {
           placeholder="Type here to search ..."
           placeholderTextColor={grey1}
         />
-        <TempButton text="SEARCH" variant="aqua" />
-        <TempButton text="Filters" variant="white" />
-        <TempButton
+        <Button text="SEARCH" variant="aqua" rounded />
+        <Button text="Filters" variant="white" rounded />
+        <Button
           text="+ ADD NEW"
           variant="aqua"
           onPress={() => {
             navigation.navigate("SpecsStepper");
           }}
+          rounded
         />
       </View>
       <ScrollView style={{ width: "100%", height: "100%" }}>
