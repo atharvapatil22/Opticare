@@ -5,6 +5,7 @@ import Sunglasses from "../screens/Sunglasses/Sunglasses";
 import Accessories from "../screens/Accessories/Accessories";
 import Lenses from "../screens/Lenses/Lenses";
 import SpecsNavigator from "./SpecsNavigator";
+import AccessoryNavigator from "./AccessoryNavigator";
 
 const MainNavigator = () => {
   const Tab = createBottomTabNavigator();
@@ -14,7 +15,7 @@ const MainNavigator = () => {
       <Tab.Screen name="SpecsNavigator" component={SpecsNavigator} />
       <Tab.Screen name="Sunglasses" component={Sunglasses} />
       <Tab.Screen name="Lenses" component={Lenses} />
-      <Tab.Screen name="Accessories" component={Accessories} />
+      <Tab.Screen name="AccessoryNavigator" component={AccessoryNavigator} />
     </Tab.Navigator>
   );
 };

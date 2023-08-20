@@ -19,10 +19,10 @@ const Spectacles = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchSpecsList();
+    fetchAllSpecs();
   }, [navigation]);
 
-  const fetchSpecsList = async () => {
+  const fetchAllSpecs = async () => {
     const { data, error } = await supabase.from("spectacles").select("*");
     if (error) {
       // api_error
@@ -33,6 +33,7 @@ const Spectacles = ({ navigation }) => {
     }
   };
 
+  // code_refactoring
   const SpecsCard = ({ data }) => {
     return (
       <TouchableOpacity
@@ -88,7 +89,7 @@ const Spectacles = ({ navigation }) => {
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsList} />
+          <RefreshControl refreshing={refreshing} onRefresh={fetchAllSpecs} />
         }
       >
         <View style={styles.grid_container}>
