@@ -19,6 +19,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
+import { supabase } from "../../supabase/client";
 
 const SpecsStepper = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -33,7 +34,7 @@ const SpecsStepper = ({ navigation }) => {
   // Step 1
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
-  const [brandName, setBrandName] = useState("");
+  const [brand, setBrand] = useState("");
   const [gender, setGender] = useState("Unisex");
   // Step 2
   const [productImages, setProductImages] = useState([]);
@@ -73,6 +74,36 @@ const SpecsStepper = ({ navigation }) => {
     }
   };
 
+  const createNewSpecs = async () => {
+    const finalObj = {
+      name: productName,
+      product_id: productId,
+      brand: brand,
+      price: parseInt(price),
+      discount: parseInt(discount),
+      material: material,
+      color: color,
+      gender: gender,
+      warranty: parseInt(warranty),
+      dimensions: dimensions,
+      weight: parseInt(weight),
+      width: parseInt(width),
+      stock: parseInt(stock),
+    };
+    const { data, error } = await supabase
+      .from("spectacles")
+      .insert([finalObj])
+      .select();
+
+    if (error) {
+      // api_error
+      console.log("api_error", error);
+    } else {
+      // api_success
+      console.log("success", data);
+    }
+  };
+
   const handleClearForm = () => {
     console.log("clear form");
     switch (currentStep) {
@@ -93,7 +124,7 @@ const SpecsStepper = ({ navigation }) => {
         let temp = {
           product_id: productId,
           product_name: productName,
-          brand_name: brandName,
+          brand: brand,
           gender: gender,
         };
         setNewSpecs(temp);
@@ -131,7 +162,7 @@ const SpecsStepper = ({ navigation }) => {
           discount: discount,
         };
         setNewSpecs({ ...newSpecs, ...temp });
-        console.log("Saved Step 5: ", { ...newSpecs, ...temp });
+        createNewSpecs();
         break;
       default:
         break;
@@ -187,8 +218,8 @@ const SpecsStepper = ({ navigation }) => {
             labelFontSize={18}
             activeStep={currentStep}
           >
-            {steps.map((step) => (
-              <ProgressStep label={step} removeBtnRow>
+            {steps.map((step, index) => (
+              <ProgressStep label={step} removeBtnRow key={index}>
                 <View style={styles.step_container}>
                   <Text style={styles.form_title}>{steps[currentStep]}</Text>
                   {currentStep === 0 ? (
@@ -213,8 +244,8 @@ const SpecsStepper = ({ navigation }) => {
                         <Text style={styles.form_label}>Brand Name</Text>
                         <TextInput
                           style={styles.text_field}
-                          onChangeText={setBrandName}
-                          value={brandName}
+                          onChangeText={setBrand}
+                          value={brand}
                         />
                       </View>
                       <View style={styles.form_field}>
