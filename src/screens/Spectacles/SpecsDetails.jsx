@@ -117,7 +117,7 @@ const SpecsDetails = ({ route }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Size: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  -
+                  {specsData.size}
                 </Text>
               </View>
               {/* Additional Information */}
@@ -219,7 +219,9 @@ const SpecsDetails = ({ route }) => {
                   >
                     Stock sold till date
                   </Text>
-                  <Text style={{ fontSize: 45, color: grey4 }}>0-</Text>
+                  <Text style={{ fontSize: 45, color: grey4 }}>
+                    {specsData.stock_sold}
+                  </Text>
                 </View>
               </View>
             </View>

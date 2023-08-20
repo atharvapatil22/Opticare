@@ -44,6 +44,7 @@ const SpecsStepper = ({ navigation }) => {
   const [weight, setWeight] = useState(null);
   const [width, setWidth] = useState(null);
   const [dimensions, setDimensions] = useState("");
+  const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
   const [stock, setStock] = useState("0");
   // Step 5
@@ -85,6 +86,7 @@ const SpecsStepper = ({ navigation }) => {
       color: color,
       gender: gender,
       warranty: parseInt(warranty),
+      size: size,
       dimensions: dimensions,
       weight: parseInt(weight),
       width: parseInt(width),
@@ -147,6 +149,7 @@ const SpecsStepper = ({ navigation }) => {
           dimensions: dimensions,
           warranty: warranty,
           stock: stock,
+          size: size,
         };
         setNewSpecs({ ...newSpecs, ...temp });
         console.log("Saved Step 3: ", { ...newSpecs, ...temp });
@@ -350,6 +353,24 @@ const SpecsStepper = ({ navigation }) => {
                           style={styles.text_field}
                           onChangeText={setMaterial}
                           value={material}
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Size</Text>
+                        <SelectList
+                          search={false}
+                          setSelected={(val) => setSize(val)}
+                          data={[
+                            { key: "1", value: "Extra Narrow" },
+                            { key: "2", value: "Narrow" },
+                            { key: "3", value: "Medium" },
+                            { key: "4", value: "Wide" },
+                            { key: "5", value: "Extra Wide" },
+                          ]}
+                          defaultOption={{ key: "3", value: "Medium" }}
+                          save="value"
+                          boxStyles={{ borderColor: grey1 }}
+                          dropdownStyles={{ borderColor: grey1 }}
                         />
                       </View>
                       <View style={styles.form_field}>
