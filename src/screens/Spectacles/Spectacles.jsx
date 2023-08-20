@@ -5,6 +5,8 @@ import {
   TextInput,
   Image,
   ScrollView,
+  RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { grey1, grey3 } from "../../constants";
@@ -14,12 +16,13 @@ import { supabase } from "../../supabase/client";
 const Spectacles = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [specs, setSpecs] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    fetchSpecs();
-  }, []);
+    fetchSpecsList();
+  }, [navigation]);
 
-  const fetchSpecs = async () => {
+  const fetchSpecsList = async () => {
     const { data, error } = await supabase.from("spectacles").select("*");
     if (error) {
       // api_error
@@ -32,7 +35,12 @@ const Spectacles = ({ navigation }) => {
 
   const SpecsCard = ({ data }) => {
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => {
+          navigation.navigate("Spectacles Details", { id: data.id });
+        }}
+      >
         <Image
           source={{
             uri: data.preview_image,
@@ -51,7 +59,7 @@ const Spectacles = ({ navigation }) => {
             ({data.lens_options} Lens options)
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -77,7 +85,12 @@ const Spectacles = ({ navigation }) => {
           rounded
         />
       </View>
-      <ScrollView style={{ width: "100%", height: "100%" }}>
+      <ScrollView
+        style={{ width: "100%", height: "100%" }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsList} />
+        }
+      >
         <View style={styles.grid_container}>
           {specs.map((item) => (
             <SpecsCard data={item} key={item.id} />
