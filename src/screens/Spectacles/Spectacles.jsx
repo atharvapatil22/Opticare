@@ -44,7 +44,7 @@ const Spectacles = ({ navigation }) => {
       >
         <Image
           source={{
-            uri: data.preview_image,
+            uri: data.images[0],
           }}
           style={{
             aspectRatio: "16/9",

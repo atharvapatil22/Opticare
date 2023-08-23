@@ -9,6 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
+  CLOUDINARY_URL,
   aqua1,
   gradient_end,
   gradient_start,
@@ -20,6 +21,7 @@ import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { supabase } from "../../supabase/client";
+import axios from "axios";
 
 const SpecsStepper = ({ navigation }) => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -51,8 +53,6 @@ const SpecsStepper = ({ navigation }) => {
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("0");
 
-  const [newSpecs, setNewSpecs] = useState(null);
-
   useEffect(() => {
     navigation.setOptions({
       title: true ? "Add New Spectacles" : "Edit Spectacles",
@@ -66,16 +66,53 @@ const SpecsStepper = ({ navigation }) => {
       aspect: [16, 9],
       quality: 1,
       allowsMultipleSelection: true,
+      base64: true,
     });
 
-    // console.log(result);
+    // console.log("imagepicker", result.assets);
 
     if (!result.canceled) {
       setProductImages(productImages.concat(result.assets));
     }
   };
 
+  const uploadImagesToCloudinary = () => {
+    // Push all the axios request promise into a single array
+    const uploaders = productImages.map((file) => {
+      let base64Img = `data:image/jpg;base64,${file.base64}`;
+
+      let data = {
+        file: base64Img,
+        upload_preset: "uz1grhbn",
+      };
+
+      return axios
+        .post(CLOUDINARY_URL, JSON.stringify(data), {
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+        .then(async (response) => {
+          const data = response.data;
+          const fileURL = data.secure_url;
+          console.log("Uploaded image to cloudinary:", fileURL);
+          return fileURL;
+        })
+        .catch((err) => console.log("Cloudinary error", err));
+    });
+
+    return axios.all(uploaders);
+  };
+
   const createNewSpecs = async () => {
+    let imageUrls = [];
+    try {
+      imageUrls = await uploadImagesToCloudinary();
+      console.log("Successfully uploaded all images ✔️");
+    } catch (err) {
+      console.log("Cloudinary error! Failed to upload all images", err);
+    }
+
     const finalObj = {
       name: productName,
       product_id: productId,
@@ -91,6 +128,7 @@ const SpecsStepper = ({ navigation }) => {
       weight: parseInt(weight),
       width: parseInt(width),
       stock: parseInt(stock),
+      images: imageUrls,
     };
     const { data, error } = await supabase
       .from("spectacles")
@@ -123,25 +161,20 @@ const SpecsStepper = ({ navigation }) => {
     // __handle validations for each step
     switch (currentStep) {
       case 0:
-        let temp = {
+        console.log("Saved Step 1: ", {
           product_id: productId,
           product_name: productName,
           brand: brand,
           gender: gender,
-        };
-        setNewSpecs(temp);
-        console.log("Saved Step 1: ", temp);
+        });
         setCurrentStep(currentStep + 1);
         break;
       case 1:
-        temp = newSpecs;
-        temp["product_images"] = productImages;
-        setNewSpecs(temp);
-        console.log("Saved Step 2: ", temp);
+        console.log("Saved Step 2: ", { images: productImages });
         setCurrentStep(currentStep + 1);
         break;
       case 2:
-        temp = {
+        console.log("Saved Step 3: ", {
           color: color,
           material: material,
           weight: weight,
@@ -150,9 +183,7 @@ const SpecsStepper = ({ navigation }) => {
           warranty: warranty,
           stock: stock,
           size: size,
-        };
-        setNewSpecs({ ...newSpecs, ...temp });
-        console.log("Saved Step 3: ", { ...newSpecs, ...temp });
+        });
         setCurrentStep(currentStep + 1);
         break;
       case 3:
@@ -160,11 +191,6 @@ const SpecsStepper = ({ navigation }) => {
         setCurrentStep(currentStep + 1);
         break;
       case 4:
-        temp = {
-          price: price,
-          discount: discount,
-        };
-        setNewSpecs({ ...newSpecs, ...temp });
         createNewSpecs();
         break;
       default:
