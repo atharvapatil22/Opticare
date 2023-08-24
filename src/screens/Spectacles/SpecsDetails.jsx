@@ -1,11 +1,22 @@
-import { View, Text, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  Dimensions,
+  Image,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../supabase/client";
 import { aqua1, gradient_start, grey2, grey3, grey4 } from "../../constants";
+import Carousel, { Pagination } from "react-native-snap-carousel";
 
 const SpecsDetails = ({ route }) => {
   const { id: specsId } = route.params;
+  const SLIDER_WIDTH = Dimensions.get("window").width;
+
   const [specsData, setSpecsData] = useState(null);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
     fetchSpecsDetails();
@@ -58,8 +69,46 @@ const SpecsDetails = ({ route }) => {
     >
       {!!specsData ? (
         <>
-          <View style={{ backgroundColor: "lightgreen", padding: 50 }}>
-            <Text>Image & Edit Delete</Text>
+          <View style={{}}>
+            <Carousel
+              data={specsData.images}
+              renderItem={({ item }) => {
+                return (
+                  <Image
+                    source={{ uri: item }}
+                    style={{
+                      width: "100%",
+                      aspectRatio: "16/9",
+                      overflow: "hidden",
+                      borderRadius: 20,
+                      borderWidth: 1,
+                      borderColor: grey3,
+                    }}
+                  />
+                );
+              }}
+              sliderWidth={SLIDER_WIDTH}
+              itemWidth={SLIDER_WIDTH - 500}
+              onSnapToItem={(index) => setCarouselIndex(index)}
+            />
+            <Pagination
+              dotsLength={specsData.images.length}
+              activeDotIndex={carouselIndex}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 5,
+                marginHorizontal: 8,
+                backgroundColor: aqua1,
+              }}
+              tappableDots={true}
+              inactiveDotStyle={{
+                backgroundColor: "black",
+                // Define styles for inactive dots here
+              }}
+              inactiveDotOpacity={0.4}
+              inactiveDotScale={0.6}
+            />
           </View>
           <View
             style={{
