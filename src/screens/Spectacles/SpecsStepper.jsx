@@ -5,6 +5,7 @@ import {
   TextInput,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -141,6 +142,12 @@ const SpecsStepper = ({ navigation }) => {
     } else {
       // api_success
       console.log("success", data);
+      Alert.alert(
+        "Success!",
+        "New specs were successfully created: " + data[0].name,
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+        { cancelable: false }
+      );
     }
   };
 

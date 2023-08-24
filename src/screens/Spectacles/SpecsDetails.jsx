@@ -5,16 +5,19 @@ import {
   StyleSheet,
   Dimensions,
   Image,
+  Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../supabase/client";
 import { aqua1, gradient_start, grey2, grey3, grey4 } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
+import Button from "../../components/Button";
 
-const SpecsDetails = ({ route }) => {
+const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
+  const carouselRef = useRef(null);
   const [specsData, setSpecsData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -35,6 +38,49 @@ const SpecsDetails = ({ route }) => {
       setSpecsData(data[0]);
       console.log("Successfully fetched specs: ", data);
     }
+  };
+
+  const deleteSpecs = async () => {
+    // __delete images from cloudinary
+
+    const { data, error } = await supabase
+      .from("spectacles")
+      .delete()
+      .eq("id", specsId);
+    if (error) {
+      // api_error
+      console.log("api_error");
+    } else {
+      // api_success
+      console.log("Successfully deleted specs with id ", specsId);
+      Alert.alert(
+        "Success!",
+        "Deleted spectacles: " + specsData.name,
+        [{ text: "OK", onPress: () => navigation.goBack() }],
+        { cancelable: false }
+      );
+    }
+  };
+
+  const showDeletePrompt = () => {
+    Alert.alert(
+      `Delete ${specsData.name} ?`,
+      "Are you sure you want to delete these spectacles",
+      [
+        { text: "Confirm", onPress: () => deleteSpecs() },
+        {
+          text: "Cancel",
+          onPress: () => {
+            console.log("in cancel");
+          },
+          style: "cancel",
+        },
+      ],
+      {
+        cancelable: true,
+        onDismiss: () => {},
+      }
+    );
   };
 
   const AdditionalField = ({ label, value, hideborder }) => {
@@ -87,6 +133,7 @@ const SpecsDetails = ({ route }) => {
                   />
                 );
               }}
+              ref={carouselRef}
               sliderWidth={SLIDER_WIDTH}
               itemWidth={SLIDER_WIDTH - 500}
               onSnapToItem={(index) => setCarouselIndex(index)}
@@ -94,6 +141,7 @@ const SpecsDetails = ({ route }) => {
             <Pagination
               dotsLength={specsData.images.length}
               activeDotIndex={carouselIndex}
+              carouselRef={carouselRef}
               dotStyle={{
                 width: 10,
                 height: 10,
@@ -110,6 +158,18 @@ const SpecsDetails = ({ route }) => {
               inactiveDotScale={0.6}
             />
           </View>
+          {/* Change UI later for edit and delete */}
+          <View style={{ flexDirection: "row", marginLeft: "3%" }}>
+            <Button text="Edit" variant="aqua" onPress={() => {}} rounded />
+            <Button
+              text="Delete"
+              variant="aqua"
+              onPress={showDeletePrompt}
+              rounded
+              style={{ backgroundColor: "red" }}
+            />
+          </View>
+          {/* ---- */}
           <View
             style={{
               flexDirection: "row",
