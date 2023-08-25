@@ -2,10 +2,13 @@ import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { aqua1, grey1, light_cyan } from "../constants";
 
-const Button = ({ text, variant, onPress, rounded, disabled, style }) => {
+const Button = ({ text, variant, onPress, rounded, disabled, style, icon }) => {
   return (
     <TouchableOpacity
       style={{
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
         paddingHorizontal: 20,
         paddingVertical: 10,
         borderRadius: rounded ? 24 : 8,
@@ -23,6 +26,7 @@ const Button = ({ text, variant, onPress, rounded, disabled, style }) => {
         if (!disabled) onPress();
       }}
     >
+      {!!icon && icon}
       <Text
         style={{
           fontSize: 18,

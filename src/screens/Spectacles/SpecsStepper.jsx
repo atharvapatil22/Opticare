@@ -24,6 +24,8 @@ import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { supabase } from "../../supabase/client";
 import axios from "axios";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
@@ -33,13 +35,13 @@ const SpecsStepper = ({ route, navigation }) => {
     "Product Images",
     "Technical Information",
     "Link Lenses",
-    "Sales & Taxes",
+    "Stock & Pricing",
   ];
 
   // Step 1
   const [productId, setProductId] = useState("");
   const [productName, setProductName] = useState("");
-  const [brand, setBrand] = useState("");
+  const [brand, setBrand] = useState("Eyemate");
   const [gender, setGender] = useState("Unisex");
   // Step 2
   const [productImages, setProductImages] = useState([]);
@@ -53,10 +55,11 @@ const SpecsStepper = ({ route, navigation }) => {
   const [dimensions, setDimensions] = useState("");
   const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
-  const [stock, setStock] = useState("0");
+
   // Step 5
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("0");
+  const [stock, setStock] = useState("0");
 
   useEffect(() => {
     navigation.setOptions({
@@ -81,8 +84,8 @@ const SpecsStepper = ({ route, navigation }) => {
     setDimensions(specsData.dimensions);
     setSize(specsData.size);
     setWarranty(specsData.warranty.toString());
-    setStock(specsData.stock.toString());
 
+    setStock(specsData.stock.toString());
     setPrice(specsData.price.toString());
     setDiscount(specsData.discount.toString());
   };
@@ -226,7 +229,7 @@ const SpecsStepper = ({ route, navigation }) => {
         "Success!",
         !!editing
           ? "Specs Details successfully updated."
-          : "New specs were successfully created: " + data[0].name,
+          : "New specs were successfully created: " + response.data[0].name,
         [{ text: "OK", onPress: () => navigation.goBack() }],
         { cancelable: false }
       );
@@ -257,13 +260,14 @@ const SpecsStepper = ({ route, navigation }) => {
         setDimensions("");
         setSize("Medium");
         setWarranty(1);
-        setStock("0");
+
         break;
       case 3:
         break;
       case 4:
         setPrice("");
         setDiscount("0");
+        setStock("0");
         break;
       default:
         break;
@@ -294,7 +298,6 @@ const SpecsStepper = ({ route, navigation }) => {
           width: width,
           dimensions: dimensions,
           warranty: warranty,
-          stock: stock,
           size: size,
         });
         setCurrentStep(currentStep + 1);
@@ -309,6 +312,25 @@ const SpecsStepper = ({ route, navigation }) => {
       default:
         break;
     }
+  };
+
+  const UploadImageButton = () => {
+    return (
+      <Button
+        text={"UPLOAD IMAGES"}
+        variant={"light_cyan"}
+        onPress={handleUploadImage}
+        style={{}}
+        icon={
+          <MaterialCommunityIcons
+            name="upload"
+            size={26}
+            color={aqua1}
+            style={{ marginRight: 4 }}
+          />
+        }
+      />
+    );
   };
 
   const FormButtons = () => {
@@ -410,13 +432,8 @@ const SpecsStepper = ({ route, navigation }) => {
                   ) : currentStep === 1 ? (
                     <>
                       {productImages.length === 0 ? (
-                        <View style={{ alignItems: "center" }}>
-                          <Button
-                            text={"UPLOAD IMAGES"}
-                            variant={"light_cyan"}
-                            onPress={handleUploadImage}
-                            style={{ width: "50%", marginTop: 80 }}
-                          />
+                        <View style={{ alignItems: "center", paddingTop: 65 }}>
+                          <UploadImageButton />
                           <Text style={{ fontSize: 18, marginTop: 50 }}>
                             Please upload 1 or more images for the product
                           </Text>
@@ -434,12 +451,7 @@ const SpecsStepper = ({ route, navigation }) => {
                       ) : (
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ width: "20%" }}>
-                            <Button
-                              text={"UPLOAD IMAGES"}
-                              variant={"light_cyan"}
-                              onPress={handleUploadImage}
-                              style={{}}
-                            />
+                            <UploadImageButton />
                             <Text
                               style={{
                                 fontSize: 16,
@@ -450,6 +462,17 @@ const SpecsStepper = ({ route, navigation }) => {
                             >
                               Note: Images must be uploaded in 16:9 aspect
                               ratio.
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                color: grey3,
+                                marginTop: 25,
+                                paddingRight: 4,
+                              }}
+                            >
+                              Star mark an Image to set it as the featured image
+                              for this product.
                             </Text>
                           </View>
 
@@ -466,10 +489,10 @@ const SpecsStepper = ({ route, navigation }) => {
                             {productImages.length !== 0 &&
                               productImages.map((img, index) => (
                                 <View
+                                  key={index}
                                   style={{ width: "48%", marginBottom: 20 }}
                                 >
                                   <Image
-                                    key={index}
                                     source={{
                                       uri:
                                         typeof img === "string" ? img : img.uri,
@@ -477,34 +500,42 @@ const SpecsStepper = ({ route, navigation }) => {
                                     style={{
                                       ...styles.form_image,
                                       borderColor:
-                                        previewImage === index
-                                          ? "yellow"
-                                          : grey3,
+                                        previewImage === index ? aqua1 : grey3,
+                                      borderWidth:
+                                        previewImage === index ? 3 : 1,
                                     }}
                                   />
                                   <View
                                     style={{
                                       flexDirection: "row",
-                                      justifyContent: "space-evenly",
+                                      justifyContent: "space-between",
+                                      paddingHorizontal: "32%",
+                                      marginTop: 6,
                                     }}
                                   >
                                     <TouchableOpacity
-                                      style={{
-                                        backgroundColor: "yellow",
-                                        padding: 8,
-                                      }}
+                                      style={styles.image_button}
                                       onPress={() => setPreviewImage(index)}
                                     >
-                                      <Text>Star</Text>
+                                      <Ionicons
+                                        name={
+                                          previewImage === index
+                                            ? "star"
+                                            : "star-outline"
+                                        }
+                                        size={32}
+                                        color={aqua1}
+                                      />
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                      style={{
-                                        backgroundColor: "red",
-                                        padding: 8,
-                                      }}
+                                      style={styles.image_button}
                                       onPress={() => deleteProductImage(index)}
                                     >
-                                      <Text>Del</Text>
+                                      <Ionicons
+                                        name="trash"
+                                        size={32}
+                                        color={"red"}
+                                      />
                                     </TouchableOpacity>
                                   </View>
                                 </View>
@@ -592,14 +623,6 @@ const SpecsStepper = ({ route, navigation }) => {
                           dropdownStyles={{ borderColor: grey1 }}
                         />
                       </View>
-                      <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Stock</Text>
-                        <TextInput
-                          style={styles.text_field}
-                          onChangeText={setStock}
-                          value={stock}
-                        />
-                      </View>
                     </View>
                   ) : currentStep === 3 ? (
                     <View style={{}}>
@@ -633,6 +656,14 @@ const SpecsStepper = ({ route, navigation }) => {
                           onChangeText={setDiscount}
                           value={discount}
                           keyboardType="numeric"
+                        />
+                      </View>
+                      <View style={styles.form_field}>
+                        <Text style={styles.form_label}>Product Stock</Text>
+                        <TextInput
+                          style={styles.text_field}
+                          onChangeText={setStock}
+                          value={stock}
                         />
                       </View>
                     </View>
@@ -697,9 +728,15 @@ const styles = StyleSheet.create({
   step_container: {
     paddingHorizontal: "3%",
     paddingVertical: 14,
-    paddingBottom: 350,
+    paddingBottom: 450,
     alignItems: "center",
     borderTopWidth: 1,
     borderColor: grey1,
+  },
+  image_button: {
+    borderColor: grey3,
+    padding: 4,
+    borderWidth: 1,
+    borderRadius: 8,
   },
 });

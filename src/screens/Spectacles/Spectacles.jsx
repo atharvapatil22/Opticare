@@ -23,12 +23,15 @@ const Spectacles = ({ navigation }) => {
   }, []);
 
   const fetchAllSpecs = async () => {
-    const { data, error } = await supabase.from("spectacles").select("*");
+    const { data, error } = await supabase
+      .from("spectacles")
+      .select("id,name,price,preview_image");
     if (error) {
       // __api_error
       console.log("api_error");
     } else {
       // __api_success
+      console.log("success", data);
       setSpecs(data);
     }
   };
@@ -44,7 +47,7 @@ const Spectacles = ({ navigation }) => {
       >
         <Image
           source={{
-            uri: data.images[0],
+            uri: data.preview_image,
           }}
           style={{
             aspectRatio: "16/9",
