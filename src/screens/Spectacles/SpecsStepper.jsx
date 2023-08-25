@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,7 +25,8 @@ import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { supabase } from "../../supabase/client";
 import axios from "axios";
 
-const SpecsStepper = ({ navigation }) => {
+const SpecsStepper = ({ route, navigation }) => {
+  const { editing, specsData } = route.params;
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     "Primary Details",
@@ -41,6 +43,8 @@ const SpecsStepper = ({ navigation }) => {
   const [gender, setGender] = useState("Unisex");
   // Step 2
   const [productImages, setProductImages] = useState([]);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [deleteCloudinaryImages, setDeleteCloudinaryImages] = useState([]);
   // Step 3
   const [color, setColor] = useState("");
   const [material, setMaterial] = useState("");
@@ -56,14 +60,37 @@ const SpecsStepper = ({ navigation }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: true ? "Add New Spectacles" : "Edit Spectacles",
+      title: !!editing ? "Edit Spectacles" : "Add New Spectacles",
     });
+    if (!!editing) initalizeValues();
   }, []);
+
+  const initalizeValues = () => {
+    setProductId(specsData.product_id);
+    setProductName(specsData.name);
+    setBrand(specsData.brand);
+    setGender(specsData.gender);
+
+    setProductImages(specsData.images);
+    setPreviewImage(specsData.preview_image);
+
+    setColor(specsData.color);
+    setMaterial(specsData.material);
+    setWeight(specsData.weight.toString());
+    setWidth(specsData.width.toString());
+    setDimensions(specsData.dimensions);
+    setSize(specsData.size);
+    setWarranty(specsData.warranty.toString());
+    setStock(specsData.stock.toString());
+
+    setPrice(specsData.price.toString());
+    setDiscount(specsData.discount.toString());
+  };
 
   const handleUploadImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      // allowsEditing: true,
       aspect: [16, 9],
       quality: 1,
       allowsMultipleSelection: true,
@@ -77,9 +104,23 @@ const SpecsStepper = ({ navigation }) => {
     }
   };
 
-  const uploadImagesToCloudinary = () => {
+  const deleteProductImage = (index) => {
+    if (editing && typeof productImages[index] === "string") {
+      setDeleteCloudinaryImages(
+        deleteCloudinaryImages.concat([productImages[index]])
+      );
+    }
+    if (index === previewImage) {
+      setPreviewImage(null);
+    }
+    temp = [].concat(productImages);
+    temp.splice(index, 1);
+    setProductImages(temp);
+  };
+
+  const uploadImagesToCloudinary = (filesArray) => {
     // Push all the axios request promise into a single array
-    const uploaders = productImages.map((file) => {
+    const uploaders = filesArray.map((file) => {
       let base64Img = `data:image/jpg;base64,${file.base64}`;
 
       let data = {
@@ -105,15 +146,44 @@ const SpecsStepper = ({ navigation }) => {
     return axios.all(uploaders);
   };
 
-  const createNewSpecs = async () => {
+  const saveToDatabase = async () => {
     let imageUrls = [];
-    try {
-      imageUrls = await uploadImagesToCloudinary();
-      console.log("Successfully uploaded all images ✔️");
-    } catch (err) {
-      console.log("Cloudinary error! Failed to upload all images", err);
+    let response = null;
+
+    // 1] Handle case if any images need to be deleted from Cloudinary
+    if (deleteCloudinaryImages.length != 0) {
+      // add logic to delete
     }
 
+    // 2] Handle uploading new images to cloudinary
+
+    const imageFiles = productImages.filter(
+      (image) => typeof image === "object"
+    );
+    console.log(
+      `Out of total ${productImages.length} productImages, ${imageFiles.length} are new.`
+    );
+
+    // If there are any new product images then upload them to cloudinary
+    if (imageFiles.length != 0) {
+      console.log(`Uploading ${imageFiles.length} new images to cloudinary`);
+      try {
+        imageUrls = await uploadImagesToCloudinary(imageFiles);
+        console.log("Successfully uploaded all images ✔️");
+      } catch (err) {
+        console.log("Cloudinary error! Failed to upload all images", err);
+      }
+    }
+
+    // Merge existing and new image urls
+    const prodImagesFinal = productImages.map((image) => {
+      if (typeof image === "string") return image;
+      else {
+        return imageUrls.shift();
+      }
+    });
+
+    // 3] Create/Update spectacles object to database
     const finalObj = {
       name: productName,
       product_id: productId,
@@ -129,22 +199,34 @@ const SpecsStepper = ({ navigation }) => {
       weight: parseInt(weight),
       width: parseInt(width),
       stock: parseInt(stock),
-      images: imageUrls,
+      images: prodImagesFinal,
+      preview_image: prodImagesFinal[previewImage],
     };
-    const { data, error } = await supabase
-      .from("spectacles")
-      .insert([finalObj])
-      .select();
 
-    if (error) {
+    // If editing exisitng product
+    if (!!editing) {
+      response = await supabase
+        .from("spectacles")
+        .update(finalObj)
+        .eq("id", specsData.id)
+        .select();
+    }
+    // If creating new product
+    else {
+      response = await supabase.from("spectacles").insert([finalObj]).select();
+    }
+
+    if (response.error) {
       // api_error
-      console.log("api_error", error);
+      console.log("api_error", response.error);
     } else {
       // api_success
-      console.log("success", data);
+      console.log("success", response.data);
       Alert.alert(
         "Success!",
-        "New specs were successfully created: " + data[0].name,
+        !!editing
+          ? "Specs Details successfully updated."
+          : "New specs were successfully created: " + data[0].name,
         [{ text: "OK", onPress: () => navigation.goBack() }],
         { cancelable: false }
       );
@@ -152,12 +234,36 @@ const SpecsStepper = ({ navigation }) => {
   };
 
   const handleClearForm = () => {
-    console.log("clear form");
     switch (currentStep) {
       case 0:
+        setProductId("");
+        setBrand("");
+        setProductName("");
+        setGender("Unisex");
         break;
       case 1:
+        productImages.forEach((image) => {
+          if (typeof image === "string")
+            setDeleteCloudinaryImages(deleteCloudinaryImages.concat([image]));
+        });
         setProductImages([]);
+        setPreviewImage(null);
+        break;
+      case 2:
+        setColor("");
+        setMaterial("");
+        setWeight(null);
+        setWidth(null);
+        setDimensions("");
+        setSize("Medium");
+        setWarranty(1);
+        setStock("0");
+        break;
+      case 3:
+        break;
+      case 4:
+        setPrice("");
+        setDiscount("0");
         break;
       default:
         break;
@@ -198,7 +304,7 @@ const SpecsStepper = ({ navigation }) => {
         setCurrentStep(currentStep + 1);
         break;
       case 4:
-        createNewSpecs();
+        saveToDatabase();
         break;
       default:
         break;
@@ -359,11 +465,49 @@ const SpecsStepper = ({ navigation }) => {
                           >
                             {productImages.length !== 0 &&
                               productImages.map((img, index) => (
-                                <Image
-                                  key={index}
-                                  source={{ uri: img.uri }}
-                                  style={styles.form_image}
-                                />
+                                <View
+                                  style={{ width: "48%", marginBottom: 20 }}
+                                >
+                                  <Image
+                                    key={index}
+                                    source={{
+                                      uri:
+                                        typeof img === "string" ? img : img.uri,
+                                    }}
+                                    style={{
+                                      ...styles.form_image,
+                                      borderColor:
+                                        previewImage === index
+                                          ? "yellow"
+                                          : grey3,
+                                    }}
+                                  />
+                                  <View
+                                    style={{
+                                      flexDirection: "row",
+                                      justifyContent: "space-evenly",
+                                    }}
+                                  >
+                                    <TouchableOpacity
+                                      style={{
+                                        backgroundColor: "yellow",
+                                        padding: 8,
+                                      }}
+                                      onPress={() => setPreviewImage(index)}
+                                    >
+                                      <Text>Star</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                      style={{
+                                        backgroundColor: "red",
+                                        padding: 8,
+                                      }}
+                                      onPress={() => deleteProductImage(index)}
+                                    >
+                                      <Text>Del</Text>
+                                    </TouchableOpacity>
+                                  </View>
+                                </View>
                               ))}
                           </View>
                         </View>
@@ -545,12 +689,10 @@ const styles = StyleSheet.create({
     width: "50%",
   },
   form_image: {
-    width: "48%",
-    height: "25.3%",
+    // width: "100%",
+    // height: "25.3%",
     aspectRatio: "16/9",
-    marginBottom: 20,
     borderWidth: 1,
-    borderColor: grey3,
   },
   step_container: {
     paddingHorizontal: "3%",
