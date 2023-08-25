@@ -33,10 +33,10 @@ const SpecsDetails = ({ route, navigation }) => {
       .select("*")
       .eq("id", specsId);
     if (error) {
-      // api_error
+      // __api_error
       console.log("api_error");
     } else {
-      // api_success
+      // __api_success
       setSpecsData(data[0]);
       console.log("Successfully fetched specs: ", data);
     }
@@ -50,10 +50,10 @@ const SpecsDetails = ({ route, navigation }) => {
       .delete()
       .eq("id", specsId);
     if (error) {
-      // api_error
+      // __api_error
       console.log("api_error");
     } else {
-      // api_success
+      // __api_success
       console.log("Successfully deleted specs with id ", specsId);
       Alert.alert(
         "Success!",
@@ -157,7 +157,6 @@ const SpecsDetails = ({ route, navigation }) => {
               tappableDots={true}
               inactiveDotStyle={{
                 backgroundColor: "black",
-                // Define styles for inactive dots here
               }}
               inactiveDotOpacity={0.4}
               inactiveDotScale={0.6}

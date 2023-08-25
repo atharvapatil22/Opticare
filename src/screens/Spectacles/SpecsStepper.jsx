@@ -152,7 +152,7 @@ const SpecsStepper = ({ route, navigation }) => {
 
     // 1] Handle case if any images need to be deleted from Cloudinary
     if (deleteCloudinaryImages.length != 0) {
-      // add logic to delete
+      // __add logic to delete
     }
 
     // 2] Handle uploading new images to cloudinary
@@ -217,10 +217,10 @@ const SpecsStepper = ({ route, navigation }) => {
     }
 
     if (response.error) {
-      // api_error
+      // __api_error
       console.log("api_error", response.error);
     } else {
-      // api_success
+      // __api_success
       console.log("success", response.data);
       Alert.alert(
         "Success!",

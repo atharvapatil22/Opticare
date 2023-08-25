@@ -25,15 +25,15 @@ const Spectacles = ({ navigation }) => {
   const fetchAllSpecs = async () => {
     const { data, error } = await supabase.from("spectacles").select("*");
     if (error) {
-      // api_error
+      // __api_error
       console.log("api_error");
     } else {
-      // api_success
+      // __api_success
       setSpecs(data);
     }
   };
 
-  // code_refactoring
+  // __code_refactoring
   const SpecsCard = ({ data }) => {
     return (
       <TouchableOpacity

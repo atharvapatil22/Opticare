@@ -25,15 +25,15 @@ const Accessories = ({ navigation }) => {
   const fetchAllAccessories = async () => {
     const { data, error } = await supabase.from("accessories").select("*");
     if (error) {
-      // api_error
+      // __api_error
       console.log("api_error");
     } else {
-      // api_success
+      // __api_success
       setAccessoriesList(data);
     }
   };
 
-  // code_refactoring
+  // __code_refactoring
   const AccessoryCard = ({ data }) => {
     return (
       <TouchableOpacity
