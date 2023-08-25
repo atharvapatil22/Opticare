@@ -13,6 +13,7 @@ import { supabase } from "../../supabase/client";
 import { aqua1, gradient_start, grey2, grey3, grey4 } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
+import AdditionalField from "../../components/AdditionalField";
 
 const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
@@ -82,32 +83,6 @@ const SpecsDetails = ({ route, navigation }) => {
         cancelable: true,
         onDismiss: () => {},
       }
-    );
-  };
-
-  const AdditionalField = ({ label, value, hideborder }) => {
-    return (
-      <View
-        style={{
-          flexDirection: "row",
-          borderBottomWidth: hideborder ? 0 : 1,
-          borderColor: grey3,
-          paddingVertical: 10,
-          marginHorizontal: "3%",
-        }}
-      >
-        <Text
-          style={{
-            ...styles.text_small,
-            width: "45%",
-          }}
-        >
-          {label}
-        </Text>
-        <Text style={{ ...styles.text_small }}>
-          :&nbsp;&nbsp;&nbsp;&nbsp;{value}
-        </Text>
-      </View>
     );
   };
 

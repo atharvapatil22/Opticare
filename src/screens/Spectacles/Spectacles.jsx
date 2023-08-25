@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 import { grey1, grey3 } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
+import ProductCard from "../../components/ProductCard";
 
 const Spectacles = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -34,37 +35,6 @@ const Spectacles = ({ navigation }) => {
       console.log("success", data);
       setSpecs(data);
     }
-  };
-
-  // __code_refactoring
-  const SpecsCard = ({ data }) => {
-    return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => {
-          navigation.navigate("Spectacles Details", { id: data.id });
-        }}
-      >
-        <Image
-          source={{
-            uri: data.preview_image,
-          }}
-          style={{
-            aspectRatio: "16/9",
-            objectFit: "fill",
-            width: "100%",
-            borderRadius: 30,
-          }}
-        />
-        <Text style={{ fontSize: 18, color: "black" }}>{data.name}</Text>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 16, color: "black" }}>₹{data.price}</Text>
-          <Text style={{ fontSize: 16, color: grey3, marginLeft: 8 }}>
-            ({data.lens_options} Lens options)
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   return (
@@ -111,7 +81,12 @@ const Spectacles = ({ navigation }) => {
         ) : (
           <View style={styles.grid_container}>
             {specs.map((item) => (
-              <SpecsCard data={item} key={item.id} />
+              <ProductCard
+                data={item}
+                key={item.id}
+                navigation={navigation}
+                type={"spectacles"}
+              />
             ))}
           </View>
         )}
@@ -146,15 +121,5 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     paddingHorizontal: 20,
     // height: "100%",
-  },
-  card: {
-    flexBasis: "23%",
-    // height: 240,
-    margin: "1%",
-    borderRadius: 30,
-    padding: "1%",
-    paddingBottom: "2%",
-    backgroundColor: "white",
-    alignItems: "center",
   },
 });
