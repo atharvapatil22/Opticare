@@ -32,7 +32,6 @@ const Spectacles = ({ navigation }) => {
       console.log("api_error");
     } else {
       // __api_success
-      console.log("success", data);
       setSpecs(data);
     }
   };
