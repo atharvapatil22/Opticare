@@ -20,7 +20,7 @@ const Spectacles = ({ navigation }) => {
 
   useEffect(() => {
     fetchAllSpecs();
-  }, [navigation]);
+  }, []);
 
   const fetchAllSpecs = async () => {
     const { data, error } = await supabase.from("spectacles").select("*");
@@ -81,7 +81,7 @@ const Spectacles = ({ navigation }) => {
           text="+ ADD NEW"
           variant="aqua"
           onPress={() => {
-            navigation.navigate("SpecsStepper");
+            navigation.navigate("SpecsStepper", { editing: false });
           }}
           rounded
         />
@@ -92,11 +92,26 @@ const Spectacles = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllSpecs} />
         }
       >
-        <View style={styles.grid_container}>
-          {specs.map((item) => (
-            <SpecsCard data={item} key={item.id} />
-          ))}
-        </View>
+        {specs.length === 0 ? (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 100,
+            }}
+          >
+            <Image source={require("../../assets/empty.png")} />
+            <Text style={{ fontSize: 24, color: grey3, marginTop: 20 }}>
+              No spectacles found!
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.grid_container}>
+            {specs.map((item) => (
+              <SpecsCard data={item} key={item.id} />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );

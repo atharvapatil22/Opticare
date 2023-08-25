@@ -6,6 +6,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  RefreshControl,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../supabase/client";
@@ -18,6 +19,7 @@ const SpecsDetails = ({ route, navigation }) => {
   const SLIDER_WIDTH = Dimensions.get("window").width;
 
   const carouselRef = useRef(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [specsData, setSpecsData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -112,6 +114,9 @@ const SpecsDetails = ({ route, navigation }) => {
   return (
     <ScrollView
       contentContainerStyle={{ backgroundColor: grey2, paddingBottom: 100 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsDetails} />
+      }
     >
       {!!specsData ? (
         <>
@@ -160,7 +165,17 @@ const SpecsDetails = ({ route, navigation }) => {
           </View>
           {/* Change UI later for edit and delete */}
           <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-            <Button text="Edit" variant="aqua" onPress={() => {}} rounded />
+            <Button
+              text="Edit"
+              variant="aqua"
+              rounded
+              onPress={() => {
+                navigation.navigate("SpecsStepper", {
+                  editing: true,
+                  specsData: specsData,
+                });
+              }}
+            />
             <Button
               text="Delete"
               variant="aqua"
