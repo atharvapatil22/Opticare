@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { grey3 } from "../constants";
 
-const ProductCard = ({ data, type, navigation }) => {
+const ProductCard = ({ data, type, onPress }) => {
   return (
     <TouchableOpacity
       style={{
@@ -15,9 +15,7 @@ const ProductCard = ({ data, type, navigation }) => {
         backgroundColor: "white",
         alignItems: "center",
       }}
-      onPress={() => {
-        navigation.navigate("Spectacles Details", { id: data.id });
-      }}
+      onPress={onPress}
     >
       <Image
         source={{

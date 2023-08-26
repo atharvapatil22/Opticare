@@ -149,7 +149,7 @@ const GlassesDetails = ({ route, navigation }) => {
               onPress={() => {
                 navigation.navigate("GlassesStepper", {
                   editing: true,
-                  specsData: glassesData,
+                  glassesData: glassesData,
                 });
               }}
             />

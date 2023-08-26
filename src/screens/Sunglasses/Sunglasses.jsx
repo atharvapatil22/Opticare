@@ -82,7 +82,9 @@ const Sunglasses = ({ navigation }) => {
               <ProductCard
                 data={item}
                 key={item.id}
-                navigation={navigation}
+                onPress={() => {
+                  navigation.navigate("Sunglasses Details", { id: item.id });
+                }}
                 type={"sunglasses"}
               />
             ))}

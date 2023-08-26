@@ -75,7 +75,7 @@ const SpecsStepper = ({ route, navigation }) => {
     setGender(specsData.gender);
 
     setProductImages(specsData.images);
-    setPreviewImage(specsData.preview_image);
+    setPreviewImage(specsData.images.indexOf(specsData.preview_image));
 
     setColor(specsData.color);
     setMaterial(specsData.material);
