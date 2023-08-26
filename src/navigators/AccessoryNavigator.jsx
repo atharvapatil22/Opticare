@@ -11,7 +11,7 @@ const AccessoryNavigator = () => {
     <Stack.Navigator>
       <Stack.Screen name="Accessories" component={Accessories} />
       <Stack.Screen name="AccessoryStepper" component={AccessoryStepper} />
-      <Stack.Screen name="AccessoryDetails" component={AccessoryDetails} />
+      <Stack.Screen name="Accessory Details" component={AccessoryDetails} />
     </Stack.Navigator>
   );
 };

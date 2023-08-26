@@ -1,64 +1,39 @@
 import {
   View,
+  Text,
   StyleSheet,
   TextInput,
+  Image,
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Image,
-  Text,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { grey1 } from "../../constants";
+import { grey1, grey3 } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
+import ProductCard from "../../components/ProductCard";
 
 const Accessories = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
-  const [accessoriesList, setAccessoriesList] = useState([]);
+  const [accessories, setAccessories] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchAllAccessories();
-  }, [navigation]);
+  }, []);
 
   const fetchAllAccessories = async () => {
-    const { data, error } = await supabase.from("accessories").select("*");
+    const { data, error } = await supabase
+      .from("accessories")
+      .select("id,name,price,preview_image");
     if (error) {
       // __api_error
       console.log("api_error");
     } else {
       // __api_success
-      setAccessoriesList(data);
+      setAccessories(data);
     }
-  };
-
-  // __code_refactoring
-  const AccessoryCard = ({ data }) => {
-    return (
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => {
-          navigation.navigate("Accessory Details", { id: data.id });
-        }}
-      >
-        <Image
-          source={{
-            uri: data.preview_image,
-          }}
-          style={{
-            aspectRatio: "16/9",
-            objectFit: "fill",
-            width: "100%",
-            borderRadius: 30,
-          }}
-        />
-        <Text style={{ fontSize: 18, color: "black" }}>{data.name}</Text>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={{ fontSize: 16, color: "black" }}>₹{data.price}</Text>
-        </View>
-      </TouchableOpacity>
-    );
   };
 
   return (
@@ -78,7 +53,7 @@ const Accessories = ({ navigation }) => {
           text="+ ADD NEW"
           variant="aqua"
           onPress={() => {
-            navigation.navigate("AccesoryStepper");
+            navigation.navigate("AccessoryStepper", { editing: false });
           }}
           rounded
         />
@@ -92,11 +67,33 @@ const Accessories = ({ navigation }) => {
           />
         }
       >
-        <View style={styles.grid_container}>
-          {accessoriesList.map((item) => (
-            <AccessoryCard data={item} key={item.id} />
-          ))}
-        </View>
+        {accessories.length === 0 ? (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 100,
+            }}
+          >
+            <Image source={require("../../assets/empty.png")} />
+            <Text style={{ fontSize: 24, color: grey3, marginTop: 20 }}>
+              No accessories found!
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.grid_container}>
+            {accessories.map((item) => (
+              <ProductCard
+                data={item}
+                key={item.id}
+                onPress={() => {
+                  navigation.navigate("Accessory Details", { id: item.id });
+                }}
+                type={"accessory"}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -128,15 +125,5 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     paddingHorizontal: 20,
     // height: "100%",
-  },
-  card: {
-    flexBasis: "23%",
-    // height: 240,
-    margin: "1%",
-    borderRadius: 30,
-    padding: "1%",
-    paddingBottom: "2%",
-    backgroundColor: "white",
-    alignItems: "center",
   },
 });
