@@ -19,7 +19,7 @@ const ProductCard = ({ data, type, onPress }) => {
     >
       <Image
         source={{
-          uri: data.preview_image,
+          uri: data.featured_image,
         }}
         style={{
           aspectRatio: "16/9",

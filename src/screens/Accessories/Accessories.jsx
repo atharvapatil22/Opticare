@@ -26,7 +26,7 @@ const Accessories = ({ navigation }) => {
   const fetchAllAccessories = async () => {
     const { data, error } = await supabase
       .from("accessories")
-      .select("id,name,price,preview_image");
+      .select("id,name,price,featured_image");
     if (error) {
       // __api_error
       console.log("api_error");

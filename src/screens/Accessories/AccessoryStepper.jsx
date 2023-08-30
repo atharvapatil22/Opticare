@@ -42,7 +42,7 @@ const AccessoryStepper = ({ route, navigation }) => {
   const [brand, setBrand] = useState("Vision Care");
   // Step 2
   const [productImages, setProductImages] = useState([]);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [featuredImage, setFeaturedImage] = useState(null);
   const [deleteCloudinaryImages, setDeleteCloudinaryImages] = useState([]);
   // Step 3
   const [additionalInfo, setAdditionalInfo] = useState("");
@@ -65,7 +65,9 @@ const AccessoryStepper = ({ route, navigation }) => {
     setBrand(accessoryData.brand);
 
     setProductImages(accessoryData.images);
-    setPreviewImage(accessoryData.images.indexOf(accessoryData.preview_image));
+    setFeaturedImage(
+      accessoryData.images.indexOf(accessoryData.featured_image)
+    );
 
     setAdditionalInfo(accessoryData.additional_info);
 
@@ -97,8 +99,8 @@ const AccessoryStepper = ({ route, navigation }) => {
         deleteCloudinaryImages.concat([productImages[index]])
       );
     }
-    if (index === previewImage) {
-      setPreviewImage(null);
+    if (index === featuredImage) {
+      setFeaturedImage(null);
     }
     temp = [].concat(productImages);
     temp.splice(index, 1);
@@ -179,7 +181,7 @@ const AccessoryStepper = ({ route, navigation }) => {
       discount: parseInt(discount),
       stock: parseInt(stock),
       images: prodImagesFinal,
-      preview_image: prodImagesFinal[previewImage],
+      featured_image: prodImagesFinal[featuredImage],
       additional_info: additionalInfo,
     };
 
@@ -226,7 +228,7 @@ const AccessoryStepper = ({ route, navigation }) => {
             setDeleteCloudinaryImages(deleteCloudinaryImages.concat([image]));
         });
         setProductImages([]);
-        setPreviewImage(null);
+        setFeaturedImage(null);
         break;
       case 2:
         setAdditionalInfo("");
@@ -440,9 +442,9 @@ const AccessoryStepper = ({ route, navigation }) => {
                                     style={{
                                       ...styles.form_image,
                                       borderColor:
-                                        previewImage === index ? aqua1 : grey3,
+                                        featuredImage === index ? aqua1 : grey3,
                                       borderWidth:
-                                        previewImage === index ? 3 : 1,
+                                        featuredImage === index ? 3 : 1,
                                     }}
                                   />
                                   <View
@@ -455,11 +457,11 @@ const AccessoryStepper = ({ route, navigation }) => {
                                   >
                                     <TouchableOpacity
                                       style={styles.image_button}
-                                      onPress={() => setPreviewImage(index)}
+                                      onPress={() => setFeaturedImage(index)}
                                     >
                                       <Ionicons
                                         name={
-                                          previewImage === index
+                                          featuredImage === index
                                             ? "star"
                                             : "star-outline"
                                         }

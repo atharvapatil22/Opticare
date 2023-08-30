@@ -45,7 +45,7 @@ const SpecsStepper = ({ route, navigation }) => {
   const [gender, setGender] = useState("Unisex");
   // Step 2
   const [productImages, setProductImages] = useState([]);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [featuredImage, setFeaturedImage] = useState(null);
   const [deleteCloudinaryImages, setDeleteCloudinaryImages] = useState([]);
   // Step 3
   const [color, setColor] = useState("");
@@ -75,7 +75,7 @@ const SpecsStepper = ({ route, navigation }) => {
     setGender(specsData.gender);
 
     setProductImages(specsData.images);
-    setPreviewImage(specsData.images.indexOf(specsData.preview_image));
+    setFeaturedImage(specsData.images.indexOf(specsData.featured_image));
 
     setColor(specsData.color);
     setMaterial(specsData.material);
@@ -113,8 +113,8 @@ const SpecsStepper = ({ route, navigation }) => {
         deleteCloudinaryImages.concat([productImages[index]])
       );
     }
-    if (index === previewImage) {
-      setPreviewImage(null);
+    if (index === featuredImage) {
+      setFeaturedImage(null);
     }
     temp = [].concat(productImages);
     temp.splice(index, 1);
@@ -203,7 +203,7 @@ const SpecsStepper = ({ route, navigation }) => {
       width: parseInt(width),
       stock: parseInt(stock),
       images: prodImagesFinal,
-      preview_image: prodImagesFinal[previewImage],
+      featured_image: prodImagesFinal[featuredImage],
     };
 
     // If editing exisitng product
@@ -250,7 +250,7 @@ const SpecsStepper = ({ route, navigation }) => {
             setDeleteCloudinaryImages(deleteCloudinaryImages.concat([image]));
         });
         setProductImages([]);
-        setPreviewImage(null);
+        setFeaturedImage(null);
         break;
       case 2:
         setColor("");
@@ -500,9 +500,9 @@ const SpecsStepper = ({ route, navigation }) => {
                                     style={{
                                       ...styles.form_image,
                                       borderColor:
-                                        previewImage === index ? aqua1 : grey3,
+                                        featuredImage === index ? aqua1 : grey3,
                                       borderWidth:
-                                        previewImage === index ? 3 : 1,
+                                        featuredImage === index ? 3 : 1,
                                     }}
                                   />
                                   <View
@@ -515,11 +515,11 @@ const SpecsStepper = ({ route, navigation }) => {
                                   >
                                     <TouchableOpacity
                                       style={styles.image_button}
-                                      onPress={() => setPreviewImage(index)}
+                                      onPress={() => setFeaturedImage(index)}
                                     >
                                       <Ionicons
                                         name={
-                                          previewImage === index
+                                          featuredImage === index
                                             ? "star"
                                             : "star-outline"
                                         }
