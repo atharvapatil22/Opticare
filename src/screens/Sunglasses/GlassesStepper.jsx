@@ -241,7 +241,7 @@ const GlassesStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         setProductId("");
-        setBrand("");
+        setBrand("Vision Glares");
         setProductName("");
         setGender("Unisex");
         break;

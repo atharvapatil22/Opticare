@@ -69,7 +69,7 @@ const Lenses = ({ navigation }) => {
           </Text>
           <View style={{ flexDirection: "row", marginTop: 8 }}>
             <Text style={{ fontSize: 20, color: text_color }}>
-              Avg. Cost: ₹{data.price}
+              Avg. Cost: ₹{parseInt(data.price) * 2}
             </Text>
             <Text style={{ fontSize: 20, color: grey2, marginLeft: 6 }}>
               (for pair)

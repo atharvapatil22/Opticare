@@ -219,7 +219,7 @@ const AccessoryStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         setProductId("");
-        setBrand("");
+        setBrand("Vision Care");
         setProductName("");
         break;
       case 1:

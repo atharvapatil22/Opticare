@@ -240,7 +240,7 @@ const SpecsStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         setProductId("");
-        setBrand("");
+        setBrand("Eyemate");
         setProductName("");
         setGender("Unisex");
         break;
