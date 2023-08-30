@@ -57,7 +57,7 @@ const Lenses = ({ navigation }) => {
           alignItems: "flex-end",
         }}
         onPress={() => {
-          navigation.navigate("Lenses Details", { id: item.id });
+          navigation.navigate("Lenses Details", { id: data.id });
         }}
       >
         <View>
