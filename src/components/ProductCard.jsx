@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
-import { grey3 } from "../constants";
+import { grey1 } from "../constants";
 
 const ProductCard = ({ data, type, onPress }) => {
   return (
@@ -32,7 +32,7 @@ const ProductCard = ({ data, type, onPress }) => {
       <View style={{ flexDirection: "row" }}>
         <Text style={{ fontSize: 16, color: "black" }}>₹{data.price}</Text>
         {type === "spectacles" && (
-          <Text style={{ fontSize: 16, color: grey3, marginLeft: 8 }}>
+          <Text style={{ fontSize: 16, color: grey1, marginLeft: 8 }}>
             ({data.lens_options} Lens options)
           </Text>
         )}

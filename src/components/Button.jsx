@@ -1,6 +1,6 @@
 import { Text, TouchableOpacity } from "react-native";
 import React from "react";
-import { aqua1, grey1, light_cyan } from "../constants";
+import { customer_primary, gradient_start, grey1 } from "../constants";
 
 const Button = ({ text, variant, onPress, rounded, disabled, style, icon }) => {
   return (
@@ -16,9 +16,9 @@ const Button = ({ text, variant, onPress, rounded, disabled, style, icon }) => {
         borderColor: variant === "white" ? grey1 : "transparent",
         backgroundColor:
           variant === "aqua"
-            ? aqua1
-            : variant === "light_cyan"
-            ? light_cyan
+            ? customer_primary
+            : variant === "gradient_start"
+            ? gradient_start
             : "white",
         ...style,
       }}

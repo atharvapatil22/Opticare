@@ -1,13 +1,20 @@
-export const aqua1 = "#26A69A";
-export const aqua2 = "#4DB6AC";
-export const light_cyan = "#E0F2F1";
-export const grey1 = "#D5D5D5";
-export const grey2 = "#F5F8FA";
-export const grey3 = "rgba(38, 46, 46, 0.5)";
-export const grey4 = "rgba(38, 46, 46, 1)";
-export const grey5 = "#79929D";
-export const gradient_start = "rgba(224, 242, 241, 1)";
-export const gradient_end = "rgba(178, 223, 219, 1)";
+// Greys
+export const grey1 = "#B5B8BA";
+export const grey2 = "#79929D";
+export const grey_3 = "#A5A5A5";
+export const grey4 = "#263238";
+
+// Gradients
+export const gradient_start = "#E0F2F1";
+export const gradient_end = "#B2DFDB";
+
+// Primary colors
+export const customer_primary = "#26A69A";
+export const admin_primary = "#008D80";
+
+// Generic
+export const app_bg = "#F5F8FA";
+export const text_color = "#262E2E";
 
 export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dspkp4krz/upload";

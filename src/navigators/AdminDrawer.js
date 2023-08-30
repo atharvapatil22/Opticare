@@ -1,7 +1,7 @@
 import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { AntDesign } from "@expo/vector-icons";
-import { gradient_end, grey3 } from "../constants";
+import { gradient_end, grey1 } from "../constants";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
@@ -36,7 +36,7 @@ const AdminDrawer = (props) => {
       />
       <View
         style={{
-          borderColor: grey3,
+          borderColor: grey1,
           borderWidth: 0.5,
           marginVertical: 15,
           marginHorizontal: "4%",

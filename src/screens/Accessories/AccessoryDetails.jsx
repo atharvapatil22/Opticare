@@ -10,7 +10,13 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../supabase/client";
-import { aqua1, gradient_start, grey2, grey3, grey4 } from "../../constants";
+import {
+  customer_primary,
+  gradient_start,
+  app_bg,
+  grey1,
+  text_color,
+} from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
 import AdditionalField from "../../components/AdditionalField";
@@ -88,7 +94,7 @@ const AccessoryDetails = ({ route, navigation }) => {
 
   return (
     <ScrollView
-      contentContainerStyle={{ backgroundColor: grey2, paddingBottom: 100 }}
+      contentContainerStyle={{ backgroundColor: app_bg, paddingBottom: 100 }}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -111,7 +117,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                       overflow: "hidden",
                       borderRadius: 20,
                       borderWidth: 1,
-                      borderColor: grey3,
+                      borderColor: grey1,
                     }}
                   />
                 );
@@ -130,7 +136,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                 height: 10,
                 borderRadius: 5,
                 marginHorizontal: 8,
-                backgroundColor: aqua1,
+                backgroundColor: customer_primary,
               }}
               tappableDots={true}
               inactiveDotStyle={{
@@ -184,7 +190,9 @@ const AccessoryDetails = ({ route, navigation }) => {
               </View>
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>From </Text>
-                <Text style={{ ...styles.text_regular, color: aqua1 }}>
+                <Text
+                  style={{ ...styles.text_regular, color: customer_primary }}
+                >
                   {accessoryData.brand}
                 </Text>
               </View>
@@ -203,7 +211,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                         ...styles.text_small,
                         textDecorationLine: "line-through",
                         marginLeft: 8,
-                        color: grey3,
+                        color: grey1,
                       }}
                     >
                       ₹{accessoryData.price}
@@ -222,7 +230,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                 <Text
                   style={{
                     ...styles.text_small,
-                    color: grey3,
+                    color: grey1,
                     textDecorationLine: "underline",
                     marginBottom: 10,
                     marginTop: 5,
@@ -230,7 +238,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                 >
                   Additional Information:
                 </Text>
-                <Text style={{ fontSize: 20, color: grey4 }}>
+                <Text style={{ fontSize: 20, color: text_color }}>
                   {accessoryData.additional_info}
                 </Text>
               </View>
@@ -257,10 +265,16 @@ const AccessoryDetails = ({ route, navigation }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text style={{ fontSize: 22, color: aqua1, width: "75%" }}>
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      color: customer_primary,
+                      width: "75%",
+                    }}
+                  >
                     Available stock for sale
                   </Text>
-                  <Text style={{ fontSize: 45, color: grey4 }}>
+                  <Text style={{ fontSize: 45, color: text_color }}>
                     {accessoryData.stock}
                   </Text>
                 </View>
@@ -275,13 +289,13 @@ const AccessoryDetails = ({ route, navigation }) => {
                   <Text
                     style={{
                       fontSize: 22,
-                      color: aqua1,
+                      color: customer_primary,
                       width: "75%",
                     }}
                   >
                     Stock sold till date
                   </Text>
-                  <Text style={{ fontSize: 45, color: grey4 }}>
+                  <Text style={{ fontSize: 45, color: text_color }}>
                     {accessoryData.stock_sold}
                   </Text>
                 </View>
@@ -313,9 +327,14 @@ export default AccessoryDetails;
 
 const styles = StyleSheet.create({
   name: { fontSize: 34, fontWeight: "500" },
-  price: { fontSize: 26, color: aqua1, marginTop: 15, fontWeight: "500" },
+  price: {
+    fontSize: 26,
+    color: customer_primary,
+    marginTop: 15,
+    fontWeight: "500",
+  },
   text_regular: { fontSize: 24, color: "black", marginTop: 12 },
-  text_small: { fontSize: 20, color: grey4 },
+  text_small: { fontSize: 20, color: text_color },
   additional_info: {
     backgroundColor: "white",
     paddingHorizontal: "3%",

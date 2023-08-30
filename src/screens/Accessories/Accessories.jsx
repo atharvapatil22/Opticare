@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { grey1, grey3 } from "../../constants";
+import { app_bg, grey1, grey_3 } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
@@ -37,7 +37,7 @@ const Accessories = ({ navigation }) => {
   };
 
   return (
-    <View style={{ backgroundColor: "#F5F8FA" }}>
+    <View style={{ backgroundColor: app_bg }}>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput
@@ -45,7 +45,7 @@ const Accessories = ({ navigation }) => {
           onChangeText={setSearchValue}
           value={searchValue}
           placeholder="Type here to search ..."
-          placeholderTextColor={grey1}
+          placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded />
         <Button text="Filters" variant="white" rounded />
@@ -76,7 +76,7 @@ const Accessories = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey3, marginTop: 20 }}>
+            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No accessories found!
             </Text>
           </View>

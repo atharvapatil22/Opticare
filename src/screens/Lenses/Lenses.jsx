@@ -9,7 +9,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { aqua1, grey1, grey3, grey4, grey5 } from "../../constants";
+import {
+  customer_primary,
+  text_color,
+  grey2,
+  app_bg,
+  grey_3,
+  grey1,
+} from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import { AntDesign } from "@expo/vector-icons";
@@ -54,29 +61,31 @@ const Lenses = ({ navigation }) => {
         }}
       >
         <View>
-          <Text style={{ fontSize: 24, color: aqua1 }}>{data.name}</Text>
-          <Text style={{ fontSize: 20, color: grey4, marginTop: 8 }}>
+          <Text style={{ fontSize: 24, color: customer_primary }}>
+            {data.name}
+          </Text>
+          <Text style={{ fontSize: 20, color: text_color, marginTop: 8 }}>
             {data.category}
           </Text>
           <View style={{ flexDirection: "row", marginTop: 8 }}>
-            <Text style={{ fontSize: 20, color: grey4 }}>
+            <Text style={{ fontSize: 20, color: text_color }}>
               Avg. Cost: ₹{data.price}
             </Text>
-            <Text style={{ fontSize: 20, color: grey5, marginLeft: 6 }}>
+            <Text style={{ fontSize: 20, color: grey2, marginLeft: 6 }}>
               (for pair)
             </Text>
           </View>
-          <Text style={{ fontSize: 18, color: grey5, marginTop: 8 }}>
+          <Text style={{ fontSize: 18, color: grey2, marginTop: 8 }}>
             {data.material}
           </Text>
         </View>
-        <AntDesign name="arrowright" size={26} color={grey4} />
+        <AntDesign name="arrowright" size={26} color={text_color} />
       </TouchableOpacity>
     );
   };
 
   return (
-    <View style={{ backgroundColor: "#F5F8FA" }}>
+    <View style={{ backgroundColor: app_bg }}>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput
@@ -84,7 +93,7 @@ const Lenses = ({ navigation }) => {
           onChangeText={setSearchValue}
           value={searchValue}
           placeholder="Type here to search ..."
-          placeholderTextColor={grey1}
+          placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded />
         <Button text="Filters" variant="white" rounded />
@@ -112,7 +121,7 @@ const Lenses = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey3, marginTop: 20 }}>
+            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No lenses found!
             </Text>
           </View>

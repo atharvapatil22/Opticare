@@ -12,11 +12,11 @@ import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   CLOUDINARY_URL,
-  aqua1,
+  customer_primary,
   gradient_end,
   gradient_start,
+  grey2,
   grey1,
-  grey3,
 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
@@ -319,14 +319,14 @@ const GlassesStepper = ({ route, navigation }) => {
     return (
       <Button
         text={"UPLOAD IMAGES"}
-        variant={"light_cyan"}
+        variant={"gradient_start"}
         onPress={handleUploadImage}
         style={{}}
         icon={
           <MaterialCommunityIcons
             name="upload"
             size={26}
-            color={aqua1}
+            color={customer_primary}
             style={{ marginRight: 4 }}
           />
         }
@@ -347,7 +347,7 @@ const GlassesStepper = ({ route, navigation }) => {
         />
         <Button
           text="CLEAR ALL"
-          variant="light_cyan"
+          variant="gradient_start"
           onPress={handleClearForm}
         />
         <Button
@@ -374,10 +374,10 @@ const GlassesStepper = ({ route, navigation }) => {
       >
         <View style={{ flex: 1 }}>
           <ProgressSteps
-            // progressBarColor={aqua1}
-            completedStepIconColor={aqua1}
-            activeStepIconBorderColor={aqua1}
-            completedProgressBarColor={aqua1}
+            // progressBarColor={customer_primary}
+            completedStepIconColor={customer_primary}
+            activeStepIconBorderColor={customer_primary}
+            completedProgressBarColor={customer_primary}
             activeLabelColor={"black"}
             activeLabelFontSize={18}
             labelFontSize={18}
@@ -425,8 +425,8 @@ const GlassesStepper = ({ route, navigation }) => {
                           ]}
                           defaultOption={{ key: "1", value: "Unisex" }}
                           save="value"
-                          boxStyles={{ borderColor: grey1 }}
-                          dropdownStyles={{ borderColor: grey1 }}
+                          boxStyles={{ borderColor: grey2 }}
+                          dropdownStyles={{ borderColor: grey2 }}
                         />
                       </View>
                     </View>
@@ -441,7 +441,7 @@ const GlassesStepper = ({ route, navigation }) => {
                           <Text
                             style={{
                               fontSize: 16,
-                              color: grey3,
+                              color: grey1,
                               marginTop: 25,
                               marginBottom: 80,
                             }}
@@ -467,7 +467,7 @@ const GlassesStepper = ({ route, navigation }) => {
                             <Text
                               style={{
                                 fontSize: 16,
-                                color: grey3,
+                                color: grey1,
                                 marginTop: 25,
                                 paddingRight: 4,
                               }}
@@ -501,7 +501,9 @@ const GlassesStepper = ({ route, navigation }) => {
                                     style={{
                                       ...styles.form_image,
                                       borderColor:
-                                        featuredImage === index ? aqua1 : grey3,
+                                        featuredImage === index
+                                          ? customer_primary
+                                          : grey1,
                                       borderWidth:
                                         featuredImage === index ? 5 : 1,
                                     }}
@@ -525,7 +527,7 @@ const GlassesStepper = ({ route, navigation }) => {
                                             : "star-outline"
                                         }
                                         size={32}
-                                        color={aqua1}
+                                        color={customer_primary}
                                       />
                                     </TouchableOpacity>
                                     <TouchableOpacity
@@ -578,8 +580,8 @@ const GlassesStepper = ({ route, navigation }) => {
                           ]}
                           defaultOption={{ key: "3", value: "Medium" }}
                           save="value"
-                          boxStyles={{ borderColor: grey1 }}
-                          dropdownStyles={{ borderColor: grey1 }}
+                          boxStyles={{ borderColor: grey2 }}
+                          dropdownStyles={{ borderColor: grey2 }}
                         />
                       </View>
                       <View style={styles.form_field}>
@@ -620,8 +622,8 @@ const GlassesStepper = ({ route, navigation }) => {
                           ]}
                           defaultOption={{ key: "1", value: "1 Year" }}
                           save="key"
-                          boxStyles={{ borderColor: grey1 }}
-                          dropdownStyles={{ borderColor: grey1 }}
+                          boxStyles={{ borderColor: grey2 }}
+                          dropdownStyles={{ borderColor: grey2 }}
                         />
                       </View>
                     </View>
@@ -635,8 +637,8 @@ const GlassesStepper = ({ route, navigation }) => {
                         // defaultOption={{ key: "1", value: "1 Year" }}
                         placeholder="No lenses Available"
                         save="key"
-                        boxStyles={{ borderColor: grey1 }}
-                        dropdownStyles={{ borderColor: grey1 }}
+                        boxStyles={{ borderColor: grey2 }}
+                        dropdownStyles={{ borderColor: grey2 }}
                       />
                     </View>
                   ) : currentStep === 4 ? (
@@ -711,7 +713,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     paddingHorizontal: "2%",
     paddingVertical: 6,
-    borderColor: grey1,
+    borderColor: grey2,
   },
   form_label: { color: "black", fontSize: 18, marginBottom: 5 },
   form_buttons: {
@@ -735,7 +737,7 @@ const styles = StyleSheet.create({
     borderColor: grey1,
   },
   image_button: {
-    borderColor: grey3,
+    borderColor: grey1,
     padding: 4,
     borderWidth: 1,
     borderRadius: 8,
