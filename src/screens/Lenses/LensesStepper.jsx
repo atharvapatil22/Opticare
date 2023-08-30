@@ -80,7 +80,7 @@ const LensesStepper = ({ route, navigation }) => {
     }
   };
 
-  const uploadImageToCloudinary = (file) => {
+  const uploadImageToCloudinary = async (file) => {
     let base64Img = `data:image/jpg;base64,${file.base64}`;
 
     let data = {
@@ -88,19 +88,20 @@ const LensesStepper = ({ route, navigation }) => {
       upload_preset: "uz1grhbn",
     };
 
-    axios
-      .post(CLOUDINARY_URL, JSON.stringify(data), {
-        headers: {
-          "content-type": "application/json",
-        },
-      })
-      .then(async (response) => {
-        const data = response.data;
-        const fileURL = data.secure_url;
-        console.log("Uploaded image to cloudinary:", fileURL);
-        return fileURL;
-      })
-      .catch((err) => console.log("Cloudinary error", err));
+    const response = await axios.post(CLOUDINARY_URL, JSON.stringify(data), {
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+
+    if (response.status === 200) {
+      const data = response.data;
+      const fileURL = data.secure_url;
+      console.log("Uploaded image to cloudinary:", fileURL);
+      return fileURL;
+    } else {
+      console.log("Cloudinary error", response);
+    }
   };
 
   const saveToDatabase = async () => {

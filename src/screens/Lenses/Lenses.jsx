@@ -47,7 +47,7 @@ const Lenses = ({ navigation }) => {
     return (
       <TouchableOpacity
         style={{
-          flexBasis: "46%",
+          flexBasis: "48%",
           margin: "1%",
           borderRadius: 30,
           padding: "2%",
