@@ -37,7 +37,7 @@ const CustomerDrawer = (props) => {
       <DrawerItem
         focused={props.state.index === 2}
         label={"Lenses"}
-        onPress={() => props.navigation.navigate("Lenses")}
+        onPress={() => props.navigation.navigate("LensesNavigator")}
         icon={() => <AntDesign name="stepforward" size={22} color="black" />}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}

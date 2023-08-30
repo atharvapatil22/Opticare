@@ -1,5 +1,4 @@
 import React from "react";
-import Lenses from "../screens/Lenses/Lenses";
 import SpecsNavigator from "./SpecsNavigator";
 import AccessoryNavigator from "./AccessoryNavigator";
 import GlassesNavigator from "./GlassesNavigator";
@@ -9,6 +8,7 @@ import Orders from "../screens/Orders";
 import AdminDrawer from "./AdminDrawer";
 import CustomerDrawer from "./CustomerDrawer";
 import { useSelector } from "react-redux";
+import LensesNavigator from "./LensesNavigator";
 
 const MainNavigator = () => {
   const Drawer = createDrawerNavigator();
@@ -35,7 +35,7 @@ const MainNavigator = () => {
           <Drawer.Screen name="Orders" component={Orders} />
           <Drawer.Screen name="SpecsNavigator" component={SpecsNavigator} />
           <Drawer.Screen name="GlassesNavigator" component={GlassesNavigator} />
-          <Drawer.Screen name="Lenses" component={Lenses} />
+          <Drawer.Screen name="LensesNavigator" component={LensesNavigator} />
           <Drawer.Screen
             name="AccessoryNavigator"
             component={AccessoryNavigator}
@@ -45,7 +45,7 @@ const MainNavigator = () => {
         <>
           <Drawer.Screen name="SpecsNavigator" component={SpecsNavigator} />
           <Drawer.Screen name="GlassesNavigator" component={GlassesNavigator} />
-          <Drawer.Screen name="Lenses" component={Lenses} />
+          <Drawer.Screen name="LensesNavigator" component={LensesNavigator} />
           <Drawer.Screen
             name="AccessoryNavigator"
             component={AccessoryNavigator}
