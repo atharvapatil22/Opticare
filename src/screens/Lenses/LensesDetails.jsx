@@ -62,7 +62,7 @@ const LensesDetails = ({ route, navigation }) => {
       console.log("Successfully deleted accessory with id ", lensId);
       Alert.alert(
         "Success!",
-        "Deleted accessory: " + lensData.name,
+        "Deleted lenses: " + lensData.name,
         [{ text: "OK", onPress: () => navigation.goBack() }],
         { cancelable: false }
       );

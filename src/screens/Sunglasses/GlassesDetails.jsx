@@ -16,6 +16,7 @@ import {
   app_bg,
   grey1,
   text_color,
+  grey4,
 } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
@@ -281,11 +282,26 @@ const GlassesDetails = ({ route, navigation }) => {
                 }}
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
-                <View style={{ alignItems: "center", marginVertical: 40 }}>
-                  <Text style={{ ...styles.text_small, color: grey1 }}>
-                    No lenses available
-                  </Text>
-                </View>
+                {!!glassesData.powered_glasses ? (
+                  <View>
+                    <Text
+                      style={{
+                        ...styles.text_small,
+                        color: grey4,
+                        marginTop: 20,
+                      }}
+                    >
+                      • Sunglasses Lenses
+                    </Text>
+                  </View>
+                ) : (
+                  <View style={{ alignItems: "center", marginVertical: 40 }}>
+                    <Text style={{ ...styles.text_small, color: grey1 }}>
+                      These sunglasses are not customisable, hence lenses cannot
+                      be added externally.
+                    </Text>
+                  </View>
+                )}
               </View>
               <View
                 style={{

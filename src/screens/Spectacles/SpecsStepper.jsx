@@ -26,6 +26,7 @@ import { supabase } from "../../supabase/client";
 import axios from "axios";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Checkbox from "expo-checkbox";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
@@ -55,6 +56,12 @@ const SpecsStepper = ({ route, navigation }) => {
   const [dimensions, setDimensions] = useState("");
   const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
+  // Step 4
+  const [linkedLenses, setLinkedLenses] = useState({
+    "Single Vision": false,
+    "Zero Power": false,
+    "Bifocal / Progressive": false,
+  });
 
   // Step 5
   const [price, setPrice] = useState("");
@@ -84,6 +91,8 @@ const SpecsStepper = ({ route, navigation }) => {
     setDimensions(specsData.dimensions);
     setSize(specsData.size);
     setWarranty(specsData.warranty.toString());
+
+    setLinkedLenses(specsData.linked_lenses);
 
     setStock(specsData.stock.toString());
     setPrice(specsData.price.toString());
@@ -204,6 +213,7 @@ const SpecsStepper = ({ route, navigation }) => {
       stock: parseInt(stock),
       images: prodImagesFinal,
       featured_image: prodImagesFinal[featuredImage],
+      linked_lenses: linkedLenses,
     };
 
     // If editing exisitng product
@@ -260,9 +270,13 @@ const SpecsStepper = ({ route, navigation }) => {
         setDimensions("");
         setSize("Medium");
         setWarranty(1);
-
         break;
       case 3:
+        setLinkedLenses({
+          "Single Vision": false,
+          "Zero Power": false,
+          "Bifocal / Progressive": false,
+        });
         break;
       case 4:
         setPrice("");
@@ -303,7 +317,9 @@ const SpecsStepper = ({ route, navigation }) => {
         setCurrentStep(currentStep + 1);
         break;
       case 3:
-        console.log("Saved Step 4: ");
+        console.log("Saved Step 4: ", {
+          linked_lenses: linkedLenses,
+        });
         setCurrentStep(currentStep + 1);
         break;
       case 4:
@@ -627,18 +643,69 @@ const SpecsStepper = ({ route, navigation }) => {
                       </View>
                     </View>
                   ) : currentStep === 3 ? (
-                    <View style={{}}>
-                      <Text style={styles.form_label}>Available Lenses</Text>
-                      <SelectList
-                        search={false}
-                        setSelected={(val) => setWarranty(val)}
-                        data={[]}
-                        // defaultOption={{ key: "1", value: "1 Year" }}
-                        placeholder="No lenses Available"
-                        save="key"
-                        boxStyles={{ borderColor: grey2 }}
-                        dropdownStyles={{ borderColor: grey2 }}
-                      />
+                    <View>
+                      <Text
+                        style={{
+                          textDecorationLine: "underline",
+                          fontSize: 18,
+                          color: grey2,
+                        }}
+                      >
+                        Available Lenses:
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          marginBottom: 100,
+                          marginTop: 25,
+                        }}
+                      >
+                        <View style={styles.lens_item}>
+                          <Checkbox
+                            style={{ width: 22, height: 22 }}
+                            value={linkedLenses["Single Vision"]}
+                            onValueChange={(val) => {
+                              setLinkedLenses({
+                                ...linkedLenses,
+                                "Single Vision": val,
+                              });
+                            }}
+                          />
+                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                            Single Vision
+                          </Text>
+                        </View>
+                        <View style={styles.lens_item}>
+                          <Checkbox
+                            style={{ width: 22, height: 22 }}
+                            value={linkedLenses["Bifocal / Progressive"]}
+                            onValueChange={(val) => {
+                              setLinkedLenses({
+                                ...linkedLenses,
+                                "Bifocal / Progressive": val,
+                              });
+                            }}
+                          />
+                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                            Bifocal / Progressive
+                          </Text>
+                        </View>
+                        <View style={styles.lens_item}>
+                          <Checkbox
+                            style={{ width: 22, height: 22 }}
+                            value={linkedLenses["Zero Power"]}
+                            onValueChange={(val) => {
+                              setLinkedLenses({
+                                ...linkedLenses,
+                                "Zero Power": val,
+                              });
+                            }}
+                          />
+                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                            Zero Power
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   ) : currentStep === 4 ? (
                     <View style={styles.form_container}>
@@ -740,5 +807,10 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderRadius: 8,
+  },
+  lens_item: {
+    width: "33%",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

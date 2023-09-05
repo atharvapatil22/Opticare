@@ -16,6 +16,7 @@ import {
   app_bg,
   grey1,
   text_color,
+  grey4,
 } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
@@ -278,11 +279,33 @@ const SpecsDetails = ({ route, navigation }) => {
                 }}
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
-                <View style={{ alignItems: "center", marginVertical: 40 }}>
-                  <Text style={{ ...styles.text_small, color: grey1 }}>
-                    No lenses available
-                  </Text>
-                </View>
+
+                {Object.values(specsData.linked_lenses).every(
+                  (v) => v === false
+                ) ? (
+                  <View style={{ alignItems: "center", marginVertical: 40 }}>
+                    <Text style={{ ...styles.text_small, color: grey1 }}>
+                      No lenses available
+                    </Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text
+                      style={{
+                        ...styles.text_small,
+                        color: grey4,
+                        marginTop: 20,
+                      }}
+                    >
+                      {!!specsData.linked_lenses["Single Vision"] &&
+                        "• Single Vision"}
+                      {!!specsData.linked_lenses["Bifocal / Progressive"] &&
+                        "\n• Bifocal / Progressive"}
+                      {!!specsData.linked_lenses["Zero Power"] &&
+                        "\n• Zero Power"}
+                    </Text>
+                  </View>
+                )}
               </View>
               <View
                 style={{

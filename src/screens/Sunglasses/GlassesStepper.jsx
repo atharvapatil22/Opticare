@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   TouchableOpacity,
+  Switch,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,6 +18,7 @@ import {
   gradient_start,
   grey2,
   grey1,
+  text_color,
 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
@@ -26,6 +28,7 @@ import { supabase } from "../../supabase/client";
 import axios from "axios";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import Checkbox from "expo-checkbox";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;
@@ -55,7 +58,8 @@ const GlassesStepper = ({ route, navigation }) => {
   const [dimensions, setDimensions] = useState("");
   const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
-
+  // Step 4
+  const [poweredGlasses, setPoweredGlasses] = useState(false);
   // Step 5
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("0");
@@ -84,6 +88,8 @@ const GlassesStepper = ({ route, navigation }) => {
     setDimensions(glassesData.dimensions);
     setSize(glassesData.size);
     setWarranty(glassesData.warranty.toString());
+
+    setPoweredGlasses(glassesData.powered_glasses);
 
     setStock(glassesData.stock.toString());
     setPrice(glassesData.price.toString());
@@ -204,6 +210,7 @@ const GlassesStepper = ({ route, navigation }) => {
       stock: parseInt(stock),
       images: prodImagesFinal,
       featured_image: prodImagesFinal[featuredImage],
+      powered_glasses: poweredGlasses,
     };
 
     // If editing exisitng product
@@ -264,6 +271,7 @@ const GlassesStepper = ({ route, navigation }) => {
 
         break;
       case 3:
+        setPoweredGlasses(false);
         break;
       case 4:
         setPrice("");
@@ -304,7 +312,7 @@ const GlassesStepper = ({ route, navigation }) => {
         setCurrentStep(currentStep + 1);
         break;
       case 3:
-        console.log("Saved Step 4: ");
+        console.log("Saved Step 4: ", { powered_glasses: poweredGlasses });
         setCurrentStep(currentStep + 1);
         break;
       case 4:
@@ -628,17 +636,32 @@ const GlassesStepper = ({ route, navigation }) => {
                       </View>
                     </View>
                   ) : currentStep === 3 ? (
-                    <View style={{}}>
-                      <Text style={styles.form_label}>Available Lenses</Text>
-                      <SelectList
-                        search={false}
-                        setSelected={(val) => setWarranty(val)}
-                        data={[]}
-                        // defaultOption={{ key: "1", value: "1 Year" }}
-                        placeholder="No lenses Available"
-                        save="key"
-                        boxStyles={{ borderColor: grey2 }}
-                        dropdownStyles={{ borderColor: grey2 }}
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginVertical: 50,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          color: text_color,
+                        }}
+                      >
+                        Powered Sunglasses
+                      </Text>
+                      <Switch
+                        trackColor={{ false: grey2, true: gradient_end }}
+                        thumbColor={poweredGlasses ? customer_primary : "white"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={setPoweredGlasses}
+                        value={poweredGlasses}
+                        style={{
+                          transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
+                          marginLeft: 20,
+                        }}
                       />
                     </View>
                   ) : currentStep === 4 ? (
