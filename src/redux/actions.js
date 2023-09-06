@@ -1,4 +1,4 @@
-import { USER_LEVEL_SET } from "./types";
+import { CURRENT_ORDER_SET, USER_LEVEL_SET } from "./types";
 
 export const setUserLevel = (userLevel) => {
   return {
@@ -7,5 +7,12 @@ export const setUserLevel = (userLevel) => {
       userLevel === "CUSTOMER" || userLevel === "ADMIN"
         ? userLevel
         : "CUSTOMER",
+  };
+};
+
+export const setCurrentOrder = (currentOrder) => {
+  return {
+    type: CURRENT_ORDER_SET,
+    payload: currentOrder,
   };
 };

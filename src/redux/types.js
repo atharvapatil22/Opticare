@@ -1,1 +1,2 @@
 export const USER_LEVEL_SET = "USER_LEVEL_SET";
+export const CURRENT_ORDER_SET = "CURRENT_ORDER_SET";

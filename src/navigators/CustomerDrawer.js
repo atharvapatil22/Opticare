@@ -86,13 +86,31 @@ const CustomerDrawer = (props) => {
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
       />
+      <DrawerItem
+        focused={props.state.index === 4}
+        label={"Cart"}
+        onPress={() => props.navigation.navigate("CartNavigator")}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/cart.png")
+                : require("../assets/cart_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
+        activeTintColor={"black"}
+        activeBackgroundColor={gradient_end}
+        labelStyle={styles.label}
+      />
       <Pressable onPress={handleAdminLogin}>
         <Text
           style={{
             fontSize: 20,
             color: "blue",
             marginLeft: "3%",
-            marginTop: 480,
+            marginTop: 420,
           }}
         >
           Admin Login

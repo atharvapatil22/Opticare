@@ -1,7 +1,8 @@
-import { USER_LEVEL_SET } from "./types";
+import { CURRENT_ORDER_SET, USER_LEVEL_SET } from "./types";
 
 const initialState = {
   userLevel: "CUSTOMER",
+  currentOrder: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -10,6 +11,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         userLevel: action.payload,
+      };
+
+    case CURRENT_ORDER_SET:
+      return {
+        ...state,
+        currentOrder: action.payload,
       };
 
     default:

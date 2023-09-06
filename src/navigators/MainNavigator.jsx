@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import LensesNavigator from "./LensesNavigator";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import CartNavigator from "./CartNavigator";
 
 const MainNavigator = () => {
   const Drawer = createDrawerNavigator();
@@ -72,6 +73,7 @@ const MainNavigator = () => {
             name="AccessoryNavigator"
             component={AccessoryNavigator}
           />
+          <Drawer.Screen name="CartNavigator" component={CartNavigator} />
         </>
       )}
     </Drawer.Navigator>
