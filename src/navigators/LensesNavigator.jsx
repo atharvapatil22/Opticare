@@ -7,7 +7,7 @@ const Stack = createStackNavigator();
 
 function LensesNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Lenses" component={Lenses} />
       <Stack.Screen name="LensesStepper" component={LensesStepper} />
       <Stack.Screen name="Lenses Details" component={LensesDetails} />

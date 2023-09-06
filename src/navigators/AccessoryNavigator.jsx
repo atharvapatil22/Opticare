@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 
 const AccessoryNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Accessories" component={Accessories} />
       <Stack.Screen name="AccessoryStepper" component={AccessoryStepper} />
       <Stack.Screen name="Accessory Details" component={AccessoryDetails} />

@@ -7,7 +7,7 @@ const Stack = createStackNavigator();
 
 function GlassesNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Sunglasses" component={Sunglasses} />
       <Stack.Screen name="GlassesStepper" component={GlassesStepper} />
       <Stack.Screen name="Sunglasses Details" component={GlassesDetails} />

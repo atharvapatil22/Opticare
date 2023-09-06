@@ -20,11 +20,13 @@ import {
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import { AntDesign } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
 
 const Lenses = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [lenses, setLenses] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const store = useSelector((state) => state.globalData);
 
   useEffect(() => {
     fetchAllLenses();
@@ -86,10 +88,24 @@ const Lenses = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: app_bg }}>
+      {/* Screen Title */}
+      <Text
+        style={{
+          marginHorizontal: "2%",
+          fontSize: 26,
+          marginTop: 16,
+          fontFamily: "Inter-Medium",
+        }}
+      >
+        Shopping for Lenses
+      </Text>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput
-          style={styles.searchbar}
+          style={{
+            ...styles.searchbar,
+            width: store.userLevel === "ADMIN" ? "60%" : "75%",
+          }}
           onChangeText={setSearchValue}
           value={searchValue}
           placeholder="Type here to search ..."
@@ -97,14 +113,16 @@ const Lenses = ({ navigation }) => {
         />
         <Button text="SEARCH" variant="aqua" rounded />
         <Button text="Filters" variant="white" rounded />
-        <Button
-          text="+ ADD NEW"
-          variant="aqua"
-          onPress={() => {
-            navigation.navigate("LensesStepper", { editing: false });
-          }}
-          rounded
-        />
+        {store.userLevel === "ADMIN" && (
+          <Button
+            text="+ ADD NEW"
+            variant="aqua"
+            onPress={() => {
+              navigation.navigate("LensesStepper", { editing: false });
+            }}
+            rounded
+          />
+        )}
       </View>
       <ScrollView
         style={{ width: "100%", height: "100%" }}

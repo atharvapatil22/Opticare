@@ -7,23 +7,21 @@ import {
   Image,
   Alert,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { supabase } from "../../supabase/client";
-import {
-  customer_primary,
-  gradient_start,
-  app_bg,
-  grey1,
-  text_color,
-} from "../../constants";
+import { customer_primary, app_bg, grey1, text_color } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
-import AdditionalField from "../../components/AdditionalField";
+import BackButton from "../../components/BackButton";
+import { useSelector } from "react-redux";
+import { AntDesign } from "@expo/vector-icons";
 
 const AccessoryDetails = ({ route, navigation }) => {
   const { id: accessoryId } = route.params;
   const SLIDER_WIDTH = Dimensions.get("window").width;
+  const store = useSelector((state) => state.globalData);
 
   const carouselRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -94,7 +92,11 @@ const AccessoryDetails = ({ route, navigation }) => {
 
   return (
     <ScrollView
-      contentContainerStyle={{ backgroundColor: app_bg, paddingBottom: 100 }}
+      contentContainerStyle={{
+        backgroundColor: app_bg,
+        paddingBottom: 100,
+        position: "relative",
+      }}
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
@@ -102,6 +104,7 @@ const AccessoryDetails = ({ route, navigation }) => {
         />
       }
     >
+      <BackButton onPress={() => navigation.goBack()} />
       {!!accessoryData ? (
         <>
           <View style={{}}>
@@ -122,9 +125,10 @@ const AccessoryDetails = ({ route, navigation }) => {
                   />
                 );
               }}
+              enableSnap={false}
+              itemWidth={SLIDER_WIDTH * 0.65}
               ref={carouselRef}
               sliderWidth={SLIDER_WIDTH}
-              itemWidth={SLIDER_WIDTH - 500}
               onSnapToItem={(index) => setCarouselIndex(index)}
             />
             <Pagination
@@ -147,27 +151,28 @@ const AccessoryDetails = ({ route, navigation }) => {
             />
           </View>
           {/* Change UI later for edit and delete */}
-          <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-            <Button
-              text="Edit"
-              variant="aqua"
-              rounded
-              onPress={() => {
-                navigation.navigate("AccessoryStepper", {
-                  editing: true,
-                  accessoryData: accessoryData,
-                });
-              }}
-            />
-            <Button
-              text="Delete"
-              variant="aqua"
-              onPress={showDeletePrompt}
-              rounded
-              style={{ backgroundColor: "red" }}
-            />
-          </View>
-          {/* ---- */}
+          {store.userLevel === "ADMIN" && (
+            <View style={{ flexDirection: "row", marginLeft: "3%" }}>
+              <Button
+                text="Edit"
+                variant="aqua"
+                rounded
+                onPress={() => {
+                  navigation.navigate("AccessoryStepper", {
+                    editing: true,
+                    accessoryData: accessoryData,
+                  });
+                }}
+              />
+              <Button
+                text="Delete"
+                variant="aqua"
+                onPress={showDeletePrompt}
+                rounded
+                style={{ backgroundColor: "red" }}
+              />
+            </View>
+          )}
           <View
             style={{
               flexDirection: "row",
@@ -224,6 +229,17 @@ const AccessoryDetails = ({ route, navigation }) => {
                   <Text style={styles.price}>₹{accessoryData.price}</Text>
                 )}
               </>
+
+              {store.userLevel === "CUSTOMER" && (
+                <TouchableOpacity style={styles.cart_btn}>
+                  <AntDesign name="shoppingcart" size={28} color="white" />
+                  <Text
+                    style={{ fontSize: 24, color: "white", marginLeft: 20 }}
+                  >
+                    Add to cart
+                  </Text>
+                </TouchableOpacity>
+              )}
 
               {/* Additional Information */}
               <View style={styles.additional_info}>
@@ -349,5 +365,14 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 28,
     elevation: 1,
+  },
+  cart_btn: {
+    backgroundColor: customer_primary,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 8,
+    borderRadius: 10,
+    marginVertical: 20,
   },
 });

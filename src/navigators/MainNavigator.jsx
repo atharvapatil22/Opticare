@@ -26,6 +26,12 @@ const MainNavigator = () => {
     switch (routeName) {
       case "Spectacles Details":
         return "Spectacles Details";
+      case "Sunglasses Details":
+        return "Sunglasses Details";
+      case "Lenses Details":
+        return "Lenses Details";
+      case "Accessory Details":
+        return "Accessory Details";
       default:
         return "Opticare";
     }
