@@ -1,8 +1,7 @@
 import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { AntDesign } from "@expo/vector-icons";
 import { gradient_end, grey1 } from "../constants";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
 
@@ -18,7 +17,16 @@ const AdminDrawer = (props) => {
         focused={props.state.index === 0}
         label={"Dashboard"}
         onPress={() => props.navigation.navigate("Dashboard")}
-        icon={() => <AntDesign name="stepforward" size={22} color="black" />}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/dashboard.png")
+                : require("../assets/dashboard_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
@@ -28,7 +36,14 @@ const AdminDrawer = (props) => {
         label={"Orders"}
         onPress={() => props.navigation.navigate("Orders")}
         icon={({ focused }) => (
-          <AntDesign name="stepforward" size={22} color={"black"} />
+          <Image
+            source={
+              focused
+                ? require("../assets/orders.png")
+                : require("../assets/orders_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
         )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
@@ -47,7 +62,16 @@ const AdminDrawer = (props) => {
         focused={props.state.index === 2}
         label={"Spectacles"}
         onPress={() => props.navigation.navigate("SpecsNavigator")}
-        icon={() => <AntDesign name="stepforward" size={22} color="black" />}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/specs.png")
+                : require("../assets/specs_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
@@ -57,7 +81,14 @@ const AdminDrawer = (props) => {
         label={"Sunglasses"}
         onPress={() => props.navigation.navigate("GlassesNavigator")}
         icon={({ focused }) => (
-          <AntDesign name="stepforward" size={22} color={"black"} />
+          <Image
+            source={
+              focused
+                ? require("../assets/sunglasses.png")
+                : require("../assets/sunglasses_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
         )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
@@ -67,7 +98,16 @@ const AdminDrawer = (props) => {
         focused={props.state.index === 4}
         label={"Lenses"}
         onPress={() => props.navigation.navigate("LensesNavigator")}
-        icon={() => <AntDesign name="stepforward" size={22} color="black" />}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/lenses.png")
+                : require("../assets/lenses_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
@@ -77,7 +117,14 @@ const AdminDrawer = (props) => {
         label={"Accessories"}
         onPress={() => props.navigation.navigate("AccessoryNavigator")}
         icon={({ focused }) => (
-          <AntDesign name="stepforward" size={22} color={"black"} />
+          <Image
+            source={
+              focused
+                ? require("../assets/accessories.png")
+                : require("../assets/accessories_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
         )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}

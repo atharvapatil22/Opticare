@@ -2,7 +2,7 @@ import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { AntDesign } from "@expo/vector-icons";
 import { gradient_end } from "../constants";
-import { Pressable, StyleSheet, Text } from "react-native";
+import { Pressable, StyleSheet, Text, Image } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
 
@@ -18,7 +18,16 @@ const CustomerDrawer = (props) => {
         focused={props.state.index === 0}
         label={"Spectacles"}
         onPress={() => props.navigation.navigate("SpecsNavigator")}
-        icon={() => <AntDesign name="stepforward" size={22} color="black" />}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/specs.png")
+                : require("../assets/specs_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
@@ -28,7 +37,14 @@ const CustomerDrawer = (props) => {
         label={"Sunglasses"}
         onPress={() => props.navigation.navigate("GlassesNavigator")}
         icon={({ focused }) => (
-          <AntDesign name="stepforward" size={22} color={"black"} />
+          <Image
+            source={
+              focused
+                ? require("../assets/sunglasses.png")
+                : require("../assets/sunglasses_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
         )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
@@ -38,7 +54,16 @@ const CustomerDrawer = (props) => {
         focused={props.state.index === 2}
         label={"Lenses"}
         onPress={() => props.navigation.navigate("LensesNavigator")}
-        icon={() => <AntDesign name="stepforward" size={22} color="black" />}
+        icon={({ focused }) => (
+          <Image
+            source={
+              focused
+                ? require("../assets/lenses.png")
+                : require("../assets/lenses_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
+        )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
@@ -48,7 +73,14 @@ const CustomerDrawer = (props) => {
         label={"Accessories"}
         onPress={() => props.navigation.navigate("AccessoryNavigator")}
         icon={({ focused }) => (
-          <AntDesign name="stepforward" size={22} color={"black"} />
+          <Image
+            source={
+              focused
+                ? require("../assets/accessories.png")
+                : require("../assets/accessories_inactive.png")
+            }
+            style={{ width: 30, height: 30 }}
+          />
         )}
         activeTintColor={"black"}
         activeBackgroundColor={gradient_end}
