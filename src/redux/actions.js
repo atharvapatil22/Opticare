@@ -1,4 +1,4 @@
-import { CURRENT_ORDER_SET, USER_LEVEL_SET } from "./types";
+import { ADD_ORDER_ITEM, UPDATE_ITEM_QUANTITY, USER_LEVEL_SET } from "./types";
 
 export const setUserLevel = (userLevel) => {
   return {
@@ -10,9 +10,16 @@ export const setUserLevel = (userLevel) => {
   };
 };
 
-export const setCurrentOrder = (currentOrder) => {
+export const addOrderItem = (itemData) => {
   return {
-    type: CURRENT_ORDER_SET,
-    payload: currentOrder,
+    type: ADD_ORDER_ITEM,
+    payload: itemData,
+  };
+};
+
+export const updateItemQuantity = (itemData) => {
+  return {
+    type: UPDATE_ITEM_QUANTITY,
+    payload: itemData,
   };
 };
