@@ -13,7 +13,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   let category;
-  let new_state = state;
+  let new_state = { ...state };
   switch (action.type) {
     case USER_LEVEL_SET:
       return {

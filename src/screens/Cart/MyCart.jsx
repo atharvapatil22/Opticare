@@ -5,13 +5,11 @@ import { app_bg } from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
 
 const MyCart = () => {
-  const currentOrder = useSelector((state) => state.globalData.currentOrder);
-
-  // console.log("order");
+  const globalData = useSelector((state) => state.globalData);
 
   return (
     <View style={{ backgroundColor: app_bg, height: "100%" }}>
-      {currentOrder.totalItems === 0 ? (
+      {globalData.currentOrder.totalItems === 0 ? (
         <>
           {/* Screen Title */}
           <Text
@@ -40,13 +38,13 @@ const MyCart = () => {
           <View style={{ width: "65%", paddingHorizontal: "2%" }}>
             {/* Screen Title */}
             <Text style={styles.screen_title}>
-              My Cart ({currentOrder.totalItems})
+              My Cart ({globalData.currentOrder.totalItems})
             </Text>
             <ScrollView>
-              {currentOrder.accessories.length !== 0 && (
+              {globalData.currentOrder.accessories.length !== 0 && (
                 <View>
                   <Text>Accessories</Text>
-                  {currentOrder.accessories.map((item, index) => (
+                  {globalData.currentOrder.accessories.map((item, index) => (
                     <CartItemCard data={item} key={index} />
                   ))}
                 </View>
