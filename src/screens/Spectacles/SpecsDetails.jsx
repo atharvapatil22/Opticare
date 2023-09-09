@@ -25,6 +25,7 @@ import AdditionalField from "../../components/AdditionalField";
 import BackButton from "../../components/BackButton";
 import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+import LensSelector from "../../components/LensSelector";
 
 const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
@@ -35,6 +36,7 @@ const SpecsDetails = ({ route, navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [specsData, setSpecsData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [showLensSelector, setShowLensSelector] = useState(false);
 
   useEffect(() => {
     fetchSpecsDetails();
@@ -109,6 +111,12 @@ const SpecsDetails = ({ route, navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsDetails} />
       }
     >
+      {showLensSelector && (
+        <LensSelector
+          linkedLenses={specsData.linked_lenses}
+          setShowLensSelector={setShowLensSelector}
+        />
+      )}
       <BackButton onPress={() => navigation.goBack()} />
       {!!specsData ? (
         <>
@@ -243,7 +251,10 @@ const SpecsDetails = ({ route, navigation }) => {
               </View>
 
               {store.userLevel === "CUSTOMER" && (
-                <TouchableOpacity style={styles.cart_btn}>
+                <TouchableOpacity
+                  style={styles.cart_btn}
+                  onPress={() => setShowLensSelector(true)}
+                >
                   <AntDesign name="shoppingcart" size={28} color="white" />
                   <Text
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}
