@@ -40,9 +40,11 @@ const reducer = (state = initialState, action) => {
       );
 
       // When quantity is updated to 0, it means remove the item from current order
-      if (quantity === 0)
+      if (quantity === 0) {
         new_state.currentOrder[category].splice(item_to_update, 1);
-      else new_state.currentOrder[category][item_to_update].quantity = quantity;
+        new_state.currentOrder.totalItems -= 1;
+      } else
+        new_state.currentOrder[category][item_to_update].quantity = quantity;
       return new_state;
 
     default:

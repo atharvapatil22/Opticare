@@ -26,9 +26,7 @@ import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { supabase } from "../../supabase/client";
 import axios from "axios";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import Checkbox from "expo-checkbox";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;
@@ -542,10 +540,10 @@ const GlassesStepper = ({ route, navigation }) => {
                                       style={styles.image_button}
                                       onPress={() => deleteProductImage(index)}
                                     >
-                                      <Ionicons
-                                        name="trash"
+                                      <Feather
+                                        name="trash-2"
                                         size={32}
-                                        color={"red"}
+                                        color="red"
                                       />
                                     </TouchableOpacity>
                                   </View>
