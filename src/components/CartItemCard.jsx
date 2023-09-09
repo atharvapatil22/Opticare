@@ -12,7 +12,7 @@ import { useDispatch } from "react-redux";
 import { updateItemQuantity } from "../redux/actions";
 import { customer_primary, grey1, text_color } from "../constants";
 
-const CartItemCard = ({ data }) => {
+const CartItemCard = ({ data, category }) => {
   const dispatch = useDispatch();
 
   return (
@@ -99,7 +99,7 @@ const CartItemCard = ({ data }) => {
                   onPress: () =>
                     dispatch(
                       updateItemQuantity({
-                        category: "accessories",
+                        category: category,
                         id: data.id,
                         quantity: 0,
                       })
@@ -135,7 +135,7 @@ const CartItemCard = ({ data }) => {
               if (data.quantity > 1)
                 dispatch(
                   updateItemQuantity({
-                    category: "accessories",
+                    category: category,
                     id: data.id,
                     quantity: data.quantity - 1,
                   })
@@ -163,7 +163,7 @@ const CartItemCard = ({ data }) => {
             onPress={() =>
               dispatch(
                 updateItemQuantity({
-                  category: "accessories",
+                  category: category,
                   id: data.id,
                   quantity: data.quantity + 1,
                 })

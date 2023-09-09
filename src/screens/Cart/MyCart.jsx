@@ -14,6 +14,7 @@ import {
   gradient_end,
   gradient_start,
   grey1,
+  grey2,
   text_color,
 } from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
@@ -34,6 +35,19 @@ const MyCart = () => {
   const setCartSummaryValues = () => {
     let total = 0;
     let savings = 0;
+
+    globalData.currentOrder.specs.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+    globalData.currentOrder.sunglasses.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+    globalData.currentOrder.lenses.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
 
     globalData.currentOrder.accessories.forEach((item) => {
       total += item.quantity * item.price;
@@ -80,11 +94,35 @@ const MyCart = () => {
             </Text>
             {/* Cart Items */}
             <ScrollView>
+              {(globalData.currentOrder.specs.length !== 0 ||
+                globalData.currentOrder.sunglasses.length !== 0 ||
+                globalData.currentOrder.lenses.length !== 0) && (
+                <View>
+                  <Text style={styles.section_title}>Eyeware</Text>
+                  {globalData.currentOrder.specs.map((item, index) => (
+                    <CartItemCard data={item} key={index} category="specs" />
+                  ))}
+                  {globalData.currentOrder.sunglasses.map((item, index) => (
+                    <CartItemCard
+                      data={item}
+                      key={index}
+                      category="sunglasses"
+                    />
+                  ))}
+                  {globalData.currentOrder.lenses.map((item, index) => (
+                    <CartItemCard data={item} key={index} category="lenses" />
+                  ))}
+                </View>
+              )}
               {globalData.currentOrder.accessories.length !== 0 && (
                 <View>
-                  <Text>Accessories</Text>
+                  <Text style={styles.section_title}>Accessories</Text>
                   {globalData.currentOrder.accessories.map((item, index) => (
-                    <CartItemCard data={item} key={index} />
+                    <CartItemCard
+                      data={item}
+                      key={index}
+                      category="accessories"
+                    />
                   ))}
                 </View>
               )}
@@ -261,5 +299,11 @@ const styles = StyleSheet.create({
     aspectRatio: "16/9",
     borderWidth: 1,
     borderColor: grey1,
+  },
+  section_title: {
+    fontSize: 18,
+    fontFamily: "Inter-Medium",
+    color: grey2,
+    marginVertical: 10,
   },
 });
