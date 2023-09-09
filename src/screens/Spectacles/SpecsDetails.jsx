@@ -114,6 +114,12 @@ const SpecsDetails = ({ route, navigation }) => {
       {showLensSelector && (
         <LensSelector
           linkedLenses={specsData.linked_lenses}
+          frameId={specsData.id}
+          frameName={specsData.name}
+          framePrice={specsData.price}
+          frameDiscount={specsData.discount}
+          frameFeaturedImage={specsData.featured_image}
+          frameType="specs"
           setShowLensSelector={setShowLensSelector}
         />
       )}

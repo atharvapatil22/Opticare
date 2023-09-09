@@ -23,18 +23,22 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
 import AdditionalField from "../../components/AdditionalField";
 import BackButton from "../../components/BackButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+import LensSelector from "../../components/LensSelector";
+import { addOrderItem } from "../../redux/actions";
 
 const GlassesDetails = ({ route, navigation }) => {
   const { id: glassesId } = route.params;
   const SLIDER_WIDTH = Dimensions.get("window").width;
   const store = useSelector((state) => state.globalData);
+  const dispatch = useDispatch();
 
   const carouselRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
   const [glassesData, setGlassesData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [showLensSelector, setShowLensSelector] = useState(false);
 
   useEffect(() => {
     fetchGlassesDetails();
@@ -98,6 +102,46 @@ const GlassesDetails = ({ route, navigation }) => {
     );
   };
 
+  const addGlassestoCart = () => {
+    dispatch(
+      addOrderItem({
+        category: "sunglasses",
+        item: {
+          id: glassesData.id,
+          name: glassesData.name,
+          price: glassesData.price,
+          discount: glassesData.discount,
+          featured_image: glassesData.featured_image,
+          linkedLenses: null,
+          quantity: 1,
+        },
+      })
+    );
+    Alert.alert(`Success`, "Added to cart");
+  };
+
+  const handleCTA = () => {
+    if (Object.values(glassesData.linked_lenses).every((v) => v === false)) {
+      addGlassestoCart();
+    } else {
+      Alert.alert(
+        "Add power?",
+        "Do you want to add custom powered lens to these sunglasses",
+        [
+          {
+            text: "No thanks",
+            onPress: () => addGlassestoCart(),
+          },
+          {
+            text: "Add custom power",
+            onPress: () => setShowLensSelector(true),
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -112,6 +156,18 @@ const GlassesDetails = ({ route, navigation }) => {
         />
       }
     >
+      {showLensSelector && (
+        <LensSelector
+          linkedLenses={glassesData.linked_lenses}
+          setShowLensSelector={setShowLensSelector}
+          frameId={glassesData.id}
+          frameName={glassesData.name}
+          framePrice={glassesData.price}
+          frameDiscount={glassesData.discount}
+          frameFeaturedImage={glassesData.featured_image}
+          frameType="sunglasses"
+        />
+      )}
       <BackButton onPress={() => navigation.goBack()} />
       {!!glassesData ? (
         <>
@@ -244,7 +300,7 @@ const GlassesDetails = ({ route, navigation }) => {
                 </Text>
               </View>
               {store.userLevel === "CUSTOMER" && (
-                <TouchableOpacity style={styles.cart_btn}>
+                <TouchableOpacity style={styles.cart_btn} onPress={handleCTA}>
                   <AntDesign name="shoppingcart" size={28} color="white" />
                   <Text
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}

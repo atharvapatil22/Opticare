@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
@@ -17,8 +18,21 @@ import {
 } from "../constants";
 import { supabase } from "../supabase/client";
 import Button from "./Button";
+import { useDispatch } from "react-redux";
+import { addOrderItem } from "../redux/actions";
 
-const LensSelector = ({ linkedLenses, setShowLensSelector }) => {
+const LensSelector = ({
+  setShowLensSelector,
+  linkedLenses,
+  frameId,
+  frameName,
+  framePrice,
+  frameDiscount,
+  frameFeaturedImage,
+  frameType,
+}) => {
+  const dispatch = useDispatch();
+
   const [modalState, setModalState] = useState("Default");
   const [singleLenses, setSingleLenses] = useState([]);
   const [bifocalLenses, setBifocalLenses] = useState([]);
@@ -46,6 +60,46 @@ const LensSelector = ({ linkedLenses, setShowLensSelector }) => {
       setSingleLenses(svLenses);
       setBifocalLenses(bpLenses);
     }
+  };
+
+  const addItemtoCart = (linkedLens) => {
+    const itemData = {
+      id: frameId,
+      name: frameName,
+      price: framePrice,
+      discount: frameDiscount,
+      featured_image: frameFeaturedImage,
+      linkedLenses: linkedLens,
+      quantity: 1,
+    };
+
+    // Get lensRef based on Category of linked lens
+    const lensRef =
+      linkedLens === "Single Vision" || linkedLens === "Zero Power"
+        ? singleLenses[selectedLens]
+        : linkedLens === "Bifocal / Progressive"
+        ? bifocalLenses[selectedLens]
+        : null;
+
+    if (!!lensRef) {
+      itemData["linkedLensesDetails"] = {
+        id: lensRef.id,
+        name: lensRef.name,
+        price: lensRef.price,
+        discount: lensRef.discount,
+        quantity: 2,
+      };
+    }
+
+    dispatch(
+      addOrderItem({
+        category: frameType,
+        item: itemData,
+      })
+    );
+
+    setShowLensSelector(false);
+    Alert.alert(`Success`, "Added to cart");
   };
 
   const LensItem = ({ lens, index }) => {
@@ -158,31 +212,39 @@ const LensSelector = ({ linkedLenses, setShowLensSelector }) => {
                   />
                 </TouchableOpacity>
               )}
-              {!!linkedLenses["Zero Power"] && (
-                <TouchableOpacity
-                  style={styles.lens_category}
-                  onPress={() => setModalState("Zero Power")}
-                >
-                  <Text style={{ fontSize: 24, color: text_color }}>
-                    Zero Power Lens
-                  </Text>
-                  <Ionicons
-                    name="arrow-forward"
-                    size={34}
-                    color={customer_primary}
-                  />
-                </TouchableOpacity>
+              {frameType === "specs" && (
+                <>
+                  {!!linkedLenses["Zero Power"] && (
+                    <TouchableOpacity
+                      style={styles.lens_category}
+                      onPress={() => setModalState("Zero Power")}
+                    >
+                      <Text style={{ fontSize: 24, color: text_color }}>
+                        Zero Power Lens
+                      </Text>
+                      <Ionicons
+                        name="arrow-forward"
+                        size={34}
+                        color={customer_primary}
+                      />
+                    </TouchableOpacity>
+                  )}
+                  <TouchableOpacity
+                    style={styles.lens_category}
+                    // null param indicates that no lens was linked
+                    onPress={() => addItemtoCart(null)}
+                  >
+                    <Text style={{ fontSize: 24, color: text_color }}>
+                      Only Spectacle Frame
+                    </Text>
+                    <Ionicons
+                      name="arrow-forward"
+                      size={34}
+                      color={customer_primary}
+                    />
+                  </TouchableOpacity>
+                </>
               )}
-              <TouchableOpacity style={styles.lens_category}>
-                <Text style={{ fontSize: 24, color: text_color }}>
-                  Only Spectacle Frame
-                </Text>
-                <Ionicons
-                  name="arrow-forward"
-                  size={34}
-                  color={customer_primary}
-                />
-              </TouchableOpacity>
             </>
           ) : (
             <>
@@ -230,7 +292,7 @@ const LensSelector = ({ linkedLenses, setShowLensSelector }) => {
                   style={{ width: "50%" }}
                   text="CONFIRM"
                   variant={selectedLens === null ? "white" : "aqua"}
-                  onPress={() => {}}
+                  onPress={() => addItemtoCart(modalState)}
                   disabled={selectedLens === null}
                 />
               </View>
