@@ -306,7 +306,8 @@ const SpecsDetails = ({ route, navigation }) => {
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
 
-                {Object.values(specsData.linked_lenses).every(
+                {specsData.linked_lenses === null ||
+                Object.values(specsData.linked_lenses).every(
                   (v) => v === false
                 ) ? (
                   <View style={{ alignItems: "center", marginVertical: 40 }}>

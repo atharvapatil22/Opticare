@@ -304,7 +304,17 @@ const GlassesDetails = ({ route, navigation }) => {
                 }}
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
-                {!!glassesData.powered_glasses ? (
+                {glassesData.linked_lenses === null ||
+                Object.values(glassesData.linked_lenses).every(
+                  (v) => v === false
+                ) ? (
+                  <View style={{ alignItems: "center", marginVertical: 40 }}>
+                    <Text style={{ ...styles.text_small, color: grey1 }}>
+                      These sunglasses are not customisable, hence lenses cannot
+                      be added externally.
+                    </Text>
+                  </View>
+                ) : (
                   <View>
                     <Text
                       style={{
@@ -313,14 +323,10 @@ const GlassesDetails = ({ route, navigation }) => {
                         marginTop: 20,
                       }}
                     >
-                      • Sunglasses Lenses
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={{ alignItems: "center", marginVertical: 40 }}>
-                    <Text style={{ ...styles.text_small, color: grey1 }}>
-                      These sunglasses are not customisable, hence lenses cannot
-                      be added externally.
+                      {!!glassesData.linked_lenses["Single Vision"] &&
+                        "• Single Vision"}
+                      {!!glassesData.linked_lenses["Bifocal / Progressive"] &&
+                        "\n• Bifocal / Progressive"}
                     </Text>
                   </View>
                 )}

@@ -7,7 +7,6 @@ import {
   Image,
   Alert,
   TouchableOpacity,
-  Switch,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -18,7 +17,6 @@ import {
   gradient_start,
   grey2,
   grey1,
-  text_color,
 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
@@ -27,6 +25,7 @@ import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
 import { supabase } from "../../supabase/client";
 import axios from "axios";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Checkbox from "expo-checkbox";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;
@@ -57,7 +56,10 @@ const GlassesStepper = ({ route, navigation }) => {
   const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
   // Step 4
-  const [poweredGlasses, setPoweredGlasses] = useState(false);
+  const [linkedLenses, setLinkedLenses] = useState({
+    "Single Vision": false,
+    "Bifocal / Progressive": false,
+  });
   // Step 5
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("0");
@@ -87,7 +89,7 @@ const GlassesStepper = ({ route, navigation }) => {
     setSize(glassesData.size);
     setWarranty(glassesData.warranty.toString());
 
-    setPoweredGlasses(glassesData.powered_glasses);
+    setLinkedLenses(glassesData.linked_lenses);
 
     setStock(glassesData.stock.toString());
     setPrice(glassesData.price.toString());
@@ -208,7 +210,7 @@ const GlassesStepper = ({ route, navigation }) => {
       stock: parseInt(stock),
       images: prodImagesFinal,
       featured_image: prodImagesFinal[featuredImage],
-      powered_glasses: poweredGlasses,
+      linked_lenses: linkedLenses,
     };
 
     // If editing exisitng product
@@ -269,7 +271,10 @@ const GlassesStepper = ({ route, navigation }) => {
 
         break;
       case 3:
-        setPoweredGlasses(false);
+        setLinkedLenses({
+          "Single Vision": false,
+          "Bifocal / Progressive": false,
+        });
         break;
       case 4:
         setPrice("");
@@ -310,7 +315,7 @@ const GlassesStepper = ({ route, navigation }) => {
         setCurrentStep(currentStep + 1);
         break;
       case 3:
-        console.log("Saved Step 4: ", { powered_glasses: poweredGlasses });
+        console.log("Saved Step 4: ", { linked_lenses: linkedLenses });
         setCurrentStep(currentStep + 1);
         break;
       case 4:
@@ -634,33 +639,54 @@ const GlassesStepper = ({ route, navigation }) => {
                       </View>
                     </View>
                   ) : currentStep === 3 ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginVertical: 50,
-                      }}
-                    >
+                    <View style={{ width: "100%" }}>
                       <Text
                         style={{
+                          textDecorationLine: "underline",
                           fontSize: 18,
-                          color: text_color,
+                          color: grey2,
                         }}
                       >
-                        Powered Sunglasses
+                        Available Lenses:
                       </Text>
-                      <Switch
-                        trackColor={{ false: grey2, true: gradient_end }}
-                        thumbColor={poweredGlasses ? customer_primary : "white"}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={setPoweredGlasses}
-                        value={poweredGlasses}
+                      <View
                         style={{
-                          transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }],
-                          marginLeft: 20,
+                          flexDirection: "row",
+                          marginBottom: 100,
+                          marginTop: 25,
                         }}
-                      />
+                      >
+                        <View style={styles.lens_item}>
+                          <Checkbox
+                            style={{ width: 22, height: 22 }}
+                            value={linkedLenses["Single Vision"]}
+                            onValueChange={(val) => {
+                              setLinkedLenses({
+                                ...linkedLenses,
+                                "Single Vision": val,
+                              });
+                            }}
+                          />
+                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                            Single Vision
+                          </Text>
+                        </View>
+                        <View style={styles.lens_item}>
+                          <Checkbox
+                            style={{ width: 22, height: 22 }}
+                            value={linkedLenses["Bifocal / Progressive"]}
+                            onValueChange={(val) => {
+                              setLinkedLenses({
+                                ...linkedLenses,
+                                "Bifocal / Progressive": val,
+                              });
+                            }}
+                          />
+                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                            Bifocal / Progressive
+                          </Text>
+                        </View>
+                      </View>
                     </View>
                   ) : currentStep === 4 ? (
                     <View style={styles.form_container}>
@@ -762,5 +788,10 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderRadius: 8,
+  },
+  lens_item: {
+    width: "33%",
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

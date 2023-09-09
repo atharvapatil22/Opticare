@@ -319,7 +319,6 @@ const LensesStepper = ({ route, navigation }) => {
                           data={[
                             { key: "1", value: "Single Vision" },
                             { key: "2", value: "Bifocal / Progressive" },
-                            { key: "3", value: "Sunglasses Lens" },
                           ]}
                           defaultOption={{ key: "1", value: "Single Vision" }}
                           save="value"
