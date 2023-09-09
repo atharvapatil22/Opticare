@@ -1,63 +1,14 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import React, { useEffect, useState } from "react";
+import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import React from "react";
 import { useSelector } from "react-redux";
-import {
-  app_bg,
-  customer_primary,
-  gradient_end,
-  gradient_start,
-  grey1,
-  grey2,
-  text_color,
-} from "../../constants";
+import { app_bg, gradient_end, gradient_start, grey2 } from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
 import { LinearGradient } from "expo-linear-gradient";
-import { FontAwesome5 } from "@expo/vector-icons";
 
-const MyCart = () => {
+import CartSummary from "../../components/CartSummary";
+
+const MyCart = ({ navigation }) => {
   const globalData = useSelector((state) => state.globalData);
-
-  const [productsTotal, setProductsTotal] = useState(0);
-  const [savings, setSavings] = useState(0);
-  const [subTotal, setSubTotal] = useState(0);
-
-  useEffect(() => {
-    setCartSummaryValues();
-  }, [globalData]);
-
-  const setCartSummaryValues = () => {
-    let total = 0;
-    let savings = 0;
-
-    globalData.currentOrder.specs.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-    globalData.currentOrder.sunglasses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-    globalData.currentOrder.lenses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-
-    globalData.currentOrder.accessories.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-
-    setProductsTotal(total);
-    setSavings(savings);
-    setSubTotal(total - savings);
-  };
 
   return (
     <View style={{ backgroundColor: app_bg, height: "100%" }}>
@@ -137,119 +88,10 @@ const MyCart = () => {
               paddingVertical: 16,
             }}
           >
-            <Text
-              style={{
-                fontFamily: "Inter-Medium",
-                fontSize: 20,
-                color: customer_primary,
-              }}
-            >
-              Cart Summary
-            </Text>
-            <View style={styles.summary_body}>
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Products Total</Text>
-                <Text style={styles.summary_text}>₹{productsTotal}</Text>
-              </View>
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Savings</Text>
-                <Text style={styles.summary_text}>-₹{savings}</Text>
-              </View>
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Products SubTotal</Text>
-                <Text style={styles.summary_text}>₹{subTotal}</Text>
-              </View>
-              <View
-                style={{
-                  marginVertical: 12,
-                  borderTopWidth: 1,
-                  borderColor: grey1,
-                }}
-              />
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>GST (18%)</Text>
-                <Text style={styles.summary_text}>₹{subTotal * 0.18}</Text>
-              </View>
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Other Charges</Text>
-                <Text style={styles.summary_text}>0</Text>
-              </View>
-              <View
-                style={{
-                  marginVertical: 12,
-                  borderTopWidth: 1,
-                  borderColor: grey1,
-                }}
-              />
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Total</Text>
-                <Text style={styles.summary_text}>₹{subTotal * 1.18}</Text>
-              </View>
-              <View style={styles.summary_field}>
-                <Text style={styles.summary_text}>Total roundOff</Text>
-                <Text style={styles.summary_text}>₹{subTotal * 1.18}</Text>
-              </View>
-              <Text
-                style={{ ...styles.summary_text, color: grey1, marginTop: 20 }}
-              >
-                We accept
-              </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Image
-                  source={require("../../assets/mastercard_logo.jpg")}
-                  style={styles.payment_options}
-                />
-                <Image
-                  source={require("../../assets/visa_logo.jpg")}
-                  style={styles.payment_options}
-                />
-                <Image
-                  source={require("../../assets/upi_logo.png")}
-                  style={styles.payment_options}
-                />
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  borderWidth: 1,
-                  borderColor: grey1,
-                  width: "30%",
-                  aspectRatio: "16/9",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  marginBottom: 20,
-                }}
-              >
-                <FontAwesome5 name="rupee-sign" size={20} color="black" />
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontFamily: "Inter-Medium",
-                    marginLeft: 4,
-                    color: text_color,
-                  }}
-                >
-                  Cash
-                </Text>
-              </View>
-            </View>
-            <TouchableOpacity style={styles.buy_btn}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: "white",
-                  fontFamily: "Inter-Medium",
-                }}
-              >
-                Proceed to buy
-              </Text>
-            </TouchableOpacity>
+            <CartSummary
+              handleCTA={() => navigation.navigate("Order Checkout")}
+              screen={"MyCart"}
+            />
           </LinearGradient>
         </View>
       )}
@@ -271,35 +113,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 30,
   },
-  summary_body: {
-    backgroundColor: "white",
-    paddingHorizontal: "4%",
-    paddingVertical: 14,
-    marginVertical: 14,
-    borderRadius: 10,
-  },
-  summary_field: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  summary_text: {
-    fontFamily: "Inter-Regular",
-    fontSize: 18,
-    color: text_color,
-    marginBottom: 8,
-  },
-  buy_btn: {
-    backgroundColor: customer_primary,
-    paddingVertical: 6,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  payment_options: {
-    width: "30%",
-    aspectRatio: "16/9",
-    borderWidth: 1,
-    borderColor: grey1,
-  },
+
   section_title: {
     fontSize: 18,
     fontFamily: "Inter-Medium",
