@@ -1,4 +1,9 @@
-import { ADD_ORDER_ITEM, UPDATE_ITEM_QUANTITY, USER_LEVEL_SET } from "./types";
+import {
+  ADD_ORDER_ITEM,
+  CLEAR_CART,
+  UPDATE_ITEM_QUANTITY,
+  USER_LEVEL_SET,
+} from "./types";
 
 const initialState = {
   userLevel: "CUSTOMER",
@@ -46,6 +51,18 @@ const reducer = (state = initialState, action) => {
       } else
         new_state.currentOrder[category][item_to_update].quantity = quantity;
       return new_state;
+
+    case CLEAR_CART:
+      return {
+        ...state,
+        currentOrder: {
+          totalItems: 0,
+          specs: [],
+          sunglasses: [],
+          lenses: [],
+          accessories: [],
+        },
+      };
 
     default:
       return state;

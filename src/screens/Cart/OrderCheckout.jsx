@@ -21,11 +21,13 @@ import CartSummary from "../../components/CartSummary";
 import Button from "../../components/Button";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "../../supabase/client";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "../../redux/actions";
 
-const OrderCheckout = ({ route }) => {
+const OrderCheckout = ({ route, navigation }) => {
   const { billingInfo } = route.params;
   const globalData = useSelector((state) => state.globalData);
+  const dispatch = useDispatch();
 
   const [customerNumber, setCustomerNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
@@ -98,7 +100,8 @@ const OrderCheckout = ({ route }) => {
           {
             text: "OK",
             onPress: () => {
-              // clear cart and go back
+              dispatch(clearCart());
+              navigation.goBack();
             },
           },
         ],

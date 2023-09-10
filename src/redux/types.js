@@ -1,3 +1,4 @@
 export const USER_LEVEL_SET = "USER_LEVEL_SET";
 export const ADD_ORDER_ITEM = "ADD_ORDER_ITEM";
 export const UPDATE_ITEM_QUANTITY = "UPDATE_ITEM_QUANTITY";
+export const CLEAR_CART = "CLEAR_CART";
