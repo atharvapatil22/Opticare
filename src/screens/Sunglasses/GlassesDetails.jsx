@@ -388,58 +388,60 @@ const GlassesDetails = ({ route, navigation }) => {
                   </View>
                 )}
               </View>
-              <View
-                style={{
-                  ...styles.side_container,
-                  backgroundColor: "white",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginTop: 20,
-                }}
-              >
+              {store.userLevel === "ADMIN" && (
                 <View
                   style={{
-                    width: "45%",
+                    ...styles.side_container,
+                    backgroundColor: "white",
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    marginTop: 20,
                   }}
                 >
-                  <Text
+                  <View
                     style={{
-                      fontSize: 22,
-                      color: customer_primary,
-                      width: "75%",
+                      width: "45%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    Available stock for sale
-                  </Text>
-                  <Text style={{ fontSize: 45, color: text_color }}>
-                    {glassesData.stock}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    width: "45%",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        color: customer_primary,
+                        width: "75%",
+                      }}
+                    >
+                      Available stock for sale
+                    </Text>
+                    <Text style={{ fontSize: 45, color: text_color }}>
+                      {glassesData.stock}
+                    </Text>
+                  </View>
+                  <View
                     style={{
-                      fontSize: 22,
-                      color: customer_primary,
-                      width: "75%",
+                      width: "45%",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    Stock sold till date
-                  </Text>
-                  <Text style={{ fontSize: 45, color: text_color }}>
-                    {glassesData.stock_sold}
-                  </Text>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        color: customer_primary,
+                        width: "75%",
+                      }}
+                    >
+                      Stock sold till date
+                    </Text>
+                    <Text style={{ fontSize: 45, color: text_color }}>
+                      {glassesData.stock_sold}
+                    </Text>
+                  </View>
                 </View>
-              </View>
+              )}
             </View>
           </View>
         </>

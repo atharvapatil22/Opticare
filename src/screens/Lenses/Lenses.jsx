@@ -35,7 +35,7 @@ const Lenses = ({ navigation }) => {
   const fetchAllLenses = async () => {
     const { data, error } = await supabase
       .from("lenses")
-      .select("id,name,price,category,material");
+      .select("id,name,price,discount,category,material");
     if (error) {
       // __api_error
       console.log("api_error");
@@ -111,8 +111,8 @@ const Lenses = ({ navigation }) => {
           placeholder="Type here to search ..."
           placeholderTextColor={grey_3}
         />
-        <Button text="SEARCH" variant="aqua" rounded />
-        <Button text="Filters" variant="white" rounded />
+        <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
+        <Button text="Filters" variant="white" rounded onPress={() => {}} />
         {store.userLevel === "ADMIN" && (
           <Button
             text="+ ADD NEW"

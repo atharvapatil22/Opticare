@@ -27,7 +27,7 @@ const Sunglasses = ({ navigation }) => {
   const fetchAllGlasses = async () => {
     const { data, error } = await supabase
       .from("sunglasses")
-      .select("id,name,price,featured_image");
+      .select("id,name,price,discount,featured_image");
     if (error) {
       // __api_error
       console.log("api_error");
@@ -62,8 +62,8 @@ const Sunglasses = ({ navigation }) => {
           placeholder="Type here to search ..."
           placeholderTextColor={grey_3}
         />
-        <Button text="SEARCH" variant="aqua" rounded />
-        <Button text="Filters" variant="white" rounded />
+        <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
+        <Button text="Filters" variant="white" rounded onPress={() => {}} />
         {store.userLevel === "ADMIN" && (
           <Button
             text="+ ADD NEW"

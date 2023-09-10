@@ -289,27 +289,30 @@ const LensesDetails = ({ route, navigation }) => {
                 paddingRight: "3%",
               }}
             >
-              <View
-                style={{
-                  ...styles.side_container,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Text
+              {store.userLevel === "ADMIN" && (
+                <View
                   style={{
-                    fontSize: 22,
-                    color: customer_primary,
-                    width: "75%",
+                    ...styles.side_container,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
                   }}
                 >
-                  Stock sold till date
-                </Text>
-                <Text style={{ fontSize: 45, color: text_color }}>
-                  {lensData.stock_sold}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      color: customer_primary,
+                      width: "75%",
+                    }}
+                  >
+                    Stock sold till date
+                  </Text>
+                  <Text style={{ fontSize: 45, color: text_color }}>
+                    {lensData.stock_sold}
+                  </Text>
+                </View>
+              )}
+
               {lensData.category === "Bifocal / Progressive" && (
                 <View style={styles.side_container}>
                   <Text

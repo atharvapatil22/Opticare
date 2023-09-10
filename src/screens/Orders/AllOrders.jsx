@@ -162,8 +162,8 @@ const AllOrders = ({ navigation }) => {
           placeholder="Type here to search ..."
           placeholderTextColor={grey_3}
         />
-        <Button text="SEARCH" variant="aqua" rounded />
-        <Button text="Filters" variant="white" rounded />
+        <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
+        <Button text="Filters" variant="white" rounded onPress={() => {}} />
       </View>
       <ScrollView
         style={{ width: "100%", height: "100%" }}
