@@ -18,3 +18,27 @@ export const text_color = "#262E2E";
 
 export const CLOUDINARY_URL =
   "https://api.cloudinary.com/v1_1/dspkp4krz/upload";
+
+export const days = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+export const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
