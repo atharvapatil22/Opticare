@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import LensesStepper from "../screens/Lenses/LensesStepper";
-import LensesDetails from "../screens/Lenses/LensesDetails";
-import Lenses from "../screens/Lenses/Lenses";
+import LensesStepper from "../../screens/Lenses/LensesStepper";
+import LensesDetails from "../../screens/Lenses/LensesDetails";
+import Lenses from "../../screens/Lenses/Lenses";
 
 const Stack = createStackNavigator();
 

@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Accessories from "../screens/Accessories/Accessories";
-import AccessoryDetails from "../screens/Accessories/AccessoryDetails";
-import AccessoryStepper from "../screens/Accessories/AccessoryStepper";
+import Accessories from "../../screens/Accessories/Accessories";
+import AccessoryDetails from "../../screens/Accessories/AccessoryDetails";
+import AccessoryStepper from "../../screens/Accessories/AccessoryStepper";
 
 const Stack = createStackNavigator();
 

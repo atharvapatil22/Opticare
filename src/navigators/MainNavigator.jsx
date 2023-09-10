@@ -1,17 +1,18 @@
 import React from "react";
-import SpecsNavigator from "./SpecsNavigator";
-import AccessoryNavigator from "./AccessoryNavigator";
-import GlassesNavigator from "./GlassesNavigator";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Dashboard from "../screens/Dashboard";
 import Orders from "../screens/Orders";
 import AdminDrawer from "./AdminDrawer";
 import CustomerDrawer from "./CustomerDrawer";
 import { useSelector } from "react-redux";
-import LensesNavigator from "./LensesNavigator";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import CartNavigator from "./CartNavigator";
+import SpecsNavigator from "./ProductNavigators/SpecsNavigator";
+import GlassesNavigator from "./ProductNavigators/GlassesNavigator";
+import LensesNavigator from "./ProductNavigators/LensesNavigator";
+import AccessoryNavigator from "./ProductNavigators/AccessoryNavigator";
+import OrdersNavigator from "./OrdersNavigator";
 
 const MainNavigator = () => {
   const Drawer = createDrawerNavigator();
@@ -55,7 +56,7 @@ const MainNavigator = () => {
       {isAdmin ? (
         <>
           <Drawer.Screen name="Dashboard" component={Dashboard} />
-          <Drawer.Screen name="Orders" component={Orders} />
+          <Drawer.Screen name="OrdersNavigator" component={OrdersNavigator} />
           <Drawer.Screen name="SpecsNavigator" component={SpecsNavigator} />
           <Drawer.Screen name="GlassesNavigator" component={GlassesNavigator} />
           <Drawer.Screen name="LensesNavigator" component={LensesNavigator} />

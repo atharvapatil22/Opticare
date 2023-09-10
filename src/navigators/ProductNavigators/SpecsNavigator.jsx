@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import Spectacles from "../screens/Spectacles/Spectacles";
-import SpecsStepper from "../screens/Spectacles/SpecsStepper";
-import SpecsDetails from "../screens/Spectacles/SpecsDetails";
+import Spectacles from "../../screens/Spectacles/Spectacles";
+import SpecsStepper from "../../screens/Spectacles/SpecsStepper";
+import SpecsDetails from "../../screens/Spectacles/SpecsDetails";
 
 const Stack = createStackNavigator();
 

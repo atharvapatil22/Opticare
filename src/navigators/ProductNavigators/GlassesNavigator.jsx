@@ -1,7 +1,7 @@
 import { createStackNavigator } from "@react-navigation/stack";
-import Sunglasses from "../screens/Sunglasses/Sunglasses";
-import GlassesStepper from "../screens/Sunglasses/GlassesStepper";
-import GlassesDetails from "../screens/Sunglasses/GlassesDetails";
+import Sunglasses from "../../screens/Sunglasses/Sunglasses";
+import GlassesStepper from "../../screens/Sunglasses/GlassesStepper";
+import GlassesDetails from "../../screens/Sunglasses/GlassesDetails";
 
 const Stack = createStackNavigator();
 

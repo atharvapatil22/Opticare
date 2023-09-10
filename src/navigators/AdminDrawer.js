@@ -34,7 +34,7 @@ const AdminDrawer = (props) => {
       <DrawerItem
         focused={props.state.index === 1}
         label={"Orders"}
-        onPress={() => props.navigation.navigate("Orders")}
+        onPress={() => props.navigation.navigate("OrdersNavigator")}
         icon={({ focused }) => (
           <Image
             source={
