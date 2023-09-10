@@ -22,13 +22,15 @@ import {
 } from "../../constants";
 import Button from "../../components/Button";
 import BackButton from "../../components/BackButton";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
+import { addOrderItem, updateItemQuantity } from "../../redux/actions";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
   const SLIDER_WIDTH = Dimensions.get("window").width;
   const store = useSelector((state) => state.globalData);
+  const dispatch = useDispatch();
 
   const [refreshing, setRefreshing] = useState(false);
   const [lensData, setLensData] = useState(null);
@@ -93,6 +95,43 @@ const LensesDetails = ({ route, navigation }) => {
         onDismiss: () => {},
       }
     );
+  };
+
+  const addLensestoCart = () => {
+    let itemInCart = 0;
+    // Check if item is already in cart
+    const cartLenses = store.currentOrder.lenses;
+    cartLenses.forEach((item) => {
+      if (item.id === lensData.id) itemInCart = item.quantity;
+    });
+
+    if (itemInCart === 0) {
+      dispatch(
+        addOrderItem({
+          category: "lenses",
+          item: {
+            id: lensData.id,
+            product_type: "lenses",
+            name: lensData.name,
+            price: lensData.price,
+            discount: lensData.discount,
+            lensCategory: lensData.category,
+            quantity: 1,
+          },
+        })
+      );
+    } else {
+      console.log("Item is already in cart. Updating the quantity ...");
+      dispatch(
+        updateItemQuantity({
+          category: "lenses",
+          id: lensData.id,
+          quantity: itemInCart + 1,
+        })
+      );
+    }
+
+    Alert.alert(`Success`, "Added to cart");
   };
 
   return (
@@ -214,7 +253,10 @@ const LensesDetails = ({ route, navigation }) => {
                 Material: {lensData.material}
               </Text>
               {store.userLevel === "CUSTOMER" && (
-                <TouchableOpacity style={styles.cart_btn}>
+                <TouchableOpacity
+                  style={styles.cart_btn}
+                  onPress={addLensestoCart}
+                >
                   <AntDesign name="shoppingcart" size={28} color="white" />
                   <Text
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}

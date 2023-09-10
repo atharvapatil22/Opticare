@@ -95,10 +95,17 @@ const CartItemCard = ({ data, category }) => {
     <View style={styles.card_body}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={styles.image_container}>
-          <Image
-            source={{ uri: data.featured_image }}
-            style={{ width: "100%", aspectRatio: "16/9" }}
-          />
+          {category === "lenses" ? (
+            <Image
+              source={require("../assets/stock_lenses.png")}
+              style={{ width: "100%", objectFit: "contain" }}
+            />
+          ) : (
+            <Image
+              source={{ uri: data.featured_image }}
+              style={{ width: "100%", aspectRatio: "16/9" }}
+            />
+          )}
         </View>
         <View style={{ width: "62%" }}>
           <Text
@@ -158,6 +165,17 @@ const CartItemCard = ({ data, category }) => {
             Subtotal: ₹
             {data.price * ((100 - data.discount) / 100) * data.quantity}
           </Text>
+          {category === "lenses" && (
+            <Text
+              style={{
+                fontFamily: "Inter-Medium",
+                color: grey2,
+                fontSize: 18,
+              }}
+            >
+              {data.lensCategory} Lens
+            </Text>
+          )}
         </View>
         <View
           style={{
