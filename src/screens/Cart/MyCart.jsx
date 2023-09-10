@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { app_bg, gradient_end, gradient_start, grey2 } from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
@@ -9,6 +9,41 @@ import CartSummary from "../../components/CartSummary";
 
 const MyCart = ({ navigation }) => {
   const globalData = useSelector((state) => state.globalData);
+
+  const [productsTotal, setProductsTotal] = useState(0);
+  const [savings, setSavings] = useState(0);
+  const [subTotal, setSubTotal] = useState(0);
+
+  useEffect(() => {
+    setCartSummaryValues();
+  }, [globalData]);
+
+  const setCartSummaryValues = () => {
+    let total = 0;
+    let savings = 0;
+
+    globalData.currentOrder.specs.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+    globalData.currentOrder.sunglasses.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+    globalData.currentOrder.lenses.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+
+    globalData.currentOrder.accessories.forEach((item) => {
+      total += item.quantity * item.price;
+      savings += item.quantity * (item.price * (item.discount / 100));
+    });
+
+    setProductsTotal(total);
+    setSavings(savings);
+    setSubTotal(total - savings);
+  };
 
   return (
     <View style={{ backgroundColor: app_bg, height: "100%" }}>
@@ -89,8 +124,13 @@ const MyCart = ({ navigation }) => {
             }}
           >
             <CartSummary
-              handleCTA={() => navigation.navigate("Order Checkout")}
+              handleCTA={() =>
+                navigation.navigate("Order Checkout", {
+                  billingInfo: { productsTotal, savings, subTotal },
+                })
+              }
               screen={"MyCart"}
+              billingInfo={{ productsTotal, savings, subTotal }}
             />
           </LinearGradient>
         </View>

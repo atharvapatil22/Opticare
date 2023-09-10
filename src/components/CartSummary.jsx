@@ -1,45 +1,14 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { customer_primary, grey1, grey2, text_color } from "../constants";
-import { useSelector } from "react-redux";
+import { customer_primary, grey1, text_color } from "../constants";
 
-const CartSummary = ({ disableCTA = false, handleCTA, screen }) => {
-  const globalData = useSelector((state) => state.globalData);
-  const [productsTotal, setProductsTotal] = useState(0);
-  const [savings, setSavings] = useState(0);
-  const [subTotal, setSubTotal] = useState(0);
-
-  useEffect(() => {
-    setCartSummaryValues();
-  }, [globalData]);
-
-  const setCartSummaryValues = () => {
-    let total = 0;
-    let savings = 0;
-
-    globalData.currentOrder.specs.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-    globalData.currentOrder.sunglasses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-    globalData.currentOrder.lenses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-
-    globalData.currentOrder.accessories.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
-
-    setProductsTotal(total);
-    setSavings(savings);
-    setSubTotal(total - savings);
-  };
+const CartSummary = ({
+  disableCTA = false,
+  handleCTA,
+  screen,
+  billingInfo,
+}) => {
   return (
     <>
       <Text
@@ -54,15 +23,15 @@ const CartSummary = ({ disableCTA = false, handleCTA, screen }) => {
       <View style={styles.summary_body}>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Products Total</Text>
-          <Text style={styles.summary_text}>₹{productsTotal}</Text>
+          <Text style={styles.summary_text}>₹{billingInfo.productsTotal}</Text>
         </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Savings</Text>
-          <Text style={styles.summary_text}>-₹{savings}</Text>
+          <Text style={styles.summary_text}>-₹{billingInfo.savings}</Text>
         </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Products SubTotal</Text>
-          <Text style={styles.summary_text}>₹{subTotal}</Text>
+          <Text style={styles.summary_text}>₹{billingInfo.subTotal}</Text>
         </View>
         <View
           style={{
@@ -73,7 +42,9 @@ const CartSummary = ({ disableCTA = false, handleCTA, screen }) => {
         />
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>GST (18%)</Text>
-          <Text style={styles.summary_text}>₹{subTotal * 0.18}</Text>
+          <Text style={styles.summary_text}>
+            ₹{billingInfo.subTotal * 0.18}
+          </Text>
         </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Other Charges</Text>
@@ -88,11 +59,15 @@ const CartSummary = ({ disableCTA = false, handleCTA, screen }) => {
         />
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Total</Text>
-          <Text style={styles.summary_text}>₹{subTotal * 1.18}</Text>
+          <Text style={styles.summary_text}>
+            ₹{billingInfo.subTotal * 1.18}
+          </Text>
         </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Total roundOff</Text>
-          <Text style={styles.summary_text}>₹{subTotal * 1.18}</Text>
+          <Text style={styles.summary_text}>
+            ₹{billingInfo.subTotal * 1.18}
+          </Text>
         </View>
         {screen === "MyCart" && (
           <>

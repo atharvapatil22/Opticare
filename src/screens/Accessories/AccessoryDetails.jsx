@@ -106,6 +106,7 @@ const AccessoryDetails = ({ route, navigation }) => {
           category: "accessories",
           item: {
             id: accessoryData.id,
+            productType: "accessories",
             name: accessoryData.name,
             price: accessoryData.price,
             discount: accessoryData.discount,

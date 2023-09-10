@@ -108,6 +108,7 @@ const GlassesDetails = ({ route, navigation }) => {
         category: "sunglasses",
         item: {
           id: glassesData.id,
+          product_type: "sunglasses",
           name: glassesData.name,
           price: glassesData.price,
           discount: glassesData.discount,

@@ -65,6 +65,7 @@ const LensSelector = ({
   const addItemtoCart = (linkedLens) => {
     const itemData = {
       id: frameId,
+      productType: frameType,
       name: frameName,
       price: framePrice,
       discount: frameDiscount,

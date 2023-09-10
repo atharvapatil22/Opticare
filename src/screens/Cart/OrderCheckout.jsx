@@ -5,6 +5,7 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,8 +20,13 @@ import {
 import CartSummary from "../../components/CartSummary";
 import Button from "../../components/Button";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { supabase } from "../../supabase/client";
+import { useSelector } from "react-redux";
 
-const OrderCheckout = () => {
+const OrderCheckout = ({ route }) => {
+  const { billingInfo } = route.params;
+  const globalData = useSelector((state) => state.globalData);
+
   const [customerNumber, setCustomerNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [salesPerson, setSalesPerson] = useState("");
@@ -32,6 +38,73 @@ const OrderCheckout = () => {
     if (customerName.trim() === "" || customerNumber.trim().length != 10)
       return;
     else setCurrentStep(currentStep + 1);
+  };
+
+  const placeOrder = async () => {
+    // 1] Make Order ID
+    // __update logic later
+    const date = new Date();
+    const orderId =
+      date.getFullYear().toString() +
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      date.getDate().toString() +
+      "_" +
+      Math.floor(Math.random() * (999 - 100 + 1) + 100).toString();
+
+    // 2] Sort Items into delivered and undelivered:
+    let undelivered = [];
+    let delivered = [];
+    globalData.currentOrder.specs.forEach((item) => {
+      if (item.linkedLenses === null) delivered.push(item);
+      else undelivered.push(item);
+    });
+    globalData.currentOrder.sunglasses.forEach((item) => {
+      if (item.linkedLenses === null) delivered.push(item);
+      else undelivered.push(item);
+    });
+    undelivered = undelivered.concat(globalData.currentOrder.lenses);
+    delivered = delivered.concat(globalData.currentOrder.accessories);
+
+    const finalObj = {
+      order_id: orderId,
+      delivered_at: date,
+      customer_name: customerName,
+      customer_number: customerNumber,
+      sales_person: salesPerson,
+      mode_of_payment: paymentInfo,
+      payment_productsMRP: Math.round(billingInfo.productsTotal),
+      payment_savings: Math.round(billingInfo.savings),
+      payment_gst: Math.round(billingInfo.subTotal * 0.18),
+      payment_total: Math.round(billingInfo.subTotal * 1.18),
+      payment_completed: Math.round(billingInfo.subTotal * 1.18),
+      items_total: delivered.length + undelivered.length,
+      items_completed: delivered.length,
+      delivered_items: delivered,
+      undelivered_items: undelivered,
+    };
+
+    response = await supabase.from("orders").insert([finalObj]).select();
+
+    if (response.error) {
+      // __api_error
+      console.log("api_error", response.error);
+    } else {
+      // __api_success
+      console.log("success", response.data);
+      Alert.alert(
+        "Success!",
+        "Order placed successfully",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              // clear cart and go back
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
   };
 
   return (
@@ -222,7 +295,8 @@ const OrderCheckout = () => {
         <CartSummary
           screen={"OrderCheckout"}
           disableCTA={currentStep < 3}
-          handleCTA={() => {}}
+          handleCTA={placeOrder}
+          billingInfo={billingInfo}
         />
       </LinearGradient>
     </ScrollView>
