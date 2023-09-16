@@ -41,8 +41,8 @@ const LensesDetails = ({ route, navigation }) => {
 
   const fetchLensDetails = async () => {
     const { data, error } = await supabase
-      .from("lenses")
-      .select("*")
+      .from("products")
+      .select("*,lenses(*)")
       .eq("id", lensId);
     if (error) {
       // __api_error
@@ -97,42 +97,42 @@ const LensesDetails = ({ route, navigation }) => {
     );
   };
 
-  const addLensestoCart = () => {
-    let itemInCart = 0;
-    // Check if item is already in cart
-    const cartLenses = store.currentOrder.lenses;
-    cartLenses.forEach((item) => {
-      if (item.id === lensData.id) itemInCart = item.quantity;
-    });
+  // const addLensestoCart = () => {
+  //   let itemInCart = 0;
+  //   // Check if item is already in cart
+  //   const cartLenses = store.currentOrder.lenses;
+  //   cartLenses.forEach((item) => {
+  //     if (item.id === lensData.id) itemInCart = item.quantity;
+  //   });
 
-    if (itemInCart === 0) {
-      dispatch(
-        addOrderItem({
-          category: "lenses",
-          item: {
-            id: lensData.id,
-            product_type: "lenses",
-            name: lensData.name,
-            price: lensData.price,
-            discount: lensData.discount,
-            lensCategory: lensData.category,
-            quantity: 1,
-          },
-        })
-      );
-    } else {
-      console.log("Item is already in cart. Updating the quantity ...");
-      dispatch(
-        updateItemQuantity({
-          category: "lenses",
-          id: lensData.id,
-          quantity: itemInCart + 1,
-        })
-      );
-    }
+  //   if (itemInCart === 0) {
+  //     dispatch(
+  //       addOrderItem({
+  //         category: "lenses",
+  //         item: {
+  //           id: lensData.id,
+  //           product_type: "lenses",
+  //           name: lensData.name,
+  //           price: lensData.price,
+  //           discount: lensData.discount,
+  //           lensCategory: lensData.category,
+  //           quantity: 1,
+  //         },
+  //       })
+  //     );
+  //   } else {
+  //     console.log("Item is already in cart. Updating the quantity ...");
+  //     dispatch(
+  //       updateItemQuantity({
+  //         category: "lenses",
+  //         id: lensData.id,
+  //         quantity: itemInCart + 1,
+  //       })
+  //     );
+  //   }
 
-    Alert.alert(`Success`, "Added to cart");
-  };
+  //   Alert.alert(`Success`, "Added to cart");
+  // };
 
   return (
     <ScrollView
@@ -188,7 +188,7 @@ const LensesDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Product ID: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {lensData.product_id}
+                  {lensData.id_label}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -211,7 +211,7 @@ const LensesDetails = ({ route, navigation }) => {
                   marginTop: 12,
                 }}
               >
-                {lensData.category}
+                {lensData.lenses.type}
               </Text>
 
               <View
@@ -250,7 +250,7 @@ const LensesDetails = ({ route, navigation }) => {
               </View>
 
               <Text style={styles.text_regular}>
-                Material: {lensData.material}
+                Material: {lensData.lenses.material}
               </Text>
               {store.userLevel === "CUSTOMER" && (
                 <TouchableOpacity
@@ -279,7 +279,7 @@ const LensesDetails = ({ route, navigation }) => {
                   Features:
                 </Text>
                 <Text style={{ fontSize: 22, color: text_color }}>
-                  {lensData.features}
+                  {lensData.lenses.features}
                 </Text>
               </View>
             </View>
@@ -313,7 +313,7 @@ const LensesDetails = ({ route, navigation }) => {
                 </View>
               )}
 
-              {lensData.category === "Bifocal / Progressive" && (
+              {lensData.lenses.type === "Bifocal / Progressive" && (
                 <View style={styles.side_container}>
                   <Text
                     style={{
@@ -326,7 +326,7 @@ const LensesDetails = ({ route, navigation }) => {
                   </Text>
                   <Image
                     source={{
-                      uri: lensData.preview_image,
+                      uri: lensData.lenses.preview_image,
                     }}
                     style={{
                       borderRadius: 20,

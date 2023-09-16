@@ -6,10 +6,9 @@ import {
   Image,
   ScrollView,
   RefreshControl,
-  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { app_bg, grey1, grey_3 } from "../../constants";
+import { app_bg, grey1, grey_3, productCategories } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
@@ -27,8 +26,9 @@ const Accessories = ({ navigation }) => {
 
   const fetchAllAccessories = async () => {
     const { data, error } = await supabase
-      .from("accessories")
-      .select("id,name,price,discount,featured_image");
+      .from("products")
+      .select("id,name,price,discount,featured_image")
+      .eq("category", productCategories.ACCESSORIES);
     if (error) {
       // __api_error
       console.log("api_error");

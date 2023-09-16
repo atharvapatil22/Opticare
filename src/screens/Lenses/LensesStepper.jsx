@@ -16,6 +16,7 @@ import {
   gradient_start,
   grey2,
   grey1,
+  productCategories,
 } from "../../constants";
 import Button from "../../components/Button";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
@@ -24,6 +25,7 @@ import axios from "axios";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { SelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
+import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 
 const LensesStepper = ({ route, navigation }) => {
   const { editing, lensesData } = route.params;
@@ -31,11 +33,11 @@ const LensesStepper = ({ route, navigation }) => {
   const steps = ["Primary Details", "Technical Information", "Pricing"];
 
   // Step 1
-  const [productId, setProductId] = useState("");
+  const [idLabel, setIdLabel] = useState("");
   const [productName, setProductName] = useState("");
   const [brand, setBrand] = useState("Vision Care");
   const [material, setMaterial] = useState("Glass");
-  const [category, setCategory] = useState("Single Vision");
+  const [type, setType] = useState("Single Vision");
   // Step 2
   const [features, setFeatures] = useState("");
   const [previewImage, setPreviewImage] = useState(null);
@@ -51,14 +53,14 @@ const LensesStepper = ({ route, navigation }) => {
   }, []);
 
   const initalizeValues = () => {
-    setProductId(lensesData.product_id);
+    setIdLabel(lensesData.id_label);
     setProductName(lensesData.name);
     setBrand(lensesData.brand);
-    setMaterial(lensesData.material);
-    setCategory(lensesData.category);
+    setMaterial(lensesData.lenses.material);
+    setType(lensesData.lenses.type);
 
-    setFeatures(lensesData.features);
-    setPreviewImage(lensesData.previewImage);
+    setFeatures(lensesData.lenses.features);
+    setPreviewImage(lensesData.lenses.previewImage);
 
     setPrice(lensesData.price.toString());
     setDiscount(lensesData.discount.toString());
@@ -106,7 +108,6 @@ const LensesStepper = ({ route, navigation }) => {
 
   const saveToDatabase = async () => {
     let imageUrl = null;
-    let response = null;
 
     // If preview image was added / edited
     if (typeof previewImage === "object") {
@@ -120,56 +121,43 @@ const LensesStepper = ({ route, navigation }) => {
     }
 
     // 3] Create/Update spectacles object to database
-    const finalObj = {
+    const productFields = {
+      category: productCategories.LENSES,
+      is_visible: true,
       name: productName,
-      product_id: productId,
+      id_label: idLabel,
       brand: brand,
-      material: material,
-      category: category,
-      features: features,
-      preview_image: imageUrl,
       price: parseInt(price),
       discount: parseInt(discount),
     };
+    const lensFields = {
+      material: material,
+      type: type,
+      features: features,
+      preview_image: imageUrl,
+    };
 
     // If editing exisitng product
-    if (!!editing) {
-      response = await supabase
-        .from("lenses")
-        .update(finalObj)
-        .eq("id", lensesData.id)
-        .select();
-    }
-    // If creating new product
-    else {
-      response = await supabase.from("lenses").insert([finalObj]).select();
-    }
-
-    if (response.error) {
-      // __api_error
-      console.log("api_error", response.error);
-    } else {
-      // __api_success
-      console.log("success", response.data);
-      Alert.alert(
-        "Success!",
-        !!editing
-          ? "Lenses Details successfully updated."
-          : "New Lenses successfully created: " + response.data[0].name,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
+    if (!!editing)
+      editProductAPI(
+        productFields,
+        lensFields,
+        lensesData.id,
+        lensesData.lenses.id,
+        () => navigation.goBack()
       );
-    }
+    // If creating new product
+    else createProductAPI(productFields, lensFields, () => navigation.goBack());
   };
 
   const handleClearForm = () => {
     switch (currentStep) {
       case 0:
-        setProductId("");
+        setIdLabel("");
         setBrand("Vision Lens");
         setProductName("");
         setMaterial("Glass");
-        setCategory("Single Vision");
+        setType("Single Vision");
         break;
       case 1:
         setFeatures("");
@@ -189,11 +177,11 @@ const LensesStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         console.log("Saved Step 1: ", {
-          product_id: productId,
+          id_label: idLabel,
           product_name: productName,
           brand: brand,
           material: material,
-          category: category,
+          type: type,
         });
         setCurrentStep(currentStep + 1);
         break;
@@ -291,8 +279,8 @@ const LensesStepper = ({ route, navigation }) => {
                         <Text style={styles.form_label}>Product ID</Text>
                         <TextInput
                           style={styles.text_field}
-                          onChangeText={setProductId}
-                          value={productId}
+                          onChangeText={setIdLabel}
+                          value={idLabel}
                         />
                       </View>
                       <View style={styles.form_field}>
@@ -312,10 +300,10 @@ const LensesStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Category</Text>
+                        <Text style={styles.form_label}>Type</Text>
                         <SelectList
                           search={false}
-                          setSelected={(val) => setCategory(val)}
+                          setSelected={(val) => setType(val)}
                           data={[
                             { key: "1", value: "Single Vision" },
                             { key: "2", value: "Bifocal / Progressive" },
@@ -351,7 +339,7 @@ const LensesStepper = ({ route, navigation }) => {
                         width: "100%",
                       }}
                     >
-                      {category === "Bifocal / Progressive" && (
+                      {type === "Bifocal / Progressive" && (
                         <View style={{ width: "48%" }}>
                           <Text style={styles.form_label}>Preview Image</Text>
                           <View style={{ alignItems: "center" }}>

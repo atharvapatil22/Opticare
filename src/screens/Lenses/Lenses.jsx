@@ -16,6 +16,7 @@ import {
   app_bg,
   grey_3,
   grey1,
+  productCategories,
 } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
@@ -34,8 +35,9 @@ const Lenses = ({ navigation }) => {
 
   const fetchAllLenses = async () => {
     const { data, error } = await supabase
-      .from("lenses")
-      .select("id,name,price,discount,category,material");
+      .from("products")
+      .select("id,name,price,discount,lenses(type,material)")
+      .eq("category", productCategories.LENSES);
     if (error) {
       // __api_error
       console.log("api_error");
@@ -67,7 +69,7 @@ const Lenses = ({ navigation }) => {
             {data.name}
           </Text>
           <Text style={{ fontSize: 20, color: text_color, marginTop: 8 }}>
-            {data.category}
+            {data.lenses.type}
           </Text>
           <View style={{ flexDirection: "row", marginTop: 8 }}>
             <Text style={{ fontSize: 20, color: text_color }}>
@@ -78,7 +80,7 @@ const Lenses = ({ navigation }) => {
             </Text>
           </View>
           <Text style={{ fontSize: 18, color: grey2, marginTop: 8 }}>
-            {data.material}
+            {data.lenses.material}
           </Text>
         </View>
         <AntDesign name="arrowright" size={26} color={text_color} />

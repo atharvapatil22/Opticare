@@ -17,13 +17,14 @@ import {
   gradient_start,
   grey2,
   grey1,
+  productCategories,
 } from "../../constants";
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { supabase } from "../../supabase/client";
 import axios from "axios";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 
 const AccessoryStepper = ({ route, navigation }) => {
   const { editing, accessoryData } = route.params;
@@ -36,7 +37,7 @@ const AccessoryStepper = ({ route, navigation }) => {
   ];
 
   // Step 1
-  const [productId, setProductId] = useState("");
+  const [idLabel, setIdLabel] = useState("");
   const [productName, setProductName] = useState("");
   const [brand, setBrand] = useState("Vision Care");
   // Step 2
@@ -53,24 +54,24 @@ const AccessoryStepper = ({ route, navigation }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      title: !!editing ? "Edit Accessory" : "Add New Accessory",
+      title: !!editing ? "Edit Accessory" : "Adsd New Accessory",
     });
     if (!!editing) initalizeValues();
   }, []);
 
   const initalizeValues = () => {
-    setProductId(accessoryData.product_id);
+    setIdLabel(accessoryData.id_label);
     setProductName(accessoryData.name);
     setBrand(accessoryData.brand);
 
-    setProductImages(accessoryData.images);
+    setProductImages(accessoryData.accessories.images);
     setFeaturedImage(
-      accessoryData.images.indexOf(accessoryData.featured_image)
+      accessoryData.accessories.images.indexOf(accessoryData.featured_image)
     );
 
-    setAdditionalInfo(accessoryData.additional_info);
+    setAdditionalInfo(accessoryData.accessories.additional_info);
 
-    setStock(accessoryData.stock.toString());
+    setStock(accessoryData.accessories.stock.toString());
     setPrice(accessoryData.price.toString());
     setDiscount(accessoryData.discount.toString());
   };
@@ -136,7 +137,6 @@ const AccessoryStepper = ({ route, navigation }) => {
 
   const saveToDatabase = async () => {
     let imageUrls = [];
-    let response = null;
 
     // 1] Handle case if any images need to be deleted from Cloudinary
     if (deleteCloudinaryImages.length != 0) {
@@ -172,52 +172,43 @@ const AccessoryStepper = ({ route, navigation }) => {
     });
 
     // 3] Create/Update spectacles object to database
-    const finalObj = {
+    const productFields = {
+      category: productCategories.ACCESSORIES,
+      is_visible: true,
       name: productName,
-      product_id: productId,
+      id_label: idLabel,
       brand: brand,
       price: parseInt(price),
       discount: parseInt(discount),
+      featured_image: prodImagesFinal[featuredImage],
+    };
+
+    const accessoryFields = {
       stock: parseInt(stock),
       images: prodImagesFinal,
-      featured_image: prodImagesFinal[featuredImage],
       additional_info: additionalInfo,
     };
 
     // If editing exisitng product
-    if (!!editing) {
-      response = await supabase
-        .from("accessories")
-        .update(finalObj)
-        .eq("id", accessoryData.id)
-        .select();
-    }
-    // If creating new product
-    else {
-      response = await supabase.from("accessories").insert([finalObj]).select();
-    }
-
-    if (response.error) {
-      // __api_error
-      console.log("api_error", response.error);
-    } else {
-      // __api_success
-      console.log("success", response.data);
-      Alert.alert(
-        "Success!",
-        !!editing
-          ? "Accessory Details successfully updated."
-          : "New Accessory successfully created: " + response.data[0].name,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
+    if (!!editing)
+      editProductAPI(
+        productFields,
+        accessoryFields,
+        accessoryData.id,
+        accessoryData.accessories.id,
+        () => navigation.goBack()
       );
-    }
+    // If creating new product
+    else
+      createProductAPI(productFields, accessoryFields, () =>
+        navigation.goBack()
+      );
   };
 
   const handleClearForm = () => {
     switch (currentStep) {
       case 0:
-        setProductId("");
+        setIdLabel("");
         setBrand("Vision Care");
         setProductName("");
         break;
@@ -247,7 +238,7 @@ const AccessoryStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         console.log("Saved Step 1: ", {
-          product_id: productId,
+          id_label: idLabel,
           product_name: productName,
           brand: brand,
         });
@@ -349,8 +340,8 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <Text style={styles.form_label}>Product ID</Text>
                         <TextInput
                           style={styles.text_field}
-                          onChangeText={setProductId}
-                          value={productId}
+                          onChangeText={setIdLabel}
+                          value={idLabel}
                         />
                       </View>
                       <View style={styles.form_field}>

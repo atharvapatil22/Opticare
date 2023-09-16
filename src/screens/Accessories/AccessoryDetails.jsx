@@ -36,8 +36,8 @@ const AccessoryDetails = ({ route, navigation }) => {
 
   const fetchAccessoryDetails = async () => {
     const { data, error } = await supabase
-      .from("accessories")
-      .select("*")
+      .from("products")
+      .select("*,accessories(*)")
       .eq("id", accessoryId);
     if (error) {
       // __api_error
@@ -92,42 +92,42 @@ const AccessoryDetails = ({ route, navigation }) => {
     );
   };
 
-  const addAccessorytoCart = () => {
-    let itemInCart = 0;
-    // Check if item is already in cart
-    const cartAccessories = store.currentOrder.accessories;
-    cartAccessories.forEach((item) => {
-      if (item.id === accessoryData.id) itemInCart = item.quantity;
-    });
+  // const addAccessorytoCart = () => {
+  //   let itemInCart = 0;
+  //   // Check if item is already in cart
+  //   const cartAccessories = store.currentOrder.accessories;
+  //   cartAccessories.forEach((item) => {
+  //     if (item.id === accessoryData.id) itemInCart = item.quantity;
+  //   });
 
-    if (itemInCart === 0) {
-      dispatch(
-        addOrderItem({
-          category: "accessories",
-          item: {
-            id: accessoryData.id,
-            productType: "accessories",
-            name: accessoryData.name,
-            price: accessoryData.price,
-            discount: accessoryData.discount,
-            featured_image: accessoryData.featured_image,
-            quantity: 1,
-          },
-        })
-      );
-    } else {
-      console.log("Item is already in cart. Updating the quantity ...");
-      dispatch(
-        updateItemQuantity({
-          category: "accessories",
-          id: accessoryData.id,
-          quantity: itemInCart + 1,
-        })
-      );
-    }
+  //   if (itemInCart === 0) {
+  //     dispatch(
+  //       addOrderItem({
+  //         category: "accessories",
+  //         item: {
+  //           id: accessoryData.id,
+  //           productType: "accessories",
+  //           name: accessoryData.name,
+  //           price: accessoryData.price,
+  //           discount: accessoryData.discount,
+  //           featured_image: accessoryData.featured_image,
+  //           quantity: 1,
+  //         },
+  //       })
+  //     );
+  //   } else {
+  //     console.log("Item is already in cart. Updating the quantity ...");
+  //     dispatch(
+  //       updateItemQuantity({
+  //         category: "accessories",
+  //         id: accessoryData.id,
+  //         quantity: itemInCart + 1,
+  //       })
+  //     );
+  //   }
 
-    Alert.alert(`Success`, "Added to cart");
-  };
+  //   Alert.alert(`Success`, "Added to cart");
+  // };
 
   return (
     <ScrollView
@@ -148,7 +148,7 @@ const AccessoryDetails = ({ route, navigation }) => {
         <>
           <View style={{}}>
             <Carousel
-              data={accessoryData.images}
+              data={accessoryData.accessories.images}
               renderItem={({ item }) => {
                 return (
                   <Image
@@ -171,7 +171,7 @@ const AccessoryDetails = ({ route, navigation }) => {
               onSnapToItem={(index) => setCarouselIndex(index)}
             />
             <Pagination
-              dotsLength={accessoryData.images.length}
+              dotsLength={accessoryData.accessories.images.length}
               activeDotIndex={carouselIndex}
               carouselRef={carouselRef}
               dotStyle={{
@@ -229,7 +229,7 @@ const AccessoryDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Product ID: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {accessoryData.product_id}
+                  {accessoryData.id_label}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -297,7 +297,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                   Additional Information:
                 </Text>
                 <Text style={{ fontSize: 20, color: text_color }}>
-                  {accessoryData.additional_info}
+                  {accessoryData.accessories.additional_info}
                 </Text>
               </View>
             </View>
@@ -334,7 +334,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </Text>
                     <Text style={{ fontSize: 45, color: text_color }}>
-                      {accessoryData.stock}
+                      {accessoryData.accessories.stock}
                     </Text>
                   </View>
                   <View
