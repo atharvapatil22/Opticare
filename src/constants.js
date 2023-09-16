@@ -42,3 +42,10 @@ export const months = [
   "November",
   "December",
 ];
+
+export const productCategories = {
+  SPECTACLES: "spectacles",
+  SUNGLASSES: "sunglasses",
+  LENSES: "lenses",
+  ACCESSORIES: "accessories",
+};

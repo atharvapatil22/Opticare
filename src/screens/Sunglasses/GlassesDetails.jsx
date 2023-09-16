@@ -46,8 +46,8 @@ const GlassesDetails = ({ route, navigation }) => {
 
   const fetchGlassesDetails = async () => {
     const { data, error } = await supabase
-      .from("sunglasses")
-      .select("*")
+      .from("products")
+      .select("*,sunglasses(*)")
       .eq("id", glassesId);
     if (error) {
       // __api_error
@@ -157,7 +157,7 @@ const GlassesDetails = ({ route, navigation }) => {
         />
       }
     >
-      {showLensSelector && (
+      {/* {showLensSelector && (
         <LensSelector
           linkedLenses={glassesData.linked_lenses}
           setShowLensSelector={setShowLensSelector}
@@ -168,13 +168,13 @@ const GlassesDetails = ({ route, navigation }) => {
           frameFeaturedImage={glassesData.featured_image}
           frameType="sunglasses"
         />
-      )}
+      )} */}
       <BackButton onPress={() => navigation.goBack()} />
       {!!glassesData ? (
         <>
           <View style={{}}>
             <Carousel
-              data={glassesData.images}
+              data={glassesData.sunglasses.images}
               renderItem={({ item }) => {
                 return (
                   <Image
@@ -197,7 +197,7 @@ const GlassesDetails = ({ route, navigation }) => {
               onSnapToItem={(index) => setCarouselIndex(index)}
             />
             <Pagination
-              dotsLength={glassesData.images.length}
+              dotsLength={glassesData.sunglasses.images.length}
               activeDotIndex={carouselIndex}
               carouselRef={carouselRef}
               dotStyle={{
@@ -255,7 +255,7 @@ const GlassesDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Product ID: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {glassesData.product_id}
+                  {glassesData.id_label}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -297,7 +297,7 @@ const GlassesDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Size: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {glassesData.size}
+                  {glassesData.sunglasses.size}
                 </Text>
               </View>
               {store.userLevel === "CUSTOMER" && (
@@ -323,27 +323,33 @@ const GlassesDetails = ({ route, navigation }) => {
                 >
                   Additional Information:
                 </Text>
-                <AdditionalField label={"Gender"} value={glassesData.gender} />
+                <AdditionalField
+                  label={"Gender"}
+                  value={glassesData.sunglasses.gender}
+                />
                 <AdditionalField
                   label={"Material"}
-                  value={glassesData.material}
+                  value={glassesData.sunglasses.material}
                 />
-                <AdditionalField label={"Color"} value={glassesData.color} />
+                <AdditionalField
+                  label={"Color"}
+                  value={glassesData.sunglasses.color}
+                />
                 <AdditionalField
                   label={"Weight"}
-                  value={glassesData.weight + " grams"}
+                  value={glassesData.sunglasses.weight + " grams"}
                 />
                 <AdditionalField
                   label={"Width"}
-                  value={glassesData.width + " cms"}
+                  value={glassesData.sunglasses.width + " cms"}
                 />
                 <AdditionalField
                   label={"Dimensions"}
-                  value={glassesData.dimensions}
+                  value={glassesData.sunglasses.dimensions}
                 />
                 <AdditionalField
                   label={"Warranty"}
-                  value={glassesData.warranty + " years"}
+                  value={glassesData.sunglasses.warranty + " years"}
                   hideborder
                 />
               </View>
@@ -361,10 +367,8 @@ const GlassesDetails = ({ route, navigation }) => {
                 }}
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
-                {glassesData.linked_lenses === null ||
-                Object.values(glassesData.linked_lenses).every(
-                  (v) => v === false
-                ) ? (
+                {!glassesData.sunglasses.linked_single &&
+                !glassesData.sunglasses.linked_bifocal ? (
                   <View style={{ alignItems: "center", marginVertical: 40 }}>
                     <Text style={{ ...styles.text_small, color: grey1 }}>
                       These sunglasses are not customisable, hence lenses cannot
@@ -380,9 +384,9 @@ const GlassesDetails = ({ route, navigation }) => {
                         marginTop: 20,
                       }}
                     >
-                      {!!glassesData.linked_lenses["Single Vision"] &&
+                      {!!glassesData.sunglasses.linked_single &&
                         "• Single Vision"}
-                      {!!glassesData.linked_lenses["Bifocal / Progressive"] &&
+                      {!!glassesData.sunglasses.linked_bifocal &&
                         "\n• Bifocal / Progressive"}
                     </Text>
                   </View>
@@ -416,7 +420,7 @@ const GlassesDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </Text>
                     <Text style={{ fontSize: 45, color: text_color }}>
-                      {glassesData.stock}
+                      {glassesData.sunglasses.stock}
                     </Text>
                   </View>
                   <View

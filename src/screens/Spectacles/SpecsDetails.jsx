@@ -44,8 +44,8 @@ const SpecsDetails = ({ route, navigation }) => {
 
   const fetchSpecsDetails = async () => {
     const { data, error } = await supabase
-      .from("spectacles")
-      .select("*")
+      .from("products")
+      .select("*,spectacles(*)")
       .eq("id", specsId);
     if (error) {
       // __api_error
@@ -111,7 +111,7 @@ const SpecsDetails = ({ route, navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsDetails} />
       }
     >
-      {showLensSelector && (
+      {/* {showLensSelector && (
         <LensSelector
           linkedLenses={specsData.linked_lenses}
           frameId={specsData.id}
@@ -122,13 +122,13 @@ const SpecsDetails = ({ route, navigation }) => {
           frameType="specs"
           setShowLensSelector={setShowLensSelector}
         />
-      )}
+      )} */}
       <BackButton onPress={() => navigation.goBack()} />
       {!!specsData ? (
         <>
           <View style={{}}>
             <Carousel
-              data={specsData.images}
+              data={specsData.spectacles.images}
               renderItem={({ item }) => {
                 return (
                   <Image
@@ -151,7 +151,7 @@ const SpecsDetails = ({ route, navigation }) => {
               onSnapToItem={(index) => setCarouselIndex(index)}
             />
             <Pagination
-              dotsLength={specsData.images.length}
+              dotsLength={specsData.spectacles.images.length}
               activeDotIndex={carouselIndex}
               carouselRef={carouselRef}
               dotStyle={{
@@ -211,7 +211,7 @@ const SpecsDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Product ID: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {specsData.product_id}
+                  {specsData.id_label}
                 </Text>
               </View>
               <View style={{ flexDirection: "row" }}>
@@ -252,7 +252,7 @@ const SpecsDetails = ({ route, navigation }) => {
               <View style={{ flexDirection: "row" }}>
                 <Text style={styles.text_regular}>Size: </Text>
                 <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
-                  {specsData.size}
+                  {specsData.spectacles.size}
                 </Text>
               </View>
 
@@ -283,27 +283,33 @@ const SpecsDetails = ({ route, navigation }) => {
                 >
                   Additional Information:
                 </Text>
-                <AdditionalField label={"Gender"} value={specsData.gender} />
+                <AdditionalField
+                  label={"Gender"}
+                  value={specsData.spectacles.gender}
+                />
                 <AdditionalField
                   label={"Material"}
-                  value={specsData.material}
+                  value={specsData.spectacles.material}
                 />
-                <AdditionalField label={"Color"} value={specsData.color} />
+                <AdditionalField
+                  label={"Color"}
+                  value={specsData.spectacles.color}
+                />
                 <AdditionalField
                   label={"Weight"}
-                  value={specsData.weight + " grams"}
+                  value={specsData.spectacles.weight + " grams"}
                 />
                 <AdditionalField
                   label={"Width"}
-                  value={specsData.width + " cms"}
+                  value={specsData.spectacles.width + " cms"}
                 />
                 <AdditionalField
                   label={"Dimensions"}
-                  value={specsData.dimensions}
+                  value={specsData.spectacles.dimensions}
                 />
                 <AdditionalField
                   label={"Warranty"}
-                  value={specsData.warranty + " years"}
+                  value={specsData.spectacles.warranty + " years"}
                   hideborder
                 />
               </View>
@@ -323,10 +329,9 @@ const SpecsDetails = ({ route, navigation }) => {
               >
                 <Text style={{ fontSize: 24 }}>Available lens options</Text>
 
-                {specsData.linked_lenses === null ||
-                Object.values(specsData.linked_lenses).every(
-                  (v) => v === false
-                ) ? (
+                {!specsData.spectacles.linked_single &&
+                !specsData.spectacles.linked_bifocal &&
+                !specsData.spectacles.linked_zero ? (
                   <View style={{ alignItems: "center", marginVertical: 40 }}>
                     <Text style={{ ...styles.text_small, color: grey1 }}>
                       No lenses available
@@ -341,12 +346,11 @@ const SpecsDetails = ({ route, navigation }) => {
                         marginTop: 20,
                       }}
                     >
-                      {!!specsData.linked_lenses["Single Vision"] &&
+                      {!!specsData.spectacles.linked_single &&
                         "• Single Vision"}
-                      {!!specsData.linked_lenses["Bifocal / Progressive"] &&
+                      {!!specsData.spectacles.linked_bifocal &&
                         "\n• Bifocal / Progressive"}
-                      {!!specsData.linked_lenses["Zero Power"] &&
-                        "\n• Zero Power"}
+                      {!!specsData.spectacles.linked_zero && "\n• Zero Power"}
                     </Text>
                   </View>
                 )}
@@ -379,7 +383,7 @@ const SpecsDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </Text>
                     <Text style={{ fontSize: 45, color: text_color }}>
-                      {specsData.stock}
+                      {specsData.spectacles.stock}
                     </Text>
                   </View>
                   <View

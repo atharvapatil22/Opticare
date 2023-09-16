@@ -17,15 +17,16 @@ import {
   gradient_start,
   grey2,
   grey1,
+  productCategories,
 } from "../../constants";
 import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { supabase } from "../../supabase/client";
 import axios from "axios";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
+import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
@@ -39,7 +40,7 @@ const SpecsStepper = ({ route, navigation }) => {
   ];
 
   // Step 1
-  const [productId, setProductId] = useState("");
+  const [idLabel, setIdLabel] = useState("");
   const [productName, setProductName] = useState("");
   const [brand, setBrand] = useState("Eyemate");
   const [gender, setGender] = useState("Unisex");
@@ -56,11 +57,9 @@ const SpecsStepper = ({ route, navigation }) => {
   const [size, setSize] = useState("Medium");
   const [warranty, setWarranty] = useState(1);
   // Step 4
-  const [linkedLenses, setLinkedLenses] = useState({
-    "Single Vision": false,
-    "Zero Power": false,
-    "Bifocal / Progressive": false,
-  });
+  const [linkedSingle, setLinkedSingle] = useState(false);
+  const [linkedBifocal, setLinkedBifocal] = useState(false);
+  const [linkedZero, setLinkedZero] = useState(false);
 
   // Step 5
   const [price, setPrice] = useState("");
@@ -75,25 +74,29 @@ const SpecsStepper = ({ route, navigation }) => {
   }, []);
 
   const initalizeValues = () => {
-    setProductId(specsData.product_id);
+    setIdLabel(specsData.id_label);
     setProductName(specsData.name);
     setBrand(specsData.brand);
-    setGender(specsData.gender);
+    setGender(specsData.spectacles.gender);
 
-    setProductImages(specsData.images);
-    setFeaturedImage(specsData.images.indexOf(specsData.featured_image));
+    setProductImages(specsData.spectacles.images);
+    setFeaturedImage(
+      specsData.spectacles.images.indexOf(specsData.featured_image)
+    );
 
-    setColor(specsData.color);
-    setMaterial(specsData.material);
-    setWeight(specsData.weight.toString());
-    setWidth(specsData.width.toString());
-    setDimensions(specsData.dimensions);
-    setSize(specsData.size);
-    setWarranty(specsData.warranty.toString());
+    setColor(specsData.spectacles.color);
+    setMaterial(specsData.spectacles.material);
+    setWeight(specsData.spectacles.weight.toString());
+    setWidth(specsData.spectacles.width.toString());
+    setDimensions(specsData.spectacles.dimensions);
+    setSize(specsData.spectacles.size);
+    setWarranty(specsData.spectacles.warranty.toString());
 
-    setLinkedLenses(specsData.linked_lenses);
+    setLinkedSingle(specsData.spectacles.linked_single);
+    setLinkedBifocal(specsData.spectacles.linked_bifocal);
+    setLinkedZero(specsData.spectacles.linked_zero);
 
-    setStock(specsData.stock.toString());
+    setStock(specsData.spectacles.stock.toString());
     setPrice(specsData.price.toString());
     setDiscount(specsData.discount.toString());
   };
@@ -159,7 +162,6 @@ const SpecsStepper = ({ route, navigation }) => {
 
   const saveToDatabase = async () => {
     let imageUrls = [];
-    let response = null;
 
     // 1] Handle case if any images need to be deleted from Cloudinary
     if (deleteCloudinaryImages.length != 0) {
@@ -195,12 +197,18 @@ const SpecsStepper = ({ route, navigation }) => {
     });
 
     // 3] Create/Update spectacles object to database
-    const finalObj = {
+    const productFields = {
+      category: productCategories.SPECTACLES,
+      is_visible: true,
       name: productName,
-      product_id: productId,
+      id_label: idLabel,
       brand: brand,
       price: parseInt(price),
       discount: parseInt(discount),
+      featured_image: prodImagesFinal[featuredImage],
+    };
+
+    const specsFields = {
       material: material,
       color: color,
       gender: gender,
@@ -211,44 +219,29 @@ const SpecsStepper = ({ route, navigation }) => {
       width: parseInt(width),
       stock: parseInt(stock),
       images: prodImagesFinal,
-      featured_image: prodImagesFinal[featuredImage],
-      linked_lenses: linkedLenses,
+      linked_single: linkedSingle,
+      linked_bifocal: linkedBifocal,
+      linked_zero: linkedZero,
     };
 
     // If editing exisitng product
-    if (!!editing) {
-      response = await supabase
-        .from("spectacles")
-        .update(finalObj)
-        .eq("id", specsData.id)
-        .select();
-    }
-    // If creating new product
-    else {
-      response = await supabase.from("spectacles").insert([finalObj]).select();
-    }
-
-    if (response.error) {
-      // __api_error
-      console.log("api_error", response.error);
-    } else {
-      // __api_success
-      console.log("success", response.data);
-      Alert.alert(
-        "Success!",
-        !!editing
-          ? "Specs Details successfully updated."
-          : "New specs were successfully created: " + response.data[0].name,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
+    if (!!editing)
+      editProductAPI(
+        productFields,
+        specsFields,
+        specsData.id,
+        specsData.spectacles.id,
+        () => navigation.goBack()
       );
-    }
+    // If creating new product
+    else
+      createProductAPI(productFields, specsFields, () => navigation.goBack());
   };
 
   const handleClearForm = () => {
     switch (currentStep) {
       case 0:
-        setProductId("");
+        setIdLabel("");
         setBrand("Eyemate");
         setProductName("");
         setGender("Unisex");
@@ -271,11 +264,9 @@ const SpecsStepper = ({ route, navigation }) => {
         setWarranty(1);
         break;
       case 3:
-        setLinkedLenses({
-          "Single Vision": false,
-          "Zero Power": false,
-          "Bifocal / Progressive": false,
-        });
+        setLinkedSingle(false);
+        setLinkedBifocal(false);
+        setLinkedZero(false);
         break;
       case 4:
         setPrice("");
@@ -292,7 +283,7 @@ const SpecsStepper = ({ route, navigation }) => {
     switch (currentStep) {
       case 0:
         console.log("Saved Step 1: ", {
-          product_id: productId,
+          id_label: idLabel,
           product_name: productName,
           brand: brand,
           gender: gender,
@@ -317,7 +308,9 @@ const SpecsStepper = ({ route, navigation }) => {
         break;
       case 3:
         console.log("Saved Step 4: ", {
-          linked_lenses: linkedLenses,
+          linked_single: linkedSingle,
+          linked_bifocal: linkedBifocal,
+          linked_zero: linkedZero,
         });
         setCurrentStep(currentStep + 1);
         break;
@@ -407,8 +400,8 @@ const SpecsStepper = ({ route, navigation }) => {
                         <Text style={styles.form_label}>Product ID</Text>
                         <TextInput
                           style={styles.text_field}
-                          onChangeText={setProductId}
-                          value={productId}
+                          onChangeText={setIdLabel}
+                          value={idLabel}
                         />
                       </View>
                       <View style={styles.form_field}>
@@ -662,12 +655,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         <View style={styles.lens_item}>
                           <Checkbox
                             style={{ width: 22, height: 22 }}
-                            value={linkedLenses["Single Vision"]}
+                            value={linkedSingle}
                             onValueChange={(val) => {
-                              setLinkedLenses({
-                                ...linkedLenses,
-                                "Single Vision": val,
-                              });
+                              setLinkedSingle(val);
                             }}
                           />
                           <Text style={{ fontSize: 20, marginLeft: 8 }}>
@@ -677,12 +667,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         <View style={styles.lens_item}>
                           <Checkbox
                             style={{ width: 22, height: 22 }}
-                            value={linkedLenses["Bifocal / Progressive"]}
+                            value={linkedBifocal}
                             onValueChange={(val) => {
-                              setLinkedLenses({
-                                ...linkedLenses,
-                                "Bifocal / Progressive": val,
-                              });
+                              setLinkedBifocal(val);
                             }}
                           />
                           <Text style={{ fontSize: 20, marginLeft: 8 }}>
@@ -692,12 +679,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         <View style={styles.lens_item}>
                           <Checkbox
                             style={{ width: 22, height: 22 }}
-                            value={linkedLenses["Zero Power"]}
+                            value={linkedZero}
                             onValueChange={(val) => {
-                              setLinkedLenses({
-                                ...linkedLenses,
-                                "Zero Power": val,
-                              });
+                              setLinkedZero(val);
                             }}
                           />
                           <Text style={{ fontSize: 20, marginLeft: 8 }}>
