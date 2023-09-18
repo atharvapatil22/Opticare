@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { addOrderItem, updateItemQuantity } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
+import EditDeleteButtons from "../../components/EditDeleteButtons";
 
 const AccessoryDetails = ({ route, navigation }) => {
   const { id: accessoryId } = route.params;
@@ -79,44 +80,41 @@ const AccessoryDetails = ({ route, navigation }) => {
     );
   };
 
-  const addAccessorytoCart = () => {};
+  const addAccessorytoCart = () => {
+    let itemInCart = 0;
+    // Check if item is already in cart
+    const cartAccessories = store.currentOrder.accessories;
+    cartAccessories.forEach((item) => {
+      if (item.id === accessoryData.id) itemInCart = item.quantity;
+    });
 
-  // const addAccessorytoCart = () => {
-  //   let itemInCart = 0;
-  //   // Check if item is already in cart
-  //   const cartAccessories = store.currentOrder.accessories;
-  //   cartAccessories.forEach((item) => {
-  //     if (item.id === accessoryData.id) itemInCart = item.quantity;
-  //   });
+    if (itemInCart === 0) {
+      dispatch(
+        addOrderItem({
+          category: "accessories",
+          item: {
+            id: accessoryData.id,
+            name: accessoryData.name,
+            price: accessoryData.price,
+            discount: accessoryData.discount,
+            featured_image: accessoryData.featured_image,
+            quantity: 1,
+          },
+        })
+      );
+    } else {
+      console.log("Item is already in cart. Updating the quantity ...");
+      dispatch(
+        updateItemQuantity({
+          category: "accessories",
+          id: accessoryData.id,
+          quantity: itemInCart + 1,
+        })
+      );
+    }
 
-  //   if (itemInCart === 0) {
-  //     dispatch(
-  //       addOrderItem({
-  //         category: "accessories",
-  //         item: {
-  //           id: accessoryData.id,
-  //           productType: "accessories",
-  //           name: accessoryData.name,
-  //           price: accessoryData.price,
-  //           discount: accessoryData.discount,
-  //           featured_image: accessoryData.featured_image,
-  //           quantity: 1,
-  //         },
-  //       })
-  //     );
-  //   } else {
-  //     console.log("Item is already in cart. Updating the quantity ...");
-  //     dispatch(
-  //       updateItemQuantity({
-  //         category: "accessories",
-  //         id: accessoryData.id,
-  //         quantity: itemInCart + 1,
-  //       })
-  //     );
-  //   }
-
-  //   Alert.alert(`Success`, "Added to cart");
-  // };
+    Alert.alert(`Success`, "Added to cart");
+  };
 
   return (
     <ScrollView
@@ -178,28 +176,16 @@ const AccessoryDetails = ({ route, navigation }) => {
               inactiveDotScale={0.6}
             />
           </View>
-          {/* Change UI later for edit and delete */}
           {store.userLevel === "ADMIN" && (
-            <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-              <Button
-                text="Edit"
-                variant="aqua"
-                rounded
-                onPress={() => {
-                  navigation.navigate("AccessoryStepper", {
-                    editing: true,
-                    accessoryData: accessoryData,
-                  });
-                }}
-              />
-              <Button
-                text="Delete"
-                variant="aqua"
-                onPress={showDeletePrompt}
-                rounded
-                style={{ backgroundColor: "red" }}
-              />
-            </View>
+            <EditDeleteButtons
+              onEdit={() => {
+                navigation.navigate("AccessoryStepper", {
+                  editing: true,
+                  accessoryData: accessoryData,
+                });
+              }}
+              onDelete={showDeletePrompt}
+            />
           )}
           <View
             style={{

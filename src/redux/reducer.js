@@ -48,8 +48,15 @@ const reducer = (state = initialState, action) => {
       if (quantity === 0) {
         new_state.currentOrder[category].splice(item_to_update, 1);
         new_state.currentOrder.totalItems -= 1;
-      } else
-        new_state.currentOrder[category][item_to_update].quantity = quantity;
+      } else {
+        const itemRef = new_state.currentOrder[category][item_to_update];
+        itemRef.quantity = quantity;
+
+        // If specs or sunglasses has attached lens
+        if (!!itemRef["linkedLensesDetails"]) {
+          itemRef["linkedLensesDetails"].quantity = quantity * 2;
+        }
+      }
       return new_state;
 
     case CLEAR_CART:

@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import LensSelector from "../../components/LensSelector";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
+import EditDeleteButtons from "../../components/EditDeleteButtons";
 
 const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
@@ -98,18 +99,20 @@ const SpecsDetails = ({ route, navigation }) => {
         <RefreshControl refreshing={refreshing} onRefresh={fetchSpecsDetails} />
       }
     >
-      {/* {showLensSelector && (
+      {showLensSelector && (
         <LensSelector
-          linkedLenses={specsData.linked_lenses}
+          linkedSingle={specsData.spectacles.linked_single}
+          linkedBifocal={specsData.spectacles.linked_bifocal}
+          linkedZero={specsData.spectacles.linked_zero}
           frameId={specsData.id}
           frameName={specsData.name}
           framePrice={specsData.price}
           frameDiscount={specsData.discount}
           frameFeaturedImage={specsData.featured_image}
-          frameType="specs"
+          frameType={"specs"}
           setShowLensSelector={setShowLensSelector}
         />
-      )} */}
+      )}
       <BackButton onPress={() => navigation.goBack()} />
       {!!specsData ? (
         <>
@@ -156,31 +159,17 @@ const SpecsDetails = ({ route, navigation }) => {
               inactiveDotScale={0.6}
             />
           </View>
-          {/* Change UI later for edit and delete */}
           {store.userLevel === "ADMIN" && (
-            <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-              <Button
-                text="Edit"
-                variant="aqua"
-                rounded
-                onPress={() => {
-                  navigation.navigate("SpecsStepper", {
-                    editing: true,
-                    specsData: specsData,
-                  });
-                }}
-              />
-              <Button
-                text="Delete"
-                variant="aqua"
-                onPress={showDeletePrompt}
-                rounded
-                style={{ backgroundColor: "red" }}
-              />
-            </View>
+            <EditDeleteButtons
+              onEdit={() => {
+                navigation.navigate("SpecsStepper", {
+                  editing: true,
+                  specsData: specsData,
+                });
+              }}
+              onDelete={showDeletePrompt}
+            />
           )}
-
-          {/* ---- */}
           <View
             style={{
               flexDirection: "row",

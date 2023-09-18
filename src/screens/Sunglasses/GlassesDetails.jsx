@@ -28,6 +28,7 @@ import { AntDesign } from "@expo/vector-icons";
 import LensSelector from "../../components/LensSelector";
 import { addOrderItem } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
+import EditDeleteButtons from "../../components/EditDeleteButtons";
 
 const GlassesDetails = ({ route, navigation }) => {
   const { id: glassesId } = route.params;
@@ -109,7 +110,10 @@ const GlassesDetails = ({ route, navigation }) => {
   };
 
   const handleCTA = () => {
-    if (Object.values(glassesData.linked_lenses).every((v) => v === false)) {
+    if (
+      !glassesData.sunglasses.linked_single &&
+      !glassesData.sunglasses.linked_bifocal
+    ) {
       addGlassestoCart();
     } else {
       Alert.alert(
@@ -144,18 +148,19 @@ const GlassesDetails = ({ route, navigation }) => {
         />
       }
     >
-      {/* {showLensSelector && (
+      {showLensSelector && (
         <LensSelector
-          linkedLenses={glassesData.linked_lenses}
+          linkedSingle={glassesData.sunglasses.linked_single}
+          linkedBifocal={glassesData.sunglasses.linked_bifocal}
           setShowLensSelector={setShowLensSelector}
           frameId={glassesData.id}
           frameName={glassesData.name}
           framePrice={glassesData.price}
           frameDiscount={glassesData.discount}
           frameFeaturedImage={glassesData.featured_image}
-          frameType="sunglasses"
+          frameType={"sunglasses"}
         />
-      )} */}
+      )}
       <BackButton onPress={() => navigation.goBack()} />
       {!!glassesData ? (
         <>
@@ -204,27 +209,17 @@ const GlassesDetails = ({ route, navigation }) => {
           </View>
           {/* Change UI later for edit and delete */}
           {store.userLevel === "ADMIN" && (
-            <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-              <Button
-                text="Edit"
-                variant="aqua"
-                rounded
-                onPress={() => {
-                  navigation.navigate("GlassesStepper", {
-                    editing: true,
-                    glassesData: glassesData,
-                  });
-                }}
-              />
-              <Button
-                text="Delete"
-                variant="aqua"
-                onPress={showDeletePrompt}
-                rounded
-                style={{ backgroundColor: "red" }}
-              />
-            </View>
+            <EditDeleteButtons
+              onEdit={() => {
+                navigation.navigate("GlassesStepper", {
+                  editing: true,
+                  glassesData: glassesData,
+                });
+              }}
+              onDelete={showDeletePrompt}
+            />
           )}
+
           <View
             style={{
               flexDirection: "row",

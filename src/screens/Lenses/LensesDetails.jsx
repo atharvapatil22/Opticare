@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { addOrderItem, updateItemQuantity } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
+import EditDeleteButtons from "../../components/EditDeleteButtons";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
@@ -84,44 +85,42 @@ const LensesDetails = ({ route, navigation }) => {
     );
   };
 
-  const addLensestoCart = () => {};
+  const addLensestoCart = () => {
+    let itemInCart = 0;
+    // Check if item is already in cart
+    const cartLenses = store.currentOrder.lenses;
+    cartLenses.forEach((item) => {
+      if (item.id === lensData.id) itemInCart = item.quantity;
+    });
 
-  // const addLensestoCart = () => {
-  //   let itemInCart = 0;
-  //   // Check if item is already in cart
-  //   const cartLenses = store.currentOrder.lenses;
-  //   cartLenses.forEach((item) => {
-  //     if (item.id === lensData.id) itemInCart = item.quantity;
-  //   });
+    if (itemInCart === 0) {
+      dispatch(
+        addOrderItem({
+          category: "lenses",
+          item: {
+            id: lensData.id,
+            product_type: "lenses",
+            name: lensData.name,
+            price: lensData.price,
+            discount: lensData.discount,
+            lensType: lensData.type,
+            quantity: 1,
+          },
+        })
+      );
+    } else {
+      console.log("Item is already in cart. Updating the quantity ...");
+      dispatch(
+        updateItemQuantity({
+          category: "lenses",
+          id: lensData.id,
+          quantity: itemInCart + 1,
+        })
+      );
+    }
 
-  //   if (itemInCart === 0) {
-  //     dispatch(
-  //       addOrderItem({
-  //         category: "lenses",
-  //         item: {
-  //           id: lensData.id,
-  //           product_type: "lenses",
-  //           name: lensData.name,
-  //           price: lensData.price,
-  //           discount: lensData.discount,
-  //           lensCategory: lensData.category,
-  //           quantity: 1,
-  //         },
-  //       })
-  //     );
-  //   } else {
-  //     console.log("Item is already in cart. Updating the quantity ...");
-  //     dispatch(
-  //       updateItemQuantity({
-  //         category: "lenses",
-  //         id: lensData.id,
-  //         quantity: itemInCart + 1,
-  //       })
-  //     );
-  //   }
-
-  //   Alert.alert(`Success`, "Added to cart");
-  // };
+    Alert.alert(`Success`, "Added to cart");
+  };
 
   return (
     <ScrollView
@@ -137,29 +136,18 @@ const LensesDetails = ({ route, navigation }) => {
       <BackButton onPress={() => navigation.goBack()} />
       {!!lensData ? (
         <>
-          {/* Change UI later for edit and delete */}
           {store.userLevel === "ADMIN" && (
-            <View style={{ flexDirection: "row", marginLeft: "3%" }}>
-              <Button
-                text="Edit"
-                variant="aqua"
-                rounded
-                onPress={() => {
-                  navigation.navigate("LensesStepper", {
-                    editing: true,
-                    lensesData: lensData,
-                  });
-                }}
-              />
-              <Button
-                text="Delete"
-                variant="aqua"
-                onPress={showDeletePrompt}
-                rounded
-                style={{ backgroundColor: "red" }}
-              />
-            </View>
+            <EditDeleteButtons
+              onEdit={() => {
+                navigation.navigate("LensesStepper", {
+                  editing: true,
+                  lensesData: lensData,
+                });
+              }}
+              onDelete={showDeletePrompt}
+            />
           )}
+
           <View
             style={{
               flexDirection: "row",

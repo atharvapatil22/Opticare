@@ -25,10 +25,28 @@ const MyCart = ({ navigation }) => {
     globalData.currentOrder.specs.forEach((item) => {
       total += item.quantity * item.price;
       savings += item.quantity * (item.price * (item.discount / 100));
+      if (!!item["linkedLensesDetails"]) {
+        total +=
+          item["linkedLensesDetails"].quantity *
+          item["linkedLensesDetails"].price;
+        savings +=
+          item["linkedLensesDetails"].quantity *
+          (item["linkedLensesDetails"].price *
+            (item["linkedLensesDetails"].discount / 100));
+      }
     });
     globalData.currentOrder.sunglasses.forEach((item) => {
       total += item.quantity * item.price;
       savings += item.quantity * (item.price * (item.discount / 100));
+      if (!!item["linkedLensesDetails"]) {
+        total +=
+          item["linkedLensesDetails"].quantity *
+          item["linkedLensesDetails"].price;
+        savings +=
+          item["linkedLensesDetails"].quantity *
+          (item["linkedLensesDetails"].price *
+            (item["linkedLensesDetails"].discount / 100));
+      }
     });
     globalData.currentOrder.lenses.forEach((item) => {
       total += item.quantity * item.price;

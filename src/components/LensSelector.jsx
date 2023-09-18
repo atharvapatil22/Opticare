@@ -14,6 +14,7 @@ import {
   gradient_start,
   grey1,
   grey2,
+  productCategories,
   text_color,
 } from "../constants";
 import { supabase } from "../supabase/client";
@@ -23,13 +24,15 @@ import { addOrderItem } from "../redux/actions";
 
 const LensSelector = ({
   setShowLensSelector,
-  linkedLenses,
   frameId,
   frameName,
   framePrice,
   frameDiscount,
   frameFeaturedImage,
   frameType,
+  linkedSingle,
+  linkedBifocal,
+  linkedZero,
 }) => {
   const dispatch = useDispatch();
 
@@ -44,8 +47,9 @@ const LensSelector = ({
 
   const fetchAllLenses = async () => {
     const { data, error } = await supabase
-      .from("lenses")
-      .select("id,name,price,discount,category,features");
+      .from("products")
+      .select("id,name,price,discount,lenses(type,features)")
+      .eq("category", productCategories.LENSES);
     if (error) {
       // __api_error
       console.log("api_error");
@@ -53,9 +57,10 @@ const LensSelector = ({
       // __api_success
       let svLenses = [];
       let bpLenses = [];
-      data.forEach((lens) => {
-        if (lens.category === "Single Vision") svLenses.push(lens);
-        else if (lens.category === "Bifocal / Progressive") bpLenses.push(lens);
+      data.forEach((item) => {
+        if (item.lenses.type === "Single Vision") svLenses.push(item);
+        else if (item.lenses.type === "Bifocal / Progressive")
+          bpLenses.push(item);
       });
       setSingleLenses(svLenses);
       setBifocalLenses(bpLenses);
@@ -65,7 +70,6 @@ const LensSelector = ({
   const addItemtoCart = (linkedLens) => {
     const itemData = {
       id: frameId,
-      productType: frameType,
       name: frameName,
       price: framePrice,
       discount: frameDiscount,
@@ -114,7 +118,9 @@ const LensSelector = ({
       >
         <View style={{ width: "92%" }}>
           <Text style={{ fontSize: 22 }}>{lens.name}</Text>
-          <Text style={{ fontSize: 16, marginTop: 10 }}>{lens.features}</Text>
+          <Text style={{ fontSize: 16, marginTop: 10 }}>
+            {lens.lenses.features}
+          </Text>
           <Text style={{ fontSize: 18, color: grey2, marginTop: 10 }}>
             Approx. ₹{lens.price * 2} for 2 lenses
           </Text>
@@ -183,7 +189,7 @@ const LensSelector = ({
           />
           {modalState === "Default" ? (
             <>
-              {!!linkedLenses["Single Vision"] && (
+              {!!linkedSingle && (
                 <TouchableOpacity
                   style={styles.lens_category}
                   onPress={() => setModalState("Single Vision")}
@@ -198,7 +204,7 @@ const LensSelector = ({
                   />
                 </TouchableOpacity>
               )}
-              {!!linkedLenses["Bifocal / Progressive"] && (
+              {!!linkedBifocal && (
                 <TouchableOpacity
                   style={styles.lens_category}
                   onPress={() => setModalState("Bifocal / Progressive")}
@@ -213,9 +219,9 @@ const LensSelector = ({
                   />
                 </TouchableOpacity>
               )}
-              {frameType === "specs" && (
+              {frameType === "spectacles" && (
                 <>
-                  {!!linkedLenses["Zero Power"] && (
+                  {!!linkedZero && (
                     <TouchableOpacity
                       style={styles.lens_category}
                       onPress={() => setModalState("Zero Power")}

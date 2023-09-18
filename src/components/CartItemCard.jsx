@@ -173,7 +173,7 @@ const CartItemCard = ({ data, category }) => {
                 fontSize: 18,
               }}
             >
-              {data.lensCategory} Lens
+              {data.lensType} Lens
             </Text>
           )}
         </View>
