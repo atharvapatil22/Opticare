@@ -27,6 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import LensSelector from "../../components/LensSelector";
 import { addOrderItem } from "../../redux/actions";
+import { deleteProductAPI } from "../../apiCalls/productAPIs";
 
 const GlassesDetails = ({ route, navigation }) => {
   const { id: glassesId } = route.params;
@@ -62,23 +63,9 @@ const GlassesDetails = ({ route, navigation }) => {
   const deleteGlasses = async () => {
     // __delete images from cloudinary
 
-    const { data, error } = await supabase
-      .from("sunglasses")
-      .delete()
-      .eq("id", glassesId);
-    if (error) {
-      // __api_error
-      console.log("api_error");
-    } else {
-      // __api_success
-      console.log("Successfully deleted glasses with id ", glassesId);
-      Alert.alert(
-        "Success!",
-        "Deleted sunglasses: " + glassesData.name,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
-      );
-    }
+    deleteProductAPI(glassesId, "sunglasses", glassesData.name, () =>
+      navigation.goBack()
+    );
   };
 
   const showDeletePrompt = () => {

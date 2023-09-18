@@ -25,6 +25,7 @@ import BackButton from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import { addOrderItem, updateItemQuantity } from "../../redux/actions";
+import { deleteProductAPI } from "../../apiCalls/productAPIs";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
@@ -57,23 +58,9 @@ const LensesDetails = ({ route, navigation }) => {
   const deleteLenses = async () => {
     // __delete images from cloudinary
 
-    const { data, error } = await supabase
-      .from("lenses")
-      .delete()
-      .eq("id", lensId);
-    if (error) {
-      // __api_error
-      console.log("api_error");
-    } else {
-      // __api_success
-      console.log("Successfully deleted accessory with id ", lensId);
-      Alert.alert(
-        "Success!",
-        "Deleted lenses: " + lensData.name,
-        [{ text: "OK", onPress: () => navigation.goBack() }],
-        { cancelable: false }
-      );
-    }
+    deleteProductAPI(lensId, "lenses", lensData.name, () =>
+      navigation.goBack()
+    );
   };
 
   const showDeletePrompt = () => {

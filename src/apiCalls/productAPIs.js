@@ -84,3 +84,28 @@ export const editProductAPI = async (
     }
   }
 };
+
+export const deleteProductAPI = async (
+  productId,
+  category,
+  name,
+  _callback
+) => {
+  const { data, error } = await supabase
+    .from("products")
+    .delete()
+    .eq("id", productId);
+  if (error) {
+    // __api_error
+    console.log("api_error");
+  } else {
+    // __api_success
+    console.log("Successfully deleted product with id ", productId);
+    Alert.alert(
+      "Success!",
+      `Deleted ${category}: ` + name,
+      [{ text: "OK", onPress: () => _callback() }],
+      { cancelable: false }
+    );
+  }
+};

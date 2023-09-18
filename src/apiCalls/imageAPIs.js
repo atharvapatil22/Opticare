@@ -1,6 +1,4 @@
 import axios from "axios";
-import crypto from "crypto";
-
 import { CLOUDINARY_API_KEY, CLOUDINARY_CLOUDNAME } from "../constants";
 
 export const uploadImagesToCloudinary = (filesArray, folder) => {
