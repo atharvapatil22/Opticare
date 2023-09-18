@@ -20,7 +20,7 @@ import {
 import { supabase } from "../supabase/client";
 import Button from "./Button";
 import { useDispatch } from "react-redux";
-import { addOrderItem } from "../redux/actions";
+import { addCartItem } from "../redux/actions";
 
 const LensSelector = ({
   setShowLensSelector,
@@ -69,12 +69,12 @@ const LensSelector = ({
 
   const addItemtoCart = (linkedLens) => {
     const itemData = {
-      id: frameId,
+      product_id: frameId,
+      category: frameType,
       name: frameName,
       price: framePrice,
       discount: frameDiscount,
       featured_image: frameFeaturedImage,
-      linkedLenses: linkedLens,
       quantity: 1,
     };
 
@@ -87,21 +87,18 @@ const LensSelector = ({
         : null;
 
     if (!!lensRef) {
-      itemData["linkedLensesDetails"] = {
+      itemData["linkedLens"] = {
         id: lensRef.id,
         name: lensRef.name,
         price: lensRef.price,
+        type: lensRef.lenses.type,
         discount: lensRef.discount,
+        eye_power: null,
         quantity: 2,
       };
     }
 
-    dispatch(
-      addOrderItem({
-        category: frameType,
-        item: itemData,
-      })
-    );
+    dispatch(addCartItem(itemData));
 
     setShowLensSelector(false);
     Alert.alert(`Success`, "Added to cart");

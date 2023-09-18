@@ -22,7 +22,7 @@ import Button from "../../components/Button";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "../../supabase/client";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCart } from "../../redux/actions";
+import { clearCart2 } from "../../redux/actions";
 
 const OrderCheckout = ({ route, navigation }) => {
   const { billingInfo } = route.params;
@@ -100,7 +100,7 @@ const OrderCheckout = ({ route, navigation }) => {
           {
             text: "OK",
             onPress: () => {
-              dispatch(clearCart());
+              dispatch(clearCart2());
               navigation.goBack();
             },
           },

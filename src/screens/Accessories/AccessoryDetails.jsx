@@ -17,7 +17,7 @@ import Button from "../../components/Button";
 import BackButton from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
-import { addOrderItem, updateItemQuantity } from "../../redux/actions";
+import { addCartItem, updateItemQuantity2 } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
 
@@ -83,31 +83,30 @@ const AccessoryDetails = ({ route, navigation }) => {
   const addAccessorytoCart = () => {
     let itemInCart = 0;
     // Check if item is already in cart
-    const cartAccessories = store.currentOrder.accessories;
+    const cartAccessories = store.orderItems.filter(
+      (item) => item.category === "accessories"
+    );
     cartAccessories.forEach((item) => {
-      if (item.id === accessoryData.id) itemInCart = item.quantity;
+      if (item.product_id === accessoryData.id) itemInCart = item.quantity;
     });
 
     if (itemInCart === 0) {
       dispatch(
-        addOrderItem({
-          category: "accessories",
-          item: {
-            id: accessoryData.id,
-            name: accessoryData.name,
-            price: accessoryData.price,
-            discount: accessoryData.discount,
-            featured_image: accessoryData.featured_image,
-            quantity: 1,
-          },
+        addCartItem({
+          product_id: accessoryData.id,
+          category: accessoryData.category,
+          name: accessoryData.name,
+          price: accessoryData.price,
+          discount: accessoryData.discount,
+          featured_image: accessoryData.featured_image,
+          quantity: 1,
         })
       );
     } else {
       console.log("Item is already in cart. Updating the quantity ...");
       dispatch(
-        updateItemQuantity({
-          category: "accessories",
-          id: accessoryData.id,
+        updateItemQuantity2({
+          product_id: accessoryData.id,
           quantity: itemInCart + 1,
         })
       );

@@ -24,7 +24,7 @@ import Button from "../../components/Button";
 import BackButton from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
-import { addOrderItem, updateItemQuantity } from "../../redux/actions";
+import { addCartItem, updateItemQuantity2 } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
 
@@ -88,22 +88,28 @@ const LensesDetails = ({ route, navigation }) => {
   const addLensestoCart = () => {
     let itemInCart = 0;
     // Check if item is already in cart
-    const cartLenses = store.currentOrder.lenses;
+    const cartLenses = store.orderItems.filter(
+      (item) => item.category === "lenses"
+    );
     cartLenses.forEach((item) => {
-      if (item.id === lensData.id) itemInCart = item.quantity;
+      if (item.product_id === lensData.id) itemInCart = item.quantity;
     });
 
     if (itemInCart === 0) {
       dispatch(
-        addOrderItem({
+        addCartItem({
+          product_id: lensData.id,
           category: "lenses",
-          item: {
-            id: lensData.id,
-            product_type: "lenses",
+          name: lensData.name,
+          price: lensData.price,
+          discount: lensData.discount,
+          quantity: 1,
+          linkedLens: {
+            type: lensData.lenses.type,
+            eye_power: null,
             name: lensData.name,
             price: lensData.price,
             discount: lensData.discount,
-            lensType: lensData.type,
             quantity: 1,
           },
         })
@@ -111,9 +117,8 @@ const LensesDetails = ({ route, navigation }) => {
     } else {
       console.log("Item is already in cart. Updating the quantity ...");
       dispatch(
-        updateItemQuantity({
-          category: "lenses",
-          id: lensData.id,
+        updateItemQuantity2({
+          product_id: lensData.id,
           quantity: itemInCart + 1,
         })
       );

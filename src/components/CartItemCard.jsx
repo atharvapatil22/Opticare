@@ -9,7 +9,7 @@ import {
 import React from "react";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
-import { updateItemQuantity } from "../redux/actions";
+import { updateItemQuantity2 } from "../redux/actions";
 import {
   customer_primary,
   gradient_start,
@@ -18,7 +18,7 @@ import {
   text_color,
 } from "../constants";
 
-const CartItemCard = ({ data, category }) => {
+const CartItemCard = ({ data }) => {
   const dispatch = useDispatch();
 
   const LinkedLenses = () => {
@@ -53,7 +53,7 @@ const CartItemCard = ({ data, category }) => {
               fontSize: 24,
             }}
           >
-            {data.linkedLensesDetails.name}
+            {data.linkedLens.name}
           </Text>
           <Text
             style={{
@@ -62,7 +62,7 @@ const CartItemCard = ({ data, category }) => {
               fontSize: 18,
             }}
           >
-            Quantity: {data.linkedLensesDetails.quantity}
+            Quantity: {data.linkedLens.quantity}
           </Text>
           <Text
             style={{
@@ -73,9 +73,9 @@ const CartItemCard = ({ data, category }) => {
             }}
           >
             Subtotal: ₹
-            {data.linkedLensesDetails.price *
-              ((100 - data.linkedLensesDetails.discount) / 100) *
-              data.linkedLensesDetails.quantity}
+            {data.linkedLens.price *
+              ((100 - data.linkedLens.discount) / 100) *
+              data.linkedLens.quantity}
           </Text>
           <Text
             style={{
@@ -84,7 +84,7 @@ const CartItemCard = ({ data, category }) => {
               fontSize: 18,
             }}
           >
-            {data.linkedLenses} Lens
+            {data.linkedLens.type} Lens
           </Text>
         </View>
       </View>
@@ -95,7 +95,7 @@ const CartItemCard = ({ data, category }) => {
     <View style={styles.card_body}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <View style={styles.image_container}>
-          {category === "lenses" ? (
+          {data.category === "lenses" ? (
             <Image
               source={require("../assets/stock_lenses.png")}
               style={{ width: "100%", objectFit: "contain" }}
@@ -165,7 +165,7 @@ const CartItemCard = ({ data, category }) => {
             Subtotal: ₹
             {data.price * ((100 - data.discount) / 100) * data.quantity}
           </Text>
-          {category === "lenses" && (
+          {data.category === "lenses" && (
             <Text
               style={{
                 fontFamily: "Inter-Medium",
@@ -173,7 +173,7 @@ const CartItemCard = ({ data, category }) => {
                 fontSize: 18,
               }}
             >
-              {data.lensType} Lens
+              {/* {data.linkedlens.type} Lens */}
             </Text>
           )}
         </View>
@@ -195,9 +195,8 @@ const CartItemCard = ({ data, category }) => {
                     text: "Confirm",
                     onPress: () =>
                       dispatch(
-                        updateItemQuantity({
-                          category: category,
-                          id: data.id,
+                        updateItemQuantity2({
+                          product_id: data.product_id,
                           quantity: 0,
                         })
                       ),
@@ -231,9 +230,8 @@ const CartItemCard = ({ data, category }) => {
               onPress={() => {
                 if (data.quantity > 1)
                   dispatch(
-                    updateItemQuantity({
-                      category: category,
-                      id: data.id,
+                    updateItemQuantity2({
+                      product_id: data.product_id,
                       quantity: data.quantity - 1,
                     })
                   );
@@ -259,9 +257,8 @@ const CartItemCard = ({ data, category }) => {
             <TouchableOpacity
               onPress={() =>
                 dispatch(
-                  updateItemQuantity({
-                    category: category,
-                    id: data.id,
+                  updateItemQuantity2({
+                    product_id: data.product_id,
                     quantity: data.quantity + 1,
                   })
                 )
@@ -276,8 +273,8 @@ const CartItemCard = ({ data, category }) => {
           </View>
         </View>
       </View>
-      {(category === "specs" || category == "sunglasses") &&
-        !!data.linkedLenses && <LinkedLenses />}
+      {(data.category === "spectacles" || data.category == "sunglasses") &&
+        !!data.linkedLens && <LinkedLenses />}
     </View>
   );
 };

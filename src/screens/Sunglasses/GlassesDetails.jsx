@@ -26,7 +26,7 @@ import BackButton from "../../components/BackButton";
 import { useDispatch, useSelector } from "react-redux";
 import { AntDesign } from "@expo/vector-icons";
 import LensSelector from "../../components/LensSelector";
-import { addOrderItem } from "../../redux/actions";
+import { addCartItem } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
 
@@ -92,18 +92,15 @@ const GlassesDetails = ({ route, navigation }) => {
 
   const addGlassestoCart = () => {
     dispatch(
-      addOrderItem({
-        category: "sunglasses",
-        item: {
-          id: glassesData.id,
-          product_type: "sunglasses",
-          name: glassesData.name,
-          price: glassesData.price,
-          discount: glassesData.discount,
-          featured_image: glassesData.featured_image,
-          linkedLenses: null,
-          quantity: 1,
-        },
+      addCartItem({
+        product_id: glassesData.id,
+        category: glassesData.category,
+        name: glassesData.name,
+        price: glassesData.price,
+        discount: glassesData.discount,
+        featured_image: glassesData.featured_image,
+        quantity: 1,
+        linkedLens: null,
       })
     );
     Alert.alert(`Success`, "Added to cart");
@@ -158,7 +155,7 @@ const GlassesDetails = ({ route, navigation }) => {
           framePrice={glassesData.price}
           frameDiscount={glassesData.discount}
           frameFeaturedImage={glassesData.featured_image}
-          frameType={"sunglasses"}
+          frameType={glassesData.category}
         />
       )}
       <BackButton onPress={() => navigation.goBack()} />

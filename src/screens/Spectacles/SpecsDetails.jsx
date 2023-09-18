@@ -109,7 +109,7 @@ const SpecsDetails = ({ route, navigation }) => {
           framePrice={specsData.price}
           frameDiscount={specsData.discount}
           frameFeaturedImage={specsData.featured_image}
-          frameType={"specs"}
+          frameType={specsData.category}
           setShowLensSelector={setShowLensSelector}
         />
       )}

@@ -1,7 +1,7 @@
 import {
-  ADD_ORDER_ITEM,
-  CLEAR_CART,
-  UPDATE_ITEM_QUANTITY,
+  ADD_CART_ITEM,
+  CLEAR_CART2,
+  UPDATE_ITEM_QUANTITY2,
   USER_LEVEL_SET,
 } from "./types";
 
@@ -15,23 +15,23 @@ export const setUserLevel = (userLevel) => {
   };
 };
 
-export const addOrderItem = (itemData) => {
+export const addCartItem = (itemData) => {
   return {
-    type: ADD_ORDER_ITEM,
+    type: ADD_CART_ITEM,
     payload: itemData,
   };
 };
 
-export const updateItemQuantity = (itemData) => {
+export const updateItemQuantity2 = (itemData) => {
   return {
-    type: UPDATE_ITEM_QUANTITY,
+    type: UPDATE_ITEM_QUANTITY2,
     payload: itemData,
   };
 };
 
-export const clearCart = (payload) => {
+export const clearCart2 = (payload) => {
   return {
-    type: CLEAR_CART,
+    type: CLEAR_CART2,
     payload: payload,
   };
 };

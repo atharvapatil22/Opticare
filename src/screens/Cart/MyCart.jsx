@@ -1,7 +1,13 @@
 import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { app_bg, gradient_end, gradient_start, grey2 } from "../../constants";
+import {
+  app_bg,
+  gradient_end,
+  gradient_start,
+  grey2,
+  productCategories,
+} from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -22,40 +28,17 @@ const MyCart = ({ navigation }) => {
     let total = 0;
     let savings = 0;
 
-    globalData.currentOrder.specs.forEach((item) => {
+    globalData.orderItems.forEach((item) => {
       total += item.quantity * item.price;
       savings += item.quantity * (item.price * (item.discount / 100));
-      if (!!item["linkedLensesDetails"]) {
-        total +=
-          item["linkedLensesDetails"].quantity *
-          item["linkedLensesDetails"].price;
-        savings +=
-          item["linkedLensesDetails"].quantity *
-          (item["linkedLensesDetails"].price *
-            (item["linkedLensesDetails"].discount / 100));
-      }
-    });
-    globalData.currentOrder.sunglasses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-      if (!!item["linkedLensesDetails"]) {
-        total +=
-          item["linkedLensesDetails"].quantity *
-          item["linkedLensesDetails"].price;
-        savings +=
-          item["linkedLensesDetails"].quantity *
-          (item["linkedLensesDetails"].price *
-            (item["linkedLensesDetails"].discount / 100));
-      }
-    });
-    globalData.currentOrder.lenses.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
-    });
 
-    globalData.currentOrder.accessories.forEach((item) => {
-      total += item.quantity * item.price;
-      savings += item.quantity * (item.price * (item.discount / 100));
+      // For specs and sunglasses with linked lens
+      if (!!item["linkedLens"] && item.category != productCategories.LENSES) {
+        total += item["linkedLens"].quantity * item["linkedLens"].price;
+        savings +=
+          item["linkedLens"].quantity *
+          (item["linkedLens"].price * (item["linkedLens"].discount / 100));
+      }
     });
 
     setProductsTotal(total);
@@ -65,7 +48,7 @@ const MyCart = ({ navigation }) => {
 
   return (
     <View style={{ backgroundColor: app_bg, height: "100%" }}>
-      {globalData.currentOrder.totalItems === 0 ? (
+      {globalData.orderItems.length === 0 ? (
         <>
           {/* Screen Title */}
           <Text
@@ -94,31 +77,19 @@ const MyCart = ({ navigation }) => {
           <View style={{ width: "67%", paddingHorizontal: "2%" }}>
             {/* Screen Title */}
             <Text style={styles.screen_title}>
-              My Cart ({globalData.currentOrder.totalItems})
+              My Cart ({globalData.orderItems.length})
             </Text>
             {/* Cart Items */}
             <ScrollView>
-              {(globalData.currentOrder.specs.length !== 0 ||
-                globalData.currentOrder.sunglasses.length !== 0 ||
-                globalData.currentOrder.lenses.length !== 0) && (
+              {true && (
                 <View>
-                  <Text style={styles.section_title}>Eyeware</Text>
-                  {globalData.currentOrder.specs.map((item, index) => (
-                    <CartItemCard data={item} key={index} category="specs" />
-                  ))}
-                  {globalData.currentOrder.sunglasses.map((item, index) => (
-                    <CartItemCard
-                      data={item}
-                      key={index}
-                      category="sunglasses"
-                    />
-                  ))}
-                  {globalData.currentOrder.lenses.map((item, index) => (
-                    <CartItemCard data={item} key={index} category="lenses" />
+                  {/* <Text style={styles.section_title}>Eyeware</Text> */}
+                  {globalData.orderItems.map((item, index) => (
+                    <CartItemCard data={item} key={index} />
                   ))}
                 </View>
               )}
-              {globalData.currentOrder.accessories.length !== 0 && (
+              {/* {globalData.currentOrder.accessories.length !== 0 && (
                 <View>
                   <Text style={styles.section_title}>Accessories</Text>
                   {globalData.currentOrder.accessories.map((item, index) => (
@@ -129,7 +100,7 @@ const MyCart = ({ navigation }) => {
                     />
                   ))}
                 </View>
-              )}
+              )} */}
             </ScrollView>
           </View>
           {/* Cart Summary */}
