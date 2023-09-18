@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  CLOUDINARY_URL,
+  CLOUDINARY_CLOUDNAME,
   customer_primary,
   gradient_end,
   gradient_start,
@@ -66,7 +66,7 @@ const LensesStepper = ({ route, navigation }) => {
     setDiscount(lensesData.discount.toString());
   };
 
-  const handleUploadImage = async () => {
+  const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -88,13 +88,18 @@ const LensesStepper = ({ route, navigation }) => {
     let data = {
       file: base64Img,
       upload_preset: "uz1grhbn",
+      folder: "bifocal preview_image",
     };
 
-    const response = await axios.post(CLOUDINARY_URL, JSON.stringify(data), {
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+    const response = await axios.post(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUDNAME}/upload`,
+      JSON.stringify(data),
+      {
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    );
 
     if (response.status === 200) {
       const data = response.data;
@@ -206,7 +211,7 @@ const LensesStepper = ({ route, navigation }) => {
       <Button
         text={!!previewImage ? "EDIT IMAGE" : "UPLOAD IMAGE"}
         variant={"gradient_start"}
-        onPress={handleUploadImage}
+        onPress={handleImageSelection}
         style={{ marginTop: 20, width: "100%" }}
         icon={
           <MaterialCommunityIcons

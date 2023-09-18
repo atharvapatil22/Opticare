@@ -92,6 +92,8 @@ const AccessoryDetails = ({ route, navigation }) => {
     );
   };
 
+  const addAccessorytoCart = () => {};
+
   // const addAccessorytoCart = () => {
   //   let itemInCart = 0;
   //   // Check if item is already in cart

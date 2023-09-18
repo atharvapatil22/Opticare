@@ -11,7 +11,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
-  CLOUDINARY_URL,
   customer_primary,
   gradient_end,
   gradient_start,
@@ -27,6 +26,7 @@ import axios from "axios";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
+import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
@@ -101,7 +101,7 @@ const SpecsStepper = ({ route, navigation }) => {
     setDiscount(specsData.discount.toString());
   };
 
-  const handleUploadImage = async () => {
+  const handleImageSelection = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       // allowsEditing: true,
@@ -132,34 +132,6 @@ const SpecsStepper = ({ route, navigation }) => {
     setProductImages(temp);
   };
 
-  const uploadImagesToCloudinary = (filesArray) => {
-    // Push all the axios request promise into a single array
-    const uploaders = filesArray.map((file) => {
-      let base64Img = `data:image/jpg;base64,${file.base64}`;
-
-      let data = {
-        file: base64Img,
-        upload_preset: "uz1grhbn",
-      };
-
-      return axios
-        .post(CLOUDINARY_URL, JSON.stringify(data), {
-          headers: {
-            "content-type": "application/json",
-          },
-        })
-        .then(async (response) => {
-          const data = response.data;
-          const fileURL = data.secure_url;
-          console.log("Uploaded image to cloudinary:", fileURL);
-          return fileURL;
-        })
-        .catch((err) => console.log("Cloudinary error", err));
-    });
-
-    return axios.all(uploaders);
-  };
-
   const saveToDatabase = async () => {
     let imageUrls = [];
 
@@ -181,7 +153,7 @@ const SpecsStepper = ({ route, navigation }) => {
     if (imageFiles.length != 0) {
       console.log(`Uploading ${imageFiles.length} new images to cloudinary`);
       try {
-        imageUrls = await uploadImagesToCloudinary(imageFiles);
+        imageUrls = await uploadImagesToCloudinary(imageFiles, "spectacles");
         console.log("Successfully uploaded all images ✔️");
       } catch (err) {
         console.log("Cloudinary error! Failed to upload all images", err);
@@ -327,7 +299,7 @@ const SpecsStepper = ({ route, navigation }) => {
       <Button
         text={"UPLOAD IMAGES"}
         variant={"gradient_start"}
-        onPress={handleUploadImage}
+        onPress={handleImageSelection}
         style={{}}
         icon={
           <MaterialCommunityIcons

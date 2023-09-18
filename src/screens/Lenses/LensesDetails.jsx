@@ -97,6 +97,8 @@ const LensesDetails = ({ route, navigation }) => {
     );
   };
 
+  const addLensestoCart = () => {};
+
   // const addLensestoCart = () => {
   //   let itemInCart = 0;
   //   // Check if item is already in cart

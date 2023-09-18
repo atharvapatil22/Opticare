@@ -16,8 +16,9 @@ export const admin_primary = "#008D80";
 export const app_bg = "#F5F8FA";
 export const text_color = "#262E2E";
 
-export const CLOUDINARY_URL =
-  "https://api.cloudinary.com/v1_1/dspkp4krz/upload";
+export const CLOUDINARY_CLOUDNAME = "dspkp4krz";
+export const CLOUDINARY_API_KEY = "545919893297958";
+export const CLOUDINARY_API_SECRET = "F65gy4UPQzSfI9y7Gk6BVjilCL0";
 
 export const days = [
   "Sunday",
