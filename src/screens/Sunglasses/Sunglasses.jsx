@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 const Sunglasses = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [glasses, setGlasses] = useState([]);
+  const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const store = useSelector((state) => state.globalData);
 
@@ -24,10 +25,28 @@ const Sunglasses = ({ navigation }) => {
     fetchAllGlasses();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchValue]);
+
+  const handleSearch = () => {
+    if (searchValue.trim().length === 0) setSearchedRecords(glasses);
+    else {
+      const searchValLower = searchValue.toLowerCase();
+      const _temp = glasses.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValLower) ||
+          item.id_label.toLowerCase().includes(searchValLower)
+      );
+      setSearchedRecords(_temp);
+      setSearchedRecords(data);
+    }
+  };
+
   const fetchAllGlasses = async () => {
     const { data, error } = await supabase
       .from("products")
-      .select("id,name,price,discount,featured_image")
+      .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.SUNGLASSES);
     if (error) {
       // __api_error
@@ -60,7 +79,7 @@ const Sunglasses = ({ navigation }) => {
           }}
           onChangeText={setSearchValue}
           value={searchValue}
-          placeholder="Type here to search ..."
+          placeholder="Search by product id or name..."
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
@@ -82,7 +101,7 @@ const Sunglasses = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllGlasses} />
         }
       >
-        {glasses.length === 0 ? (
+        {searchedRecords.length === 0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -97,7 +116,7 @@ const Sunglasses = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.grid_container}>
-            {glasses.map((item) => (
+            {searchedRecords.map((item) => (
               <ProductCard
                 data={item}
                 key={item.id}

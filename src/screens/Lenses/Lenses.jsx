@@ -26,6 +26,7 @@ import { useSelector } from "react-redux";
 const Lenses = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [lenses, setLenses] = useState([]);
+  const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const store = useSelector((state) => state.globalData);
 
@@ -33,10 +34,27 @@ const Lenses = ({ navigation }) => {
     fetchAllLenses();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchValue]);
+
+  const handleSearch = () => {
+    if (searchValue.trim().length === 0) setSearchedRecords(lenses);
+    else {
+      const searchValLower = searchValue.toLowerCase();
+      const _temp = lenses.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValLower) ||
+          item.id_label.toLowerCase().includes(searchValLower)
+      );
+      setSearchedRecords(_temp);
+    }
+  };
+
   const fetchAllLenses = async () => {
     const { data, error } = await supabase
       .from("products")
-      .select("id,name,price,discount,lenses(type,material)")
+      .select("id,id_label,name,price,discount,lenses(type,material)")
       .eq("category", productCategories.LENSES);
     if (error) {
       // __api_error
@@ -44,6 +62,7 @@ const Lenses = ({ navigation }) => {
     } else {
       // __api_success
       setLenses(data);
+      setSearchedRecords(data);
     }
   };
 
@@ -110,7 +129,7 @@ const Lenses = ({ navigation }) => {
           }}
           onChangeText={setSearchValue}
           value={searchValue}
-          placeholder="Type here to search ..."
+          placeholder="Search by product id or name..."
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
@@ -132,7 +151,7 @@ const Lenses = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllLenses} />
         }
       >
-        {lenses.length === 0 ? (
+        {searchedRecords.length === 0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -147,7 +166,7 @@ const Lenses = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.grid_container}>
-            {lenses.map((item) => (
+            {searchedRecords.map((item) => (
               <FlatCard key={item.id} data={item} />
             ))}
           </View>

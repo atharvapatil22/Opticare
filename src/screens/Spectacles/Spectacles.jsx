@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 const Spectacles = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [specs, setSpecs] = useState([]);
+  const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const store = useSelector((state) => state.globalData);
@@ -25,10 +26,27 @@ const Spectacles = ({ navigation }) => {
     fetchAllSpecs();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchValue]);
+
+  const handleSearch = () => {
+    if (searchValue.trim().length === 0) setSearchedRecords(specs);
+    else {
+      const searchValLower = searchValue.toLowerCase();
+      const _temp = specs.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValLower) ||
+          item.id_label.toLowerCase().includes(searchValLower)
+      );
+      setSearchedRecords(_temp);
+    }
+  };
+
   const fetchAllSpecs = async () => {
     const { data, error } = await supabase
       .from("products")
-      .select("id,name,price,discount,featured_image")
+      .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.SPECTACLES);
     if (error) {
       // __api_error
@@ -36,6 +54,7 @@ const Spectacles = ({ navigation }) => {
     } else {
       // __api_success
       setSpecs(data);
+      setSearchedRecords(data);
     }
   };
 
@@ -61,7 +80,7 @@ const Spectacles = ({ navigation }) => {
           }}
           onChangeText={setSearchValue}
           value={searchValue}
-          placeholder="Type here to search ..."
+          placeholder="Search by product id or name..."
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
@@ -83,7 +102,7 @@ const Spectacles = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllSpecs} />
         }
       >
-        {specs.length === 0 ? (
+        {searchedRecords.length === 0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -98,7 +117,7 @@ const Spectacles = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.grid_container}>
-            {specs.map((item) => (
+            {searchedRecords.map((item) => (
               <ProductCard
                 data={item}
                 key={item.id}

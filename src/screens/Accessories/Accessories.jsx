@@ -17,6 +17,7 @@ import { useSelector } from "react-redux";
 const Accessories = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [accessories, setAccessories] = useState([]);
+  const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const store = useSelector((state) => state.globalData);
 
@@ -24,10 +25,27 @@ const Accessories = ({ navigation }) => {
     fetchAllAccessories();
   }, []);
 
+  useEffect(() => {
+    handleSearch();
+  }, [searchValue]);
+
+  const handleSearch = () => {
+    if (searchValue.trim().length === 0) setSearchedRecords(accessories);
+    else {
+      const searchValLower = searchValue.toLowerCase();
+      const _temp = accessories.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValLower) ||
+          item.id_label.toLowerCase().includes(searchValLower)
+      );
+      setSearchedRecords(_temp);
+    }
+  };
+
   const fetchAllAccessories = async () => {
     const { data, error } = await supabase
       .from("products")
-      .select("id,name,price,discount,featured_image")
+      .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.ACCESSORIES);
     if (error) {
       // __api_error
@@ -35,6 +53,7 @@ const Accessories = ({ navigation }) => {
     } else {
       // __api_success
       setAccessories(data);
+      setSearchedRecords(data);
     }
   };
 
@@ -60,7 +79,7 @@ const Accessories = ({ navigation }) => {
           }}
           onChangeText={setSearchValue}
           value={searchValue}
-          placeholder="Type here to search ..."
+          placeholder="Search by product id or name..."
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
@@ -85,7 +104,7 @@ const Accessories = ({ navigation }) => {
           />
         }
       >
-        {accessories.length === 0 ? (
+        {searchedRecords.length === 0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -100,7 +119,7 @@ const Accessories = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.grid_container}>
-            {accessories.map((item) => (
+            {searchedRecords.map((item) => (
               <ProductCard
                 data={item}
                 key={item.id}
