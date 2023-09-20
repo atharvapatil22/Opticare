@@ -190,6 +190,18 @@ const CartItemCard = ({ data }) => {
               {/* {data.linkedlens.type} Lens */}
             </Text>
           )}
+          {data.category === "lenses" && (
+            <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <TouchableOpacity
+                style={styles.power_buttons}
+                onPress={() => setShowEditModal(true)}
+              >
+                <Text style={styles.power_btn_text}>
+                  {!!data.linkedLens.eye_power ? "Edit power" : "Add power"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
         <View
           style={{

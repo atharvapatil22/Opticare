@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
+import { View, Text, ScrollView, Image, StyleSheet, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
@@ -19,6 +19,7 @@ const MyCart = ({ navigation }) => {
   const [productsTotal, setProductsTotal] = useState(0);
   const [savings, setSavings] = useState(0);
   const [subTotal, setSubTotal] = useState(0);
+  const [hasLensPowers, setHasLensPowers] = useState(false);
 
   useEffect(() => {
     setCartSummaryValues();
@@ -28,22 +29,33 @@ const MyCart = ({ navigation }) => {
     let total = 0;
     let savings = 0;
 
+    let total_lenses = 0;
+    let power_set_for_lenses = 0;
+
     globalData.orderItems.forEach((item) => {
       total += item.quantity * item.price;
       savings += item.quantity * (item.price * (item.discount / 100));
 
-      // For specs and sunglasses with linked lens
-      if (!!item["linkedLens"] && item.category != productCategories.LENSES) {
-        total += item["linkedLens"].quantity * item["linkedLens"].price;
-        savings +=
-          item["linkedLens"].quantity *
-          (item["linkedLens"].price * (item["linkedLens"].discount / 100));
+      // For all lenses
+      if (!!item["linkedLens"]) {
+        // If lens is linked to specs or glasses, include its price
+        if (item.category != productCategories.LENSES) {
+          total += item["linkedLens"].quantity * item["linkedLens"].price;
+          savings +=
+            item["linkedLens"].quantity *
+            (item["linkedLens"].price * (item["linkedLens"].discount / 100));
+        }
+
+        // Lens power calc
+        total_lenses += 1;
+        if (!!item["linkedLens"].eye_power) power_set_for_lenses += 1;
       }
     });
 
     setProductsTotal(total);
     setSavings(savings);
     setSubTotal(total - savings);
+    setHasLensPowers(total_lenses - power_set_for_lenses === 0);
   };
 
   return (
@@ -113,11 +125,18 @@ const MyCart = ({ navigation }) => {
             }}
           >
             <CartSummary
-              handleCTA={() =>
-                navigation.navigate("Order Checkout", {
-                  billingInfo: { productsTotal, savings, subTotal },
-                })
-              }
+              handleCTA={() => {
+                if (hasLensPowers)
+                  navigation.navigate("Order Checkout", {
+                    billingInfo: { productsTotal, savings, subTotal },
+                  });
+                else
+                  Alert.alert(
+                    "Add powers!",
+                    "Please add eye power to all lenses before proceeding",
+                    [{ text: "OK", onPress: () => {} }]
+                  );
+              }}
               screen={"MyCart"}
               billingInfo={{ productsTotal, savings, subTotal }}
             />
