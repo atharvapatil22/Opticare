@@ -63,7 +63,7 @@ const LensesStepper = ({ route, navigation }) => {
     setPreviewImage(lensesData.lenses.previewImage);
 
     setPrice(lensesData.price.toString());
-    setDiscount(lensesData.discount.toString());
+    // setDiscount(lensesData.discount.toString());
   };
 
   const handleImageSelection = async () => {
@@ -133,7 +133,7 @@ const LensesStepper = ({ route, navigation }) => {
       id_label: idLabel,
       brand: brand,
       price: parseInt(price),
-      discount: parseInt(discount),
+      // discount: parseInt(discount),
     };
     const lensFields = {
       material: material,
@@ -170,7 +170,7 @@ const LensesStepper = ({ route, navigation }) => {
         break;
       case 2:
         setPrice("");
-        setDiscount("0");
+        // setDiscount("0");
         break;
       default:
         break;
@@ -416,7 +416,7 @@ const LensesStepper = ({ route, navigation }) => {
                           }
                         />
                       </View>
-                      <View style={styles.form_field}>
+                      {/* <View style={styles.form_field}>
                         <Text style={styles.form_label}>Discount (in %)</Text>
                         <TextInput
                           style={styles.text_field}
@@ -424,7 +424,7 @@ const LensesStepper = ({ route, navigation }) => {
                           value={discount}
                           keyboardType="numeric"
                         />
-                      </View>
+                      </View> */}
                     </View>
                   ) : (
                     <>
