@@ -1,6 +1,7 @@
 import {
   ADD_CART_ITEM,
   CLEAR_CART2,
+  EDIT_LENS_POWER,
   UPDATE_ITEM_QUANTITY2,
   USER_LEVEL_SET,
 } from "./types";
@@ -32,6 +33,13 @@ export const updateItemQuantity2 = (itemData) => {
 export const clearCart2 = (payload) => {
   return {
     type: CLEAR_CART2,
+    payload: payload,
+  };
+};
+
+export const editLensPower = (payload) => {
+  return {
+    type: EDIT_LENS_POWER,
     payload: payload,
   };
 };

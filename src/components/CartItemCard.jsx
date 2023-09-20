@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useDispatch } from "react-redux";
 import { updateItemQuantity2 } from "../redux/actions";
@@ -17,9 +17,13 @@ import {
   grey2,
   text_color,
 } from "../constants";
+import AddPowerRecord from "./EyePowerModals/AddPowerRecord";
+import EditLensPower from "./EyePowerModals/EditLensPower";
 
 const CartItemCard = ({ data }) => {
   const dispatch = useDispatch();
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
 
   const LinkedLenses = () => {
     return (
@@ -86,6 +90,16 @@ const CartItemCard = ({ data }) => {
           >
             {data.linkedLens.type} Lens
           </Text>
+          <View style={{ flexDirection: "row", marginTop: 10 }}>
+            <TouchableOpacity
+              style={styles.power_buttons}
+              onPress={() => setShowEditModal(true)}
+            >
+              <Text style={styles.power_btn_text}>
+                {!!data.linkedLens.eye_power ? "Edit power" : "Add power"}
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -275,6 +289,16 @@ const CartItemCard = ({ data }) => {
       </View>
       {(data.category === "spectacles" || data.category == "sunglasses") &&
         !!data.linkedLens && <LinkedLenses />}
+      {!!showAddModal && (
+        <AddPowerRecord onClose={() => setShowAddModal(false)} />
+      )}
+      {!!showEditModal && (
+        <EditLensPower
+          data={data}
+          onClose={() => setShowEditModal(false)}
+          onAddRecord={() => setShowAddModal(true)}
+        />
+      )}
     </View>
   );
 };
@@ -296,5 +320,15 @@ const styles = StyleSheet.create({
     borderColor: grey1,
     borderRadius: 16,
     justifyContent: "center",
+  },
+  power_btn_text: { fontSize: 18, color: customer_primary },
+  power_buttons: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: customer_primary,
+    paddingHorizontal: "3%",
+    paddingVertical: "2%",
+    borderRadius: 12,
+    marginRight: 15,
   },
 });

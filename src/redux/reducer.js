@@ -1,6 +1,7 @@
 import {
   ADD_CART_ITEM,
   CLEAR_CART2,
+  EDIT_LENS_POWER,
   UPDATE_ITEM_QUANTITY2,
   USER_LEVEL_SET,
 } from "./types";
@@ -13,6 +14,9 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   let new_state = { ...state };
+  let product_id = null,
+    item_to_update = null;
+
   switch (action.type) {
     case USER_LEVEL_SET:
       return {
@@ -25,10 +29,11 @@ const reducer = (state = initialState, action) => {
       return new_state;
 
     case UPDATE_ITEM_QUANTITY2:
-      const { product_id, quantity } = action.payload;
+      const { quantity } = action.payload;
+      product_id = action.payload.product_id;
 
       // Find Index
-      const item_to_update = new_state.orderItems.findIndex(
+      item_to_update = new_state.orderItems.findIndex(
         (obj) => obj.product_id == product_id
       );
 
@@ -55,6 +60,19 @@ const reducer = (state = initialState, action) => {
         ...state,
         orderItems: [],
       };
+
+    case EDIT_LENS_POWER:
+      console.log("came here");
+      const { power } = action.payload;
+      product_id = action.payload.product_id;
+
+      // Find Index
+      item_to_update = new_state.orderItems.findIndex(
+        (obj) => obj.product_id == product_id
+      );
+      new_state.orderItems[item_to_update].linkedLens.eye_power = power;
+      console.log("finished opps", new_state);
+      return new_state;
 
     default:
       return state;
