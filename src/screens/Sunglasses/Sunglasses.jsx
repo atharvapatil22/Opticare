@@ -54,6 +54,7 @@ const Sunglasses = ({ navigation }) => {
     } else {
       // __api_success
       setGlasses(data);
+      setSearchedRecords(data);
     }
   };
 

@@ -34,7 +34,7 @@ const AllOrders = ({ navigation }) => {
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "id,order_id,created_at,items_total,items_completed,payment_total,payment_completed,customer_name"
+        "id,order_number,created_at,items_total,items_completed,payment_total,payment_completed,customer_name"
       );
     if (error) {
       // __api_error
@@ -104,7 +104,7 @@ const AllOrders = ({ navigation }) => {
               fontFamily: "Inter-Medium",
             }}
           >
-            Order#: {data.order_id}
+            Order#: {data.order_number}
           </Text>
           <Text
             style={{

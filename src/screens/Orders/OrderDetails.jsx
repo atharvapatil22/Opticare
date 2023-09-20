@@ -13,7 +13,7 @@ import {
 import { supabase } from "../../supabase/client";
 import { StyleSheet } from "react-native";
 import { Ionicons, Entypo } from "@expo/vector-icons";
-import { Image } from "react-native";
+import { TouchableOpacity } from "react-native";
 
 const OrderDetails = ({ route }) => {
   const { id: orderId } = route.params;
@@ -28,7 +28,7 @@ const OrderDetails = ({ route }) => {
   const fetchOrderDetails = async () => {
     const { data, error } = await supabase
       .from("orders")
-      .select("*")
+      .select("*,orderItems(*)")
       .eq("id", orderId);
     if (error) {
       // __api_error
@@ -84,8 +84,14 @@ const OrderDetails = ({ route }) => {
           marginTop: 14,
         }}
       >
-        <View style={{ flexDirection: "row" }}>
-          <View style={styles.image_container}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* <View style={styles.image_container}>
             {data.product_type === "lenses" ? (
               <Image
                 source={require("../../assets/stock_lenses.png")}
@@ -97,7 +103,7 @@ const OrderDetails = ({ route }) => {
                 style={{ width: "100%", aspectRatio: "16/9" }}
               />
             )}
-          </View>
+          </View> */}
           <View style={{ marginLeft: 12 }}>
             <Text
               style={{
@@ -116,8 +122,29 @@ const OrderDetails = ({ route }) => {
               {data.price * ((100 - data.discount) / 100) * data.quantity}
             </Text>
           </View>
+
+          {!data.is_delivered && (
+            <TouchableOpacity
+              style={{
+                alignSelf: "flex-start",
+                paddingHorizontal: "2%",
+                paddingVertical: "1%",
+                marginTop: 12,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontFamily: "Inter-Medium",
+                  color: customer_primary,
+                }}
+              >
+                Mark as delivered
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
-        {!!data.linkedLenses && (
+        {!!data.linked_lens && (
           <View
             style={{
               backgroundColor: gradient_start,
@@ -136,16 +163,13 @@ const OrderDetails = ({ route }) => {
               Linked Lens
             </Text>
             <Text style={styles.cart_item_text}>
-              {data.linkedLenses} - {data.linkedLensesDetails.name}
+              {data.linked_lens.type} - {data.linked_lens.name}
             </Text>
             <Text style={styles.cart_item_text}>
-              Quantity: {data.linkedLensesDetails.quantity}
+              Quantity: {data.linked_lens.quantity}
             </Text>
             <Text style={styles.cart_item_text}>
-              Subtotal: ₹
-              {data.linkedLensesDetails.price *
-                ((100 - data.linkedLensesDetails.discount) / 100) *
-                data.linkedLensesDetails.quantity}
+              Subtotal: ₹{data.linked_lens.price * data.linked_lens.quantity}
             </Text>
           </View>
         )}
@@ -167,7 +191,7 @@ const OrderDetails = ({ route }) => {
                 color: customer_primary,
               }}
             >
-              Order#: {orderData.order_id}
+              Order#: {orderData.order_number}
             </Text>
             {!!creationDate && (
               <Text style={styles.text_big}>
@@ -268,10 +292,10 @@ const OrderDetails = ({ route }) => {
             >
               <SummaryRow
                 label={"Products total"}
-                value={orderData.payment_productsMRP}
+                value={orderData.bill_products_total}
               />
-              <SummaryRow label={"Savings"} value={orderData.payment_savings} />
-              <SummaryRow label={"GST"} value={orderData.payment_gst} />
+              <SummaryRow label={"Savings"} value={orderData.bill_savings} />
+
               <View
                 style={{
                   borderBottomWidth: 1,
@@ -306,9 +330,10 @@ const OrderDetails = ({ route }) => {
                     Undelivered Items (
                     {orderData.items_total - orderData.items_completed})
                   </Text>
-                  {orderData.undelivered_items.map((item, index) => (
-                    <ItemCard key={index} data={item} />
-                  ))}
+                  {orderData.orderItems.map((item, index) => {
+                    if (!item.is_delivered)
+                      return <ItemCard key={index} data={item} />;
+                  })}
                 </View>
               )}
 
@@ -324,9 +349,10 @@ const OrderDetails = ({ route }) => {
                   >
                     Delivered Items ({orderData.items_completed})
                   </Text>
-                  {orderData.delivered_items.map((item, index) => (
-                    <ItemCard key={index} data={item} />
-                  ))}
+                  {orderData.orderItems.map((item, index) => {
+                    if (item.is_delivered)
+                      return <ItemCard key={index} data={item} />;
+                  })}
                 </View>
               )}
             </ScrollView>
