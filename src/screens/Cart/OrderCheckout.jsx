@@ -42,57 +42,22 @@ const OrderCheckout = ({ route, navigation }) => {
     else setCurrentStep(currentStep + 1);
   };
 
-  const placeOrder = async () => {
-    // 1] Make Order ID
-    // __update logic later
-    const date = new Date();
-    const orderId =
-      date.getFullYear().toString() +
-      (date.getMonth() + 1).toString().padStart(2, "0") +
-      date.getDate().toString() +
-      "_" +
-      Math.floor(Math.random() * (999 - 100 + 1) + 100).toString();
-
-    // 2] Sort Items into delivered and undelivered:
-    let undelivered = [];
-    let delivered = [];
-    globalData.currentOrder.specs.forEach((item) => {
-      if (item.linkedLenses === null) delivered.push(item);
-      else undelivered.push(item);
+  const insertOrderItems = async (orderItems, orderId) => {
+    // add id to all items
+    const _items = orderItems.map((item) => {
+      return { ...item, order_id: orderId };
     });
-    globalData.currentOrder.sunglasses.forEach((item) => {
-      if (item.linkedLenses === null) delivered.push(item);
-      else undelivered.push(item);
-    });
-    undelivered = undelivered.concat(globalData.currentOrder.lenses);
-    delivered = delivered.concat(globalData.currentOrder.accessories);
+    const { data, error } = await supabase
+      .from("orderItems")
+      .insert(_items)
+      .select();
 
-    const finalObj = {
-      order_id: orderId,
-      delivered_at: date,
-      customer_name: customerName,
-      customer_number: customerNumber,
-      sales_person: salesPerson,
-      mode_of_payment: paymentInfo,
-      payment_productsMRP: Math.round(billingInfo.productsTotal),
-      payment_savings: Math.round(billingInfo.savings),
-      payment_gst: Math.round(billingInfo.subTotal * 0.18),
-      payment_total: Math.round(billingInfo.subTotal * 1.18),
-      payment_completed: Math.round(billingInfo.subTotal * 1.18),
-      items_total: delivered.length + undelivered.length,
-      items_completed: delivered.length,
-      delivered_items: delivered,
-      undelivered_items: undelivered,
-    };
-
-    response = await supabase.from("orders").insert([finalObj]).select();
-
-    if (response.error) {
+    if (error) {
       // __api_error
-      console.log("api_error", response.error);
+      console.log("api_error", error);
     } else {
       // __api_success
-      console.log("success", response.data);
+      console.log("success Order Items created", data);
       Alert.alert(
         "Success!",
         "Order placed successfully",
@@ -107,6 +72,82 @@ const OrderCheckout = ({ route, navigation }) => {
         ],
         { cancelable: false }
       );
+    }
+  };
+
+  const placeOrder = async () => {
+    let unDeliveredItems = 0;
+
+    // 1] Make Order ID
+    // __update logic later
+    const date = new Date();
+    const orderNumber =
+      date.getFullYear().toString() +
+      (date.getMonth() + 1).toString().padStart(2, "0") +
+      date.getDate().toString() +
+      "_" +
+      Math.floor(Math.random() * (999 - 100 + 1) + 100).toString();
+
+    // 2] Prepare order Items
+    const orderItems = globalData.orderItems.map((item) => {
+      const effectivePrice = item.price * ((100 - item.discount) / 100);
+      let isDelivered = true;
+      let linkedLens = null;
+
+      if (!!item.linkedLens) {
+        //
+        isDelivered = false;
+        unDeliveredItems += 1;
+
+        //
+        linkedLens = {
+          id: item.linkedLens.id,
+          name: item.linkedLens.name,
+          effective_price:
+            item.linkedLens.price * ((100 - item.linkedLens.discount) / 100),
+          quantity: item.linkedLens.quantity,
+          eye_power: item.linkedLens.eye_power,
+        };
+      }
+
+      return {
+        product_id: item.product_id,
+        name: item.name,
+        price: effectivePrice,
+        quantity: item.quantity,
+        is_delivered: isDelivered,
+        linked_lens: linkedLens,
+      };
+    });
+
+    const finalObj = {
+      order_number: orderNumber,
+      delivered_at: unDeliveredItems === 0 ? date : null,
+      customer_name: customerName,
+      customer_number: customerNumber,
+      sales_person: salesPerson,
+      mode_of_payment: paymentInfo,
+      payment_total: Math.round(billingInfo.subTotal * 1.18),
+      payment_completed: Math.round(billingInfo.subTotal * 1.18),
+      items_total: orderItems.length,
+      items_completed: orderItems.length - unDeliveredItems,
+      bill_products_total: Math.round(billingInfo.productsTotal),
+      bill_products_savings: Math.round(billingInfo.savings),
+      bill_other_charges: null,
+    };
+
+    const { data, error } = await supabase
+      .from("orders")
+      .insert([finalObj])
+      .select();
+
+    if (error) {
+      // __api_error
+      console.log("api_error", error);
+    } else {
+      // __api_success
+      console.log("success Order Object created", data);
+      insertOrderItems(orderItems, data[0].id);
     }
   };
 

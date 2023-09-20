@@ -22,7 +22,7 @@ const CartSummary = ({
       </Text>
       <View style={styles.summary_body}>
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Products Total</Text>
+          <Text style={styles.summary_text}>Items Total</Text>
           <Text style={styles.summary_text}>₹{billingInfo.productsTotal}</Text>
         </View>
         <View style={styles.summary_field}>
@@ -30,7 +30,7 @@ const CartSummary = ({
           <Text style={styles.summary_text}>-₹{billingInfo.savings}</Text>
         </View>
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Products SubTotal</Text>
+          <Text style={styles.summary_text}>Effective Items Total</Text>
           <Text style={styles.summary_text}>₹{billingInfo.subTotal}</Text>
         </View>
         <View
@@ -40,12 +40,6 @@ const CartSummary = ({
             borderColor: grey1,
           }}
         />
-        <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>GST (18%)</Text>
-          <Text style={styles.summary_text}>
-            ₹{billingInfo.subTotal * 0.18}
-          </Text>
-        </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Other Charges</Text>
           <Text style={styles.summary_text}>0</Text>
@@ -58,17 +52,10 @@ const CartSummary = ({
           }}
         />
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Total</Text>
-          <Text style={styles.summary_text}>
-            ₹{billingInfo.subTotal * 1.18}
-          </Text>
+          <Text style={styles.summary_text}>Grand Total</Text>
+          <Text style={styles.summary_text}>₹{billingInfo.subTotal}</Text>
         </View>
-        <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Total roundOff</Text>
-          <Text style={styles.summary_text}>
-            ₹{billingInfo.subTotal * 1.18}
-          </Text>
-        </View>
+
         {screen === "MyCart" && (
           <>
             <Text
