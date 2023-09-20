@@ -17,15 +17,15 @@ import {
   grey2,
   grey1,
   productCategories,
+  text_color,
 } from "../../constants";
 import Button from "../../components/Button";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { supabase } from "../../supabase/client";
 import axios from "axios";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { SelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
+import SelectDropdown from "react-native-select-dropdown";
+import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const LensesStepper = ({ route, navigation }) => {
   const { editing, lensesData } = route.params;
@@ -341,33 +341,38 @@ const LensesStepper = ({ route, navigation }) => {
                       </View>
                       <View style={styles.form_field}>
                         <Text style={styles.form_label}>Type</Text>
-                        <SelectList
-                          search={false}
-                          setSelected={(val) => setType(val)}
-                          data={[
-                            { key: "1", value: "Single Vision" },
-                            { key: "2", value: "Bifocal / Progressive" },
-                          ]}
-                          defaultOption={{ key: "1", value: "Single Vision" }}
-                          save="value"
-                          boxStyles={{ borderColor: grey2 }}
-                          dropdownStyles={{ borderColor: grey2 }}
+                        <SelectDropdown
+                          renderDropdownIcon={() => (
+                            <Entypo
+                              name="chevron-down"
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          defaultValue={type}
+                          data={["Single Vision", "Bifocal / Progressive"]}
+                          onSelect={(selectedItem, index) => {
+                            setType(selectedItem);
+                          }}
+                          buttonStyle={styles.dropdown}
                         />
                       </View>
                       <View style={styles.form_field}>
                         <Text style={styles.form_label}>Material</Text>
-                        <SelectList
-                          search={false}
-                          setSelected={(val) => setMaterial(val)}
-                          data={[
-                            { key: "1", value: "Glass" },
-                            { key: "2", value: "MR7" },
-                            { key: "3", value: "MR8" },
-                          ]}
-                          defaultOption={{ key: "1", value: "Glass" }}
-                          save="value"
-                          boxStyles={{ borderColor: grey2 }}
-                          dropdownStyles={{ borderColor: grey2 }}
+                        <SelectDropdown
+                          renderDropdownIcon={() => (
+                            <Entypo
+                              name="chevron-down"
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          defaultValue={material}
+                          data={["Glass", "MR7", "MR8"]}
+                          onSelect={(selectedItem, index) => {
+                            setMaterial(selectedItem);
+                          }}
+                          buttonStyle={styles.dropdown}
                         />
                       </View>
                     </View>
@@ -533,5 +538,12 @@ const styles = StyleSheet.create({
     padding: 4,
     borderWidth: 1,
     borderRadius: 8,
+  },
+  dropdown: {
+    borderWidth: 1,
+    width: "100%",
+    borderColor: grey2,
+    borderRadius: 8,
+    backgroundColor: "white",
   },
 });

@@ -18,16 +18,19 @@ import {
   grey1,
   productCategories,
 } from "../../constants";
-import { SelectList } from "react-native-dropdown-select-list";
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import { supabase } from "../../supabase/client";
-import axios from "axios";
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+  Entypo,
+} from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
+import SelectDropdown from "react-native-select-dropdown";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;
@@ -56,7 +59,7 @@ const GlassesStepper = ({ route, navigation }) => {
   const [width, setWidth] = useState(null);
   const [dimensions, setDimensions] = useState("");
   const [size, setSize] = useState("Medium");
-  const [warranty, setWarranty] = useState(1);
+  const [warranty, setWarranty] = useState("1 Year");
   // Step 4
   const [linkedSingle, setLinkedSingle] = useState(false);
   const [linkedBifocal, setLinkedBifocal] = useState(false);
@@ -232,7 +235,7 @@ const GlassesStepper = ({ route, navigation }) => {
         setWidth(null);
         setDimensions("");
         setSize("Medium");
-        setWarranty(1);
+        setWarranty("1 Year");
 
         break;
       case 3:
@@ -436,18 +439,20 @@ const GlassesStepper = ({ route, navigation }) => {
                       </View>
                       <View style={styles.form_field}>
                         <Text style={styles.form_label}>Gender</Text>
-                        <SelectList
-                          search={false}
-                          setSelected={(val) => setGender(val)}
-                          data={[
-                            { key: "1", value: "Unisex" },
-                            { key: "2", value: "Male" },
-                            { key: "3", value: "Female" },
-                          ]}
-                          defaultOption={{ key: "1", value: "Unisex" }}
-                          save="value"
-                          boxStyles={{ borderColor: grey2 }}
-                          dropdownStyles={{ borderColor: grey2 }}
+                        <SelectDropdown
+                          renderDropdownIcon={() => (
+                            <Entypo
+                              name="chevron-down"
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          defaultValue={gender}
+                          data={["Unisex", "Male", "Female"]}
+                          onSelect={(selectedItem, index) => {
+                            setGender(selectedItem);
+                          }}
+                          buttonStyle={styles.dropdown}
                         />
                       </View>
                     </View>
@@ -589,20 +594,27 @@ const GlassesStepper = ({ route, navigation }) => {
                       </View>
                       <View style={styles.form_field}>
                         <Text style={styles.form_label}>Size</Text>
-                        <SelectList
-                          search={false}
-                          setSelected={(val) => setSize(val)}
+
+                        <SelectDropdown
+                          renderDropdownIcon={() => (
+                            <Entypo
+                              name="chevron-down"
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          defaultValue={size}
                           data={[
-                            { key: "1", value: "Extra Narrow" },
-                            { key: "2", value: "Narrow" },
-                            { key: "3", value: "Medium" },
-                            { key: "4", value: "Wide" },
-                            { key: "5", value: "Extra Wide" },
+                            "Extra Narrow",
+                            "Narrow",
+                            "Medium",
+                            "Wide",
+                            "Extra Wide",
                           ]}
-                          defaultOption={{ key: "3", value: "Medium" }}
-                          save="value"
-                          boxStyles={{ borderColor: grey2 }}
-                          dropdownStyles={{ borderColor: grey2 }}
+                          onSelect={(selectedItem, index) => {
+                            setSize(selectedItem);
+                          }}
+                          buttonStyle={styles.dropdown}
                         />
                       </View>
                       <View style={styles.form_field}>
@@ -633,18 +645,21 @@ const GlassesStepper = ({ route, navigation }) => {
                       </View>
                       <View style={styles.form_field}>
                         <Text style={styles.form_label}>Product Warranty</Text>
-                        <SelectList
-                          search={false}
-                          setSelected={(val) => setWarranty(val)}
-                          data={[
-                            { key: "1", value: "1 Year" },
-                            { key: "2", value: "2 Years" },
-                            { key: "3", value: "3 Years" },
-                          ]}
-                          defaultOption={{ key: "1", value: "1 Year" }}
-                          save="key"
-                          boxStyles={{ borderColor: grey2 }}
-                          dropdownStyles={{ borderColor: grey2 }}
+
+                        <SelectDropdown
+                          renderDropdownIcon={() => (
+                            <Entypo
+                              name="chevron-down"
+                              size={24}
+                              color="black"
+                            />
+                          )}
+                          defaultValue={warranty}
+                          data={["1 Year", "2 Years", "3 Years"]}
+                          onSelect={(selectedItem, index) => {
+                            setWarranty(selectedItem);
+                          }}
+                          buttonStyle={styles.dropdown}
                         />
                       </View>
                     </View>
@@ -797,5 +812,12 @@ const styles = StyleSheet.create({
     width: "33%",
     flexDirection: "row",
     alignItems: "center",
+  },
+  dropdown: {
+    borderWidth: 1,
+    width: "100%",
+    borderColor: grey2,
+    borderRadius: 8,
+    backgroundColor: "white",
   },
 });
