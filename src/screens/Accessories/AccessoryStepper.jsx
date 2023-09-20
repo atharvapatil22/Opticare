@@ -99,12 +99,13 @@ const AccessoryStepper = ({ route, navigation }) => {
         deleteCloudinaryImages.concat([productImages[index]])
       );
     }
-    if (index === featuredImage) {
-      setFeaturedImage(null);
-    }
+
     temp = [].concat(productImages);
     temp.splice(index, 1);
     setProductImages(temp);
+    if (index === featuredImage) {
+      setFeaturedImage(null);
+    } else if (featuredImage > index) setFeaturedImage(featuredImage - 1);
   };
 
   const saveToDatabase = async () => {
@@ -205,6 +206,39 @@ const AccessoryStepper = ({ route, navigation }) => {
     }
   };
 
+  const areFieldsValid = () => {
+    errorMessage = "";
+
+    switch (currentStep) {
+      case 0:
+        if (idLabel.trim().length === 0)
+          errorMessage = "Product ID cannot be blank!";
+        else if (productName.trim().length === 0)
+          errorMessage = "Product Name cannot be blank!";
+        else if (brand.trim().length === 0)
+          errorMessage = "Product Brand cannot be blank!";
+        break;
+      case 1:
+        if (productImages.length === 0)
+          errorMessage = "You must upload at least 1 image!";
+        else if (featuredImage == null)
+          errorMessage = "Featured image not selected!";
+        break;
+      case 3:
+        if (price.trim().length === 0) errorMessage = "Price cannot be blank.";
+        else if (!/^\d+$/.test(price) || parseInt(price) < 1)
+          errorMessage = "Price must be valid non-zero number";
+        break;
+      default:
+        break;
+    }
+
+    if (!!errorMessage) {
+      Alert.alert(errorMessage);
+      return false;
+    } else return true;
+  };
+
   const handleProceed = () => {
     // __handle validations for each step
     switch (currentStep) {
@@ -272,7 +306,9 @@ const AccessoryStepper = ({ route, navigation }) => {
         <Button
           text={currentStep === steps.length - 1 ? "SUBMIT" : "SAVE & PROCEED"}
           variant="aqua"
-          onPress={handleProceed}
+          onPress={() => {
+            if (areFieldsValid()) handleProceed();
+          }}
         />
       </View>
     );
