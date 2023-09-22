@@ -185,7 +185,7 @@ const LensSelector = ({
             }}
           />
           {modalState === "Default" ? (
-            <>
+            <ScrollView>
               {!!linkedSingle && (
                 <TouchableOpacity
                   style={styles.lens_category}
@@ -249,7 +249,7 @@ const LensSelector = ({
                   </TouchableOpacity>
                 </>
               )}
-            </>
+            </ScrollView>
           ) : (
             <>
               <TouchableOpacity

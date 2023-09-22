@@ -36,6 +36,7 @@ const LensesDetails = ({ route, navigation }) => {
 
   const [refreshing, setRefreshing] = useState(false);
   const [lensData, setLensData] = useState(null);
+  const [showPreviewImage, setShowPreviewImage] = useState(false);
 
   useEffect(() => {
     fetchLensDetails();
@@ -296,7 +297,10 @@ const LensesDetails = ({ route, navigation }) => {
               )}
 
               {lensData.lenses.type === "Bifocal / Progressive" && (
-                <View style={styles.side_container}>
+                <TouchableOpacity
+                  style={styles.side_container}
+                  onPress={() => setShowPreviewImage(true)}
+                >
                   <Text
                     style={{
                       fontSize: 20,
@@ -317,7 +321,7 @@ const LensesDetails = ({ route, navigation }) => {
                       aspectRatio: "16/9",
                     }}
                   />
-                </View>
+                </TouchableOpacity>
               )}
             </View>
           </View>
@@ -338,11 +342,34 @@ const LensesDetails = ({ route, navigation }) => {
           </Text>
         </View>
       )}
+      {!!showPreviewImage && (
+        <View
+          style={{
+            position: "absolute",
+            zIndex: 100,
+            width: window.width,
+            height: window.height,
+            backgroundColor: "black",
+          }}
+        >
+          <Image
+            source={{
+              uri: lensData.lenses.preview_image,
+            }}
+            style={{
+              width: "100%",
+              aspectRatio: "16/9",
+            }}
+          />
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 export default LensesDetails;
+
+const window = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   name: { fontSize: 34, fontWeight: "500" },
