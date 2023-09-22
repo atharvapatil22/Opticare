@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { customer_primary, grey1, text_color } from "../constants";
@@ -14,7 +21,7 @@ const CartSummary = ({
   const globalData = useSelector((state) => state.globalData);
 
   return (
-    <>
+    <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
       <Text
         style={{
           fontFamily: "Inter-Medium",
@@ -164,7 +171,7 @@ const CartSummary = ({
           {screen === "MyCart" ? "Proceed to buy" : "PLACE ORDER"}
         </Text>
       </TouchableOpacity>
-    </>
+    </ScrollView>
   );
 };
 

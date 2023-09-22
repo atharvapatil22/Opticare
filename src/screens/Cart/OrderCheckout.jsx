@@ -156,208 +156,214 @@ const OrderCheckout = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{
+    <View
+      style={{
         flexDirection: "row",
         height: "100%",
         backgroundColor: app_bg,
       }}
     >
       <View style={{ width: "67%", paddingHorizontal: "2%" }}>
-        {/* Customer Information */}
-        <View style={styles.section_container}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.section_title}>Customer Information</Text>
-            {currentStep > 0 && (
-              <Ionicons
-                name="checkmark-circle"
-                size={28}
-                color="green"
-                style={{ marginLeft: "2%" }}
-              />
-            )}
-          </View>
+        <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
+          {/* Customer Information */}
+          <View style={styles.section_container}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.section_title}>Customer Information</Text>
+              {currentStep > 0 && (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={28}
+                  color="green"
+                  style={{ marginLeft: "2%" }}
+                />
+              )}
+            </View>
 
-          {currentStep === 0 ? (
-            <>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  marginTop: 16,
-                }}
-              >
-                <View style={{ width: "48%" }}>
-                  <Text style={styles.section_label}>Contact Number</Text>
-                  <TextInput
-                    keyboardType="numeric"
-                    maxLength={10}
-                    style={styles.text_input}
-                    value={customerNumber}
-                    onChangeText={setCustomerNumber}
-                  />
-                </View>
-                <View style={{ width: "48%" }}>
-                  <Text style={styles.section_label}>Full Name</Text>
-                  <TextInput
-                    style={styles.text_input}
-                    value={customerName}
-                    onChangeText={setCustomerName}
-                  />
-                </View>
-              </View>
-              <View style={styles.section_btns}>
-                <Button
-                  text="CLEAR"
-                  variant="white"
-                  onPress={() => {
-                    setCustomerName("");
-                    setCustomerNumber("");
-                  }}
-                />
-                <Button
-                  text="SAVE"
-                  variant="aqua"
-                  onPress={saveCustomerInfo}
-                  style={{ marginLeft: "3%" }}
-                />
-              </View>
-            </>
-          ) : (
-            <>
-              <Text style={styles.saved_field}>{customerNumber}</Text>
-              <Text style={styles.saved_field}>{customerName}</Text>
-            </>
-          )}
-        </View>
-        {/* Salesperson */}
-        <View style={styles.section_container}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.section_title}>Sales Person</Text>
-            {currentStep > 1 && (
-              <Ionicons
-                name="checkmark-circle"
-                size={28}
-                color="green"
-                style={{ marginLeft: "2%" }}
-              />
-            )}
-          </View>
-          {currentStep === 1 && (
-            <>
-              {["Salesperson 1", "Salesperson 2"].map((option, index) => {
-                const isSelected = option === salesPerson;
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => setSalesPerson(option)}
-                    style={{
-                      ...styles.radio_option,
-                      backgroundColor: isSelected ? gradient_start : "white",
-                    }}
-                  >
-                    <MaterialIcons
-                      name={isSelected ? "radio-button-on" : "radio-button-off"}
-                      size={28}
-                      color={isSelected ? customer_primary : grey2}
-                    />
-                    <Text style={{ fontSize: 20, marginLeft: "2%" }}>
-                      {option}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-
-              <View style={styles.section_btns}>
-                <Button
-                  text="SAVE"
-                  variant="aqua"
-                  onPress={() => {
-                    if (salesPerson != "") setCurrentStep(currentStep + 1);
-                  }}
-                />
-              </View>
-            </>
-          )}
-        </View>
-
-        {/* Payment Info */}
-        <View style={styles.section_container}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.section_title}>Payment Info</Text>
-            {currentStep > 2 && (
-              <Ionicons
-                name="checkmark-circle"
-                size={28}
-                color="green"
-                style={{ marginLeft: "2%" }}
-              />
-            )}
-          </View>
-          {currentStep === 2 && (
-            <>
-              <Text style={{ ...styles.section_label, marginTop: 15 }}>
-                Ammount paid
-              </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <TextInput
-                  keyboardType="numeric"
-                  style={{ ...styles.text_input, width: "48%" }}
-                  value={ammountPaid.toString()}
-                  onChangeText={(txt) => {
-                    setAmmountPaid(parseInt(txt) || 0);
-                  }}
-                />
-                <Text
+            {currentStep === 0 ? (
+              <>
+                <View
                   style={{
-                    fontSize: 22,
-                    color: text_color,
-                    fontFamily: "Inter-Regular",
-                    marginLeft: "3%",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginTop: 16,
                   }}
                 >
-                  out of ₹
-                  {billingInfo.productsDiscounted - globalData.couponDiscount}
+                  <View style={{ width: "48%" }}>
+                    <Text style={styles.section_label}>Contact Number</Text>
+                    <TextInput
+                      keyboardType="numeric"
+                      maxLength={10}
+                      style={styles.text_input}
+                      value={customerNumber}
+                      onChangeText={setCustomerNumber}
+                    />
+                  </View>
+                  <View style={{ width: "48%" }}>
+                    <Text style={styles.section_label}>Full Name</Text>
+                    <TextInput
+                      style={styles.text_input}
+                      value={customerName}
+                      onChangeText={setCustomerName}
+                    />
+                  </View>
+                </View>
+                <View style={styles.section_btns}>
+                  <Button
+                    text="CLEAR"
+                    variant="white"
+                    onPress={() => {
+                      setCustomerName("");
+                      setCustomerNumber("");
+                    }}
+                  />
+                  <Button
+                    text="SAVE"
+                    variant="aqua"
+                    onPress={saveCustomerInfo}
+                    style={{ marginLeft: "3%" }}
+                  />
+                </View>
+              </>
+            ) : (
+              <>
+                <Text style={styles.saved_field}>{customerNumber}</Text>
+                <Text style={styles.saved_field}>{customerName}</Text>
+              </>
+            )}
+          </View>
+          {/* Salesperson */}
+          <View style={styles.section_container}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.section_title}>Sales Person</Text>
+              {currentStep > 1 && (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={28}
+                  color="green"
+                  style={{ marginLeft: "2%" }}
+                />
+              )}
+            </View>
+            {currentStep === 1 && (
+              <>
+                {["Salesperson 1", "Salesperson 2"].map((option, index) => {
+                  const isSelected = option === salesPerson;
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setSalesPerson(option)}
+                      style={{
+                        ...styles.radio_option,
+                        backgroundColor: isSelected ? gradient_start : "white",
+                      }}
+                    >
+                      <MaterialIcons
+                        name={
+                          isSelected ? "radio-button-on" : "radio-button-off"
+                        }
+                        size={28}
+                        color={isSelected ? customer_primary : grey2}
+                      />
+                      <Text style={{ fontSize: 20, marginLeft: "2%" }}>
+                        {option}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+
+                <View style={styles.section_btns}>
+                  <Button
+                    text="SAVE"
+                    variant="aqua"
+                    onPress={() => {
+                      if (salesPerson != "") setCurrentStep(currentStep + 1);
+                    }}
+                  />
+                </View>
+              </>
+            )}
+          </View>
+
+          {/* Payment Info */}
+          <View style={styles.section_container}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.section_title}>Payment Info</Text>
+              {currentStep > 2 && (
+                <Ionicons
+                  name="checkmark-circle"
+                  size={28}
+                  color="green"
+                  style={{ marginLeft: "2%" }}
+                />
+              )}
+            </View>
+            {currentStep === 2 && (
+              <>
+                <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                  Ammount paid
                 </Text>
-              </View>
-              <Text style={{ ...styles.section_label, marginTop: 15 }}>
-                Mode of Payment
-              </Text>
-              {["UPI", "Credit card", "Cash"].map((option, index) => {
-                const isSelected = option === paymentInfo;
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => setPaymentInfo(option)}
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TextInput
+                    keyboardType="numeric"
+                    style={{ ...styles.text_input, width: "48%" }}
+                    value={ammountPaid.toString()}
+                    onChangeText={(txt) => {
+                      setAmmountPaid(parseInt(txt) || 0);
+                    }}
+                  />
+                  <Text
                     style={{
-                      ...styles.radio_option,
-                      backgroundColor: isSelected ? gradient_start : "white",
+                      fontSize: 22,
+                      color: text_color,
+                      fontFamily: "Inter-Regular",
+                      marginLeft: "3%",
                     }}
                   >
-                    <MaterialIcons
-                      name={isSelected ? "radio-button-on" : "radio-button-off"}
-                      size={28}
-                      color={isSelected ? customer_primary : grey2}
-                    />
-                    <Text style={{ fontSize: 20, marginLeft: "2%" }}>
-                      {option}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                    out of ₹
+                    {billingInfo.productsDiscounted - globalData.couponDiscount}
+                  </Text>
+                </View>
+                <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                  Mode of Payment
+                </Text>
+                {["UPI", "Credit card", "Cash"].map((option, index) => {
+                  const isSelected = option === paymentInfo;
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => setPaymentInfo(option)}
+                      style={{
+                        ...styles.radio_option,
+                        backgroundColor: isSelected ? gradient_start : "white",
+                      }}
+                    >
+                      <MaterialIcons
+                        name={
+                          isSelected ? "radio-button-on" : "radio-button-off"
+                        }
+                        size={28}
+                        color={isSelected ? customer_primary : grey2}
+                      />
+                      <Text style={{ fontSize: 20, marginLeft: "2%" }}>
+                        {option}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
 
-              <View style={styles.section_btns}>
-                <Button
-                  text="SAVE"
-                  variant="aqua"
-                  onPress={() => {
-                    if (paymentInfo !== "") setCurrentStep(currentStep + 1);
-                  }}
-                />
-              </View>
-            </>
-          )}
-        </View>
+                <View style={styles.section_btns}>
+                  <Button
+                    text="SAVE"
+                    variant="aqua"
+                    onPress={() => {
+                      if (paymentInfo !== "") setCurrentStep(currentStep + 1);
+                    }}
+                  />
+                </View>
+              </>
+            )}
+          </View>
+        </ScrollView>
       </View>
       <LinearGradient
         colors={[gradient_start, gradient_end]}
@@ -374,7 +380,7 @@ const OrderCheckout = ({ route, navigation }) => {
           billingInfo={billingInfo}
         />
       </LinearGradient>
-    </ScrollView>
+    </View>
   );
 };
 
