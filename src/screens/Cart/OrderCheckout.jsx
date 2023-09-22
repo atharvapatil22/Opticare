@@ -34,7 +34,7 @@ const OrderCheckout = ({ route, navigation }) => {
   const [salesPerson, setSalesPerson] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
   const [ammountPaid, setAmmountPaid] = useState(
-    Math.round(billingInfo.subTotal)
+    Math.round(billingInfo.productsDiscounted) - globalData.couponDiscount
   );
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -130,13 +130,14 @@ const OrderCheckout = ({ route, navigation }) => {
       customer_number: customerNumber,
       sales_person: salesPerson,
       mode_of_payment: paymentInfo,
-      payment_total: Math.round(billingInfo.subTotal),
+      payment_total:
+        Math.round(billingInfo.productsDiscounted) - globalData.couponDiscount,
       payment_completed: ammountPaid,
       items_total: orderItems.length,
       items_completed: orderItems.length - unDeliveredItems,
       bill_products_total: Math.round(billingInfo.productsTotal),
       bill_products_savings: Math.round(billingInfo.savings),
-      bill_other_charges: null,
+      bill_coupon_discount: globalData.couponDiscount,
     };
 
     const { data, error } = await supabase
@@ -315,7 +316,8 @@ const OrderCheckout = ({ route, navigation }) => {
                     marginLeft: "3%",
                   }}
                 >
-                  out of ₹{billingInfo.subTotal}
+                  out of ₹
+                  {billingInfo.productsDiscounted - globalData.couponDiscount}
                 </Text>
               </View>
               <Text style={{ ...styles.section_label, marginTop: 15 }}>

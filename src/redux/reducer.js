@@ -1,5 +1,6 @@
 import {
   ADD_CART_ITEM,
+  ADD_COUPON_DISCOUNT,
   CLEAR_CART2,
   EDIT_LENS_POWER,
   UPDATE_ITEM_QUANTITY2,
@@ -8,8 +9,8 @@ import {
 
 const initialState = {
   userLevel: "CUSTOMER",
-
   orderItems: [],
+  couponDiscount: 0,
 };
 
 const reducer = (state = initialState, action) => {
@@ -59,6 +60,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         orderItems: [],
+        couponDiscount: 0,
       };
 
     case EDIT_LENS_POWER:
@@ -73,6 +75,9 @@ const reducer = (state = initialState, action) => {
       new_state.orderItems[item_to_update].linkedLens.eye_power = power;
       console.log("finished opps", new_state);
       return new_state;
+
+    case ADD_COUPON_DISCOUNT:
+      return { ...new_state, couponDiscount: parseInt(action.payload) };
 
     default:
       return state;

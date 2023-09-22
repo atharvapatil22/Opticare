@@ -1,5 +1,6 @@
 import {
   ADD_CART_ITEM,
+  ADD_COUPON_DISCOUNT,
   CLEAR_CART2,
   EDIT_LENS_POWER,
   UPDATE_ITEM_QUANTITY2,
@@ -40,6 +41,13 @@ export const clearCart2 = (payload) => {
 export const editLensPower = (payload) => {
   return {
     type: EDIT_LENS_POWER,
+    payload: payload,
+  };
+};
+
+export const addCouponDiscount = (payload) => {
+  return {
+    type: ADD_COUPON_DISCOUNT,
     payload: payload,
   };
 };

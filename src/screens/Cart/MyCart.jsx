@@ -1,25 +1,40 @@
-import { View, Text, ScrollView, Image, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   app_bg,
+  customer_primary,
   gradient_end,
   gradient_start,
   grey2,
   productCategories,
+  text_color,
 } from "../../constants";
 import CartItemCard from "../../components/CartItemCard";
 import { LinearGradient } from "expo-linear-gradient";
-
 import CartSummary from "../../components/CartSummary";
+import CustomModal from "../../components/CustomModal";
+import { addCouponDiscount } from "../../redux/actions";
 
 const MyCart = ({ navigation }) => {
   const globalData = useSelector((state) => state.globalData);
+  const dispatch = useDispatch();
 
   const [productsTotal, setProductsTotal] = useState(0);
   const [savings, setSavings] = useState(0);
-  const [subTotal, setSubTotal] = useState(0);
+  const [productsDiscounted, setProductsDiscounted] = useState(0);
   const [hasLensPowers, setHasLensPowers] = useState(false);
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
 
   useEffect(() => {
     setCartSummaryValues();
@@ -54,8 +69,25 @@ const MyCart = ({ navigation }) => {
 
     setProductsTotal(total);
     setSavings(savings);
-    setSubTotal(total - savings);
+    setProductsDiscounted(total - savings);
     setHasLensPowers(total_lenses - power_set_for_lenses === 0);
+  };
+
+  const applyCouponDiscount = () => {
+    if (/SAVE[0-9]+/.test(couponCode)) {
+      const discountVal = couponCode.match(/SAVE([0-9]+)/)[1];
+      if (
+        parseInt(discountVal) <= 0 ||
+        parseInt(discountVal) > productsDiscounted
+      )
+        Alert.alert("Invalid coupon code");
+      else {
+        dispatch(addCouponDiscount(discountVal));
+        setShowCouponModal(false);
+      }
+    } else {
+      Alert.alert("Invalid coupon code");
+    }
   };
 
   return (
@@ -128,7 +160,7 @@ const MyCart = ({ navigation }) => {
               handleCTA={() => {
                 if (hasLensPowers)
                   navigation.navigate("Order Checkout", {
-                    billingInfo: { productsTotal, savings, subTotal },
+                    billingInfo: { productsTotal, savings, productsDiscounted },
                   });
                 else
                   Alert.alert(
@@ -138,9 +170,51 @@ const MyCart = ({ navigation }) => {
                   );
               }}
               screen={"MyCart"}
-              billingInfo={{ productsTotal, savings, subTotal }}
+              billingInfo={{ productsTotal, savings, productsDiscounted }}
+              onApplyCoupon={() => {
+                setCouponCode("");
+                setShowCouponModal(true);
+              }}
             />
           </LinearGradient>
+          {!!showCouponModal && (
+            <CustomModal
+              bodyStyles={{
+                width: "30%",
+                minHeight: 240,
+              }}
+              heading={"Apply coupon"}
+              onClose={() => setShowCouponModal(false)}
+              body={
+                <View style={{ paddingHorizontal: "5%" }}>
+                  <Text style={styles.section_title}>Enter coupon code</Text>
+                  <TextInput
+                    style={styles.text_input}
+                    value={couponCode}
+                    onChangeText={setCouponCode}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      ...styles.button,
+                      width: "100%",
+                      marginTop: 25,
+                    }}
+                    onPress={() => applyCouponDiscount()}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 20,
+                        textAlign: "center",
+                      }}
+                    >
+                      Apply
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              }
+            />
+          )}
         </View>
       )}
     </View>
@@ -167,5 +241,24 @@ const styles = StyleSheet.create({
     fontFamily: "Inter-Medium",
     color: grey2,
     marginVertical: 10,
+  },
+  button: {
+    backgroundColor: customer_primary,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    marginTop: 12,
+  },
+  text_input: {
+    borderWidth: 1,
+    borderColor: grey2,
+    fontSize: 22,
+    paddingVertical: 10,
+    paddingHorizontal: "3%",
+    borderRadius: 8,
+    color: text_color,
+    fontFamily: "Inter-Regular",
+    marginTop: 6,
   },
 });

@@ -2,13 +2,17 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { customer_primary, grey1, text_color } from "../constants";
+import { useSelector } from "react-redux";
 
 const CartSummary = ({
   disableCTA = false,
   handleCTA,
   screen,
   billingInfo,
+  onApplyCoupon,
 }) => {
+  const globalData = useSelector((state) => state.globalData);
+
   return (
     <>
       <Text
@@ -31,7 +35,9 @@ const CartSummary = ({
         </View>
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Effective Items Total</Text>
-          <Text style={styles.summary_text}>₹{billingInfo.subTotal}</Text>
+          <Text style={styles.summary_text}>
+            ₹{billingInfo.productsDiscounted}
+          </Text>
         </View>
         <View
           style={{
@@ -44,6 +50,33 @@ const CartSummary = ({
           <Text style={styles.summary_text}>Other Charges</Text>
           <Text style={styles.summary_text}>0</Text>
         </View>
+        {screen === "MyCart" && globalData.couponDiscount == 0 && (
+          <TouchableOpacity onPress={onApplyCoupon}>
+            <Text
+              style={{
+                ...styles.summary_text,
+                color: customer_primary,
+                fontFamily: "Inter-SemiBold",
+                textDecorationLine: "underline",
+              }}
+            >
+              Apply coupon
+            </Text>
+          </TouchableOpacity>
+        )}
+        {globalData.couponDiscount > 0 && (
+          <TouchableOpacity
+            style={styles.summary_field}
+            onPress={onApplyCoupon}
+          >
+            <Text style={styles.summary_text}>Coupon Discount</Text>
+
+            <Text style={styles.summary_text}>
+              -₹{globalData.couponDiscount}
+            </Text>
+          </TouchableOpacity>
+        )}
+
         <View
           style={{
             marginVertical: 12,
@@ -53,7 +86,9 @@ const CartSummary = ({
         />
         <View style={styles.summary_field}>
           <Text style={styles.summary_text}>Grand Total</Text>
-          <Text style={styles.summary_text}>₹{billingInfo.subTotal}</Text>
+          <Text style={styles.summary_text}>
+            ₹{billingInfo.productsDiscounted - globalData.couponDiscount}
+          </Text>
         </View>
 
         {screen === "MyCart" && (
