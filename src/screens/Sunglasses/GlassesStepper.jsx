@@ -31,9 +31,12 @@ import Checkbox from "expo-checkbox";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import SelectDropdown from "react-native-select-dropdown";
+import { Portal, Snackbar } from "react-native-paper";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     "Primary Details",
@@ -205,11 +208,23 @@ const GlassesStepper = ({ route, navigation }) => {
         glassesFields,
         glassesData.id,
         glassesData.sunglasses.id,
-        () => navigation.goBack()
+        () => navigation.goBack(),
+        (snackMsg) => {
+          setSnackMessage(snackMsg);
+          setShowSnackbar(true);
+        }
       );
     // If creating new product
     else
-      createProductAPI(productFields, glassesFields, () => navigation.goBack());
+      createProductAPI(
+        productFields,
+        glassesFields,
+        () => navigation.goBack(),
+        (snackMsg) => {
+          setSnackMessage(snackMsg);
+          setShowSnackbar(true);
+        }
+      );
   };
 
   const handleClearForm = () => {
@@ -388,6 +403,23 @@ const GlassesStepper = ({ route, navigation }) => {
       colors={[gradient_start, gradient_end]}
       style={styles.gradient_container}
     >
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
       <View
         style={{
           backgroundColor: "white",

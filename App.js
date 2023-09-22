@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import store from "./src/redux/store";
 import * as Font from "expo-font";
 import Apploading from "expo-app-loading";
+import { PaperProvider } from "react-native-paper";
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -36,9 +37,11 @@ export default function App() {
   if (fontsLoaded) {
     return (
       <Provider store={store}>
-        <NavigationContainer>
-          <MainNavigator />
-        </NavigationContainer>
+        <PaperProvider>
+          <NavigationContainer>
+            <MainNavigator />
+          </NavigationContainer>
+        </PaperProvider>
       </Provider>
     );
   } else {

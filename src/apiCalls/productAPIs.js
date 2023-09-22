@@ -4,15 +4,19 @@ import { supabase } from "../supabase/client";
 export const createProductAPI = async (
   productFields,
   categoryFields,
-  _callback
+  _callback,
+  _showSnack
 ) => {
   const response1 = await supabase
     .from("products")
     .insert([productFields])
     .select();
   if (response1.error) {
-    // __api_error
-    console.log("api_error", response1.error);
+    console.log(
+      `API ERROR => Error while products object: \n`,
+      response1.error
+    );
+    _showSnack(`Error while creating product record!`);
   } else if (response1.status === 201) {
     console.log("Product record successfully created: ", response1.data);
 
@@ -22,12 +26,14 @@ export const createProductAPI = async (
       .select();
 
     if (response2.error) {
-      // __api_error
-      console.log("api_error", response2.error);
-    } else {
-      // __api_success
       console.log(
-        `${productFields.category} record successfully created: `,
+        `API ERROR => Error while creating ${productFields.category}: \n`,
+        response2.error
+      );
+      _showSnack(`Error while creating ${productFields.category}!`);
+    } else {
+      console.log(
+        `API SUCCESS => ${productFields.category} record successfully created: `,
         response2.data
       );
       Alert.alert(
@@ -45,7 +51,8 @@ export const editProductAPI = async (
   categoryFields,
   productId,
   categoryId,
-  _callback
+  _callback,
+  _showSnack
 ) => {
   const response1 = await supabase
     .from("products")
@@ -54,11 +61,16 @@ export const editProductAPI = async (
     .select();
 
   if (response1.error) {
-    // __api_error
-    console.log("api_error", response1.error);
+    console.log(
+      `API ERROR => Error while editing products object: \n`,
+      response1.error
+    );
+    _showSnack(`Error while editing product record!`);
   } else if (response1.status == 200) {
-    // __api_success
-    console.log("Product record successfully edited: ", response1.data);
+    console.log(
+      "API SUCCESS => Product record successfully edited: ",
+      response1.data
+    );
 
     const response2 = await supabase
       .from(productFields.category)
@@ -67,14 +79,17 @@ export const editProductAPI = async (
       .select();
 
     if (response2.error) {
-      // __api_error
-      console.log("api_error", response2.error);
-    } else {
-      // __api_success
       console.log(
-        `${productFields.category} record successfully edited: `,
+        `API ERROR => Error while editing ${productFields.category} record: \n`,
+        response2.error
+      );
+      _showSnack(`Error while editing ${productFields.category} record!`);
+    } else {
+      console.log(
+        `API SUCCESS => ${productFields.category} record successfully edited: `,
         response2.data
       );
+
       Alert.alert(
         "Success!",
         `${productFields.category} Details successfully updated.`,
@@ -99,8 +114,11 @@ export const deleteProductAPI = async (
     // __api_error
     console.log("api_error");
   } else {
-    // __api_success
-    console.log("Successfully deleted product with id ", productId);
+    console.log(
+      `API SUCCESS => Successfully deleted product with id: `,
+      productId
+    );
+
     Alert.alert(
       "Success!",
       `Deleted ${category}: ` + name,

@@ -13,13 +13,17 @@ import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
+import { Portal, Snackbar } from "react-native-paper";
 
 const Sunglasses = ({ navigation }) => {
+  const store = useSelector((state) => state.globalData);
+
   const [searchValue, setSearchValue] = useState("");
   const [glasses, setGlasses] = useState([]);
   const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const store = useSelector((state) => state.globalData);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
 
   useEffect(() => {
     fetchAllGlasses();
@@ -49,10 +53,12 @@ const Sunglasses = ({ navigation }) => {
       .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.SUNGLASSES);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log("API ERROR => Error in fetch all sunglasses \n", error);
+      setSnackMessage("Error while fetching sunglasses!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      console.log("API SUCCESS => Fetched all sunglasses \n", data);
+
       setGlasses(data);
       setSearchedRecords(data);
     }
@@ -71,6 +77,23 @@ const Sunglasses = ({ navigation }) => {
       >
         Shopping for Sunglasses
       </Text>
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput

@@ -13,12 +13,15 @@ import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
+import { Portal, Snackbar } from "react-native-paper";
 
 const Accessories = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [accessories, setAccessories] = useState([]);
   const [searchedRecords, setSearchedRecords] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const store = useSelector((state) => state.globalData);
 
   useEffect(() => {
@@ -48,10 +51,11 @@ const Accessories = ({ navigation }) => {
       .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.ACCESSORIES);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log("API ERROR => Error in fetch all accessories \n", error);
+      setSnackMessage("Error while fetching accessories!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      console.log("API SUCCESS => Fetched all accessories \n", data);
       setAccessories(data);
       setSearchedRecords(data);
     }
@@ -70,6 +74,23 @@ const Accessories = ({ navigation }) => {
       >
         Shopping for Accessories
       </Text>
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput

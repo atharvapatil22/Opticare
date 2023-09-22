@@ -21,7 +21,6 @@ import {
 import Button from "../../components/Button";
 import * as ImagePicker from "expo-image-picker";
 import { ProgressSteps, ProgressStep } from "react-native-progress-steps";
-import axios from "axios";
 import {
   Feather,
   Ionicons,
@@ -32,9 +31,12 @@ import Checkbox from "expo-checkbox";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import SelectDropdown from "react-native-select-dropdown";
+import { Portal, Snackbar } from "react-native-paper";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     "Primary Details",
@@ -209,11 +211,23 @@ const SpecsStepper = ({ route, navigation }) => {
         specsFields,
         specsData.id,
         specsData.spectacles.id,
-        () => navigation.goBack()
+        () => navigation.goBack(),
+        (snackMsg) => {
+          setSnackMessage(snackMsg);
+          setShowSnackbar(true);
+        }
       );
     // If creating new product
     else
-      createProductAPI(productFields, specsFields, () => navigation.goBack());
+      createProductAPI(
+        productFields,
+        specsFields,
+        () => navigation.goBack(),
+        (snackMsg) => {
+          setSnackMessage(snackMsg);
+          setShowSnackbar(true);
+        }
+      );
   };
 
   const handleClearForm = () => {
@@ -393,6 +407,23 @@ const SpecsStepper = ({ route, navigation }) => {
       colors={[gradient_start, gradient_end]}
       style={styles.gradient_container}
     >
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
       <View
         style={{
           backgroundColor: "white",
