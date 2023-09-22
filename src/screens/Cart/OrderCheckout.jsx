@@ -33,6 +33,9 @@ const OrderCheckout = ({ route, navigation }) => {
   const [customerName, setCustomerName] = useState("");
   const [salesPerson, setSalesPerson] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
+  const [ammountPaid, setAmmountPaid] = useState(
+    Math.round(billingInfo.subTotal)
+  );
 
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -127,8 +130,8 @@ const OrderCheckout = ({ route, navigation }) => {
       customer_number: customerNumber,
       sales_person: salesPerson,
       mode_of_payment: paymentInfo,
-      payment_total: Math.round(billingInfo.subTotal * 1.18),
-      payment_completed: Math.round(billingInfo.subTotal * 1.18),
+      payment_total: Math.round(billingInfo.subTotal),
+      payment_completed: ammountPaid,
       items_total: orderItems.length,
       items_completed: orderItems.length - unDeliveredItems,
       bill_products_total: Math.round(billingInfo.productsTotal),
@@ -292,6 +295,32 @@ const OrderCheckout = ({ route, navigation }) => {
           </View>
           {currentStep === 2 && (
             <>
+              <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                Ammount paid
+              </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <TextInput
+                  keyboardType="numeric"
+                  style={{ ...styles.text_input, width: "48%" }}
+                  value={ammountPaid.toString()}
+                  onChangeText={(txt) => {
+                    setAmmountPaid(parseInt(txt) || 0);
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 22,
+                    color: text_color,
+                    fontFamily: "Inter-Regular",
+                    marginLeft: "3%",
+                  }}
+                >
+                  out of ₹{billingInfo.subTotal}
+                </Text>
+              </View>
+              <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                Mode of Payment
+              </Text>
               {["UPI", "Credit card", "Cash"].map((option, index) => {
                 const isSelected = option === paymentInfo;
                 return (

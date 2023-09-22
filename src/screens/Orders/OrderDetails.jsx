@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import {
   app_bg,
@@ -12,14 +12,23 @@ import {
 } from "../../constants";
 import { supabase } from "../../supabase/client";
 import { StyleSheet } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import {
+  Ionicons,
+  Entypo,
+  MaterialCommunityIcons,
+  Feather,
+} from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
+import CustomModal from "../../components/CustomModal";
 
 const OrderDetails = ({ route }) => {
   const { id: orderId } = route.params;
+
   const [orderData, setOrderData] = useState(null);
   const [creationDate, setCreationDate] = useState(null);
   const [deliveryDate, setDeliveryDate] = useState(null);
+  const [showDuesModal, setShowDuesModal] = useState(false);
+  const [paymentCompleted, setPaymentCompleted] = useState(0);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -36,10 +45,29 @@ const OrderDetails = ({ route }) => {
     } else {
       // __api_success
       setOrderData(data[0]);
+      setPaymentCompleted(data[0].payment_completed);
       setCreationDate(new Date(data[0].created_at));
       if (!!data[0].delivered_at)
         setDeliveryDate(new Date(data[0].delivered_at));
       console.log("Successfully fetched order: ", data);
+    }
+  };
+
+  const handleDuesUpdate = async () => {
+    const { data, error } = await supabase
+      .from("orders")
+      .update({ payment_completed: paymentCompleted })
+      .eq("id", orderData.id)
+      .select();
+
+    if (error) {
+      // __api_error
+      console.log("api_error", error);
+    } else {
+      // __api_success
+      console.log("edited 'payment completed' field", data);
+      fetchOrderDetails();
+      setShowDuesModal(false);
     }
   };
 
@@ -66,13 +94,49 @@ const OrderDetails = ({ route }) => {
             fontFamily: label === "Total" ? "Inter-Medium" : "Inter-Regular",
           }}
         >
-          ₹{value}
+          ₹{value || 0}
         </Text>
       </View>
     );
   };
 
   const ItemCard = ({ data }) => {
+    const markAsDelivered = async () => {
+      let temp = null;
+      orderData.orderItems.forEach((item) => {
+        if (item.id === data.id) {
+          temp = item;
+        }
+      });
+
+      const response = await supabase
+        .from("orderItems")
+        .update({ is_delivered: true })
+        .eq("id", temp.id)
+        .select();
+
+      if (response.error) {
+        // __api_error
+        console.log("api_error", response.error);
+      } else {
+        // __api_success
+        console.log("marked item as completed");
+        const response2 = await supabase
+          .from("orders")
+          .update({ items_completed: orderData.items_completed + 1 })
+          .eq("id", orderData.id)
+          .select();
+
+        if (response2.error) {
+          // __api_error
+          console.log("api_error", response2.error);
+        } else {
+          // __api_success
+          console.log("updated completed items in order");
+          fetchOrderDetails();
+        }
+      }
+    };
     return (
       <View
         style={{
@@ -131,6 +195,7 @@ const OrderDetails = ({ route }) => {
                 paddingVertical: "1%",
                 marginTop: 12,
               }}
+              onPress={markAsDelivered}
             >
               <Text
                 style={{
@@ -184,6 +249,69 @@ const OrderDetails = ({ route }) => {
       {!!orderData ? (
         <>
           <View style={styles.section}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              {orderData.payment_completed === orderData.payment_total &&
+              orderData.items_completed === orderData.items_total ? (
+                <View
+                  style={{
+                    ...styles.order_status,
+                    borderColor: customer_primary,
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="check-decagram"
+                    size={24}
+                    color={customer_primary}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      marginTop: 6,
+                      color: customer_primary,
+                      fontFamily: "Inter-Medium",
+                    }}
+                  >
+                    COMPLETED
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    ...styles.order_status,
+
+                    borderColor: "#FF9800",
+                  }}
+                >
+                  <Feather name="clock" size={24} color="orange" />
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      marginTop: 6,
+                      color: "orange",
+                      fontFamily: "Inter-Medium",
+                    }}
+                  >
+                    INCOMPLETE
+                  </Text>
+                </View>
+              )}
+              {orderData.payment_completed != orderData.payment_total && (
+                <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                  (Payment Remaining)
+                </Text>
+              )}
+              {orderData.items_completed != orderData.items_total && (
+                <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                  (Delivery Remaining)
+                </Text>
+              )}
+            </View>
             <Text
               style={{
                 ...styles.text_big,
@@ -267,9 +395,29 @@ const OrderDetails = ({ route }) => {
                 <Text style={styles.text_medium}>
                   {orderData.mode_of_payment} payment
                 </Text>
-                <Text style={styles.text_medium}>
-                  ₹{orderData.payment_total}
-                </Text>
+                {orderData.payment_total == orderData.payment_completed ? (
+                  <Text style={styles.text_medium}>
+                    ₹{orderData.payment_total}
+                  </Text>
+                ) : (
+                  <>
+                    <Text style={styles.text_medium}>
+                      Ammount Recieved: ₹{orderData.payment_completed}
+                    </Text>
+                    <Text style={styles.text_medium}>
+                      Dues: ₹
+                      {orderData.payment_total - orderData.payment_completed}
+                    </Text>
+                    <TouchableOpacity style={styles.button}>
+                      <Text
+                        style={{ ...styles.text_medium, color: "white" }}
+                        onPress={() => setShowDuesModal(true)}
+                      >
+                        Update
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
               </View>
             </View>
             <Text
@@ -357,6 +505,59 @@ const OrderDetails = ({ route }) => {
               )}
             </ScrollView>
           </View>
+          {showDuesModal && (
+            <CustomModal
+              bodyStyles={{
+                width: "30%",
+                minHeight: 240,
+              }}
+              heading={"Edit dues"}
+              onClose={() => setShowDuesModal(false)}
+              body={
+                <View style={{ paddingHorizontal: "4%", paddingTop: 10 }}>
+                  <Text style={styles.text_medium}>Ammount Paid</Text>
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <TextInput
+                      keyboardType="numeric"
+                      style={{ ...styles.text_input, width: "60%" }}
+                      value={paymentCompleted.toString()}
+                      onChangeText={(txt) => {
+                        setPaymentCompleted(parseInt(txt) || 0);
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        color: text_color,
+                        fontFamily: "Inter-Regular",
+                        marginLeft: "3%",
+                      }}
+                    >
+                      out of ₹{orderData.payment_total}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      ...styles.button,
+                      width: "100%",
+                      marginTop: 25,
+                    }}
+                    onPress={() => handleDuesUpdate()}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 20,
+                        textAlign: "center",
+                      }}
+                    >
+                      Save
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              }
+            />
+          )}
         </>
       ) : (
         <View
@@ -416,4 +617,31 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cart_item_text: { fontSize: 17, marginTop: 4, fontFamily: "Inter-Regular" },
+  text_input: {
+    borderWidth: 1,
+    borderColor: grey2,
+    fontSize: 22,
+    paddingVertical: 10,
+    paddingHorizontal: "3%",
+    borderRadius: 8,
+    color: text_color,
+    fontFamily: "Inter-Regular",
+    marginTop: 6,
+  },
+  button: {
+    backgroundColor: customer_primary,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignSelf: "flex-start",
+    borderRadius: 10,
+    marginTop: 12,
+  },
+  order_status: {
+    borderWidth: 2,
+    flexDirection: "row",
+    width: "40%",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 8,
+  },
 });
