@@ -1,34 +1,53 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import CustomModal from "../CustomModal";
-import { TextInput } from "react-native";
-import { StyleSheet } from "react-native";
 import {
   app_bg,
   customer_primary,
   gradient_start,
   grey2,
+  text_color,
 } from "../../constants";
-import { ScrollView } from "react-native";
 import { supabase } from "../../supabase/client";
-import { Alert } from "react-native";
 
 const AddPowerRecord = ({ onClose }) => {
   const [customerName, setCustomerName] = useState("");
   const [customerNumber, setCustomerNumber] = useState("");
 
-  const [shpereLeft, setShpereLeft] = useState("0.0");
-  const [shpereRight, setShpereRight] = useState("0.0");
-  const [cylinderLeft, setCylinderLeft] = useState("0.0");
-  const [cylinderRight, setCylinderRight] = useState("0.0");
+  const [shpereLeft, setShpereLeft] = useState(0);
+  const [shpereRight, setShpereRight] = useState(0);
+  const [cylinderLeft, setCylinderLeft] = useState(0);
+  const [cylinderRight, setCylinderRight] = useState(0);
 
-  const [axisLeft, setAxisLeft] = useState("0");
-  const [axisRight, setAxisRight] = useState("0");
-  const [pupilLeft, setPupilLeft] = useState("25");
-  const [pupilRight, setPupilRight] = useState("25");
+  const [axisLeft, setAxisLeft] = useState(0);
+  const [axisRight, setAxisRight] = useState(0);
+  const [pupilLeft, setPupilLeft] = useState(25);
+  const [pupilRight, setPupilRight] = useState(25);
 
-  const [nearLeft, setNearLeft] = useState("0");
-  const [nearRight, setNearRight] = useState("0");
+  const [nearLeft, setNearLeft] = useState(0);
+  const [nearRight, setNearRight] = useState(0);
+
+  const [numberSelectorType, setNumberSelectorType] = useState(null);
+  const nsTypes = {
+    SPHERE_LEFT: "SPHERE_LEFT",
+    SPHERE_RIGHT: "SPHERE_RIGHT",
+    CYLINDER_LEFT: "CYLINDER_LEFT",
+    CYLINDER_RIGHT: "CYLINDER_RIGHT",
+    AXIS_LEFT: "AXIS_LEFT",
+    AXIS_RIGHT: "AXIS_RIGHT",
+    PUPIL_LEFT: "PUPIL_LEFT",
+    PUPIL_RIGHT: "PUPIL_RIGHT",
+    NEAR_LEFT: "NEAR_LEFT",
+    NEAR_RIGHT: "NEAR_RIGHT",
+  };
 
   const editExistingRecord = async () => {
     const eyeRecord = {
@@ -112,7 +131,15 @@ const AddPowerRecord = ({ onClose }) => {
     }
   };
 
-  const TableRow = ({ left, right, middle, heading, range }) => {
+  const TableCell = ({ onPress, value }) => {
+    return (
+      <TouchableOpacity onPress={onPress}>
+        <Text style={styles.value_btn}>{value.toFixed(2)}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const TableRow = ({ left, right, middle, heading }) => {
     return (
       <View
         style={{
@@ -122,14 +149,7 @@ const AddPowerRecord = ({ onClose }) => {
           borderBottomWidth: heading ? 1 : 0,
         }}
       >
-        <View style={{ ...styles.table_cell, width: "50%" }}>
-          {left}
-          <Text
-            style={{ fontSize: 16, fontFamily: "Inter-Regular", color: grey2 }}
-          >
-            {range}
-          </Text>
-        </View>
+        <View style={{ ...styles.table_cell, width: "50%" }}>{left}</View>
         <View
           style={{
             ...styles.table_cell,
@@ -144,6 +164,145 @@ const AddPowerRecord = ({ onClose }) => {
       </View>
     );
   };
+
+  const NumberSelector = () => {
+    const [positiveArray, setPositiveArray] = useState([]);
+    const [negativeArray, setNegativeArray] = useState([]);
+
+    useEffect(() => {
+      initalizeStateVariables();
+    }, []);
+
+    const initalizeStateVariables = () => {
+      let rangeStart = 0,
+        rangeEnd = 0,
+        step = 0;
+      // initalize basic data
+      if (
+        numberSelectorType === nsTypes.SPHERE_LEFT ||
+        numberSelectorType === nsTypes.SPHERE_RIGHT
+      ) {
+        rangeStart = -12;
+        rangeEnd = 12;
+        step = 0.25;
+      } else if (
+        numberSelectorType === nsTypes.CYLINDER_LEFT ||
+        numberSelectorType === nsTypes.CYLINDER_RIGHT
+      ) {
+        rangeStart = -6;
+        rangeEnd = 6;
+        step = 0.25;
+      } else if (
+        numberSelectorType === nsTypes.AXIS_LEFT ||
+        numberSelectorType === nsTypes.AXIS_RIGHT
+      ) {
+        rangeStart = 0;
+        rangeEnd = 180;
+        step = 1;
+      } else if (
+        numberSelectorType === nsTypes.PUPIL_LEFT ||
+        numberSelectorType === nsTypes.PUPIL_RIGHT
+      ) {
+        rangeStart = 25;
+        rangeEnd = 40;
+        step = 0.5;
+      } else if (
+        numberSelectorType === nsTypes.NEAR_LEFT ||
+        numberSelectorType === nsTypes.NEAR_RIGHT
+      ) {
+        rangeStart = 0.5;
+        rangeEnd = 3;
+        step = 0.25;
+      }
+
+      // initalize values arrays
+      let _pos = [],
+        _neg = [];
+
+      if (rangeStart < 0) {
+        for (let i = 0 - step; i >= rangeStart; i -= step) {
+          _neg.push(i);
+        }
+        for (let i = 0; i <= rangeEnd; i += step) {
+          _pos.push(i);
+        }
+      } else {
+        for (let i = rangeStart; i <= rangeEnd; i += step) {
+          _pos.push(i);
+        }
+      }
+      setPositiveArray(_pos);
+      setNegativeArray(_neg);
+    };
+
+    const handleNumberSelect = (num) => {
+      if (numberSelectorType === nsTypes.SPHERE_LEFT) setShpereLeft(num);
+      else if (numberSelectorType === nsTypes.SPHERE_RIGHT) setShpereRight(num);
+      else if (numberSelectorType === nsTypes.CYLINDER_LEFT)
+        setCylinderLeft(num);
+      else if (numberSelectorType === nsTypes.CYLINDER_RIGHT)
+        setCylinderRight(num);
+      else if (numberSelectorType === nsTypes.AXIS_LEFT) setAxisLeft(num);
+      else if (numberSelectorType === nsTypes.AXIS_RIGHT) setAxisRight(num);
+      else if (numberSelectorType === nsTypes.PUPIL_LEFT) setPupilLeft(num);
+      else if (numberSelectorType === nsTypes.PUPIL_RIGHT) setPupilRight(num);
+      else if (numberSelectorType === nsTypes.NEAR_LEFT) setNearLeft(num);
+      else if (numberSelectorType === nsTypes.NEAR_RIGHT) setNearRight(num);
+      setNumberSelectorType(null);
+    };
+
+    return (
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+        }}
+      >
+        {negativeArray.length > 0 && (
+          <View
+            style={{
+              ...styles.grid_container,
+              width: "48%",
+            }}
+          >
+            {negativeArray.map((num, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.ns_item}
+                onPress={() => handleNumberSelect(num)}
+              >
+                <Text style={styles.ns_text}>{num.toFixed(2)}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
+        <View
+          style={{
+            ...styles.grid_container,
+            width: negativeArray.length != 0 ? "48%" : "100%",
+          }}
+        >
+          {positiveArray.map((num, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.ns_item}
+              onPress={() => handleNumberSelect(num)}
+            >
+              <Text style={styles.ns_text}>
+                {numberSelectorType === nsTypes.AXIS_LEFT ||
+                numberSelectorType === nsTypes.AXIS_RIGHT
+                  ? `${num}°`
+                  : num.toFixed(2)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    );
+  };
+
   return (
     <CustomModal
       bodyStyles={{ width: "60%", height: "80%" }}
@@ -178,120 +337,126 @@ const AddPowerRecord = ({ onClose }) => {
           </View>
 
           <View style={{ marginTop: 40, alignItems: "center" }}>
-            <View style={styles.table}>
-              <TableRow
-                left={<Text style={styles.table_text}>Rx</Text>}
-                middle={<Text style={styles.table_text}>Left</Text>}
-                right={<Text style={styles.table_text}>Right</Text>}
-                heading
-              />
-              <TableRow
-                left={<Text style={styles.table_text}>Sphere</Text>}
-                range={"-12.0 to +12.0 (0.25 inc)"}
-                middle={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={shpereLeft}
-                    onChangeText={setShpereLeft}
+            {!!numberSelectorType ? (
+              <NumberSelector />
+            ) : (
+              <>
+                <View style={styles.table}>
+                  <TableRow
+                    left={<Text style={styles.table_text}>Rx</Text>}
+                    middle={<Text style={styles.table_text}>Left</Text>}
+                    right={<Text style={styles.table_text}>Right</Text>}
+                    heading
                   />
-                }
-                right={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={shpereRight}
-                    onChangeText={setShpereRight}
+                  <TableRow
+                    left={<Text style={styles.table_text}>Sphere</Text>}
+                    middle={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.SPHERE_LEFT)
+                        }
+                        value={shpereLeft}
+                      />
+                    }
+                    right={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.SPHERE_RIGHT)
+                        }
+                        value={shpereRight}
+                      />
+                    }
                   />
-                }
-              />
-              <TableRow
-                left={<Text style={styles.table_text}>Cylinder</Text>}
-                range={"-6.0 to +6.0 (0.25 inc)"}
-                middle={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={cylinderLeft}
-                    onChangeText={setCylinderLeft}
+                  <TableRow
+                    left={<Text style={styles.table_text}>Cylinder</Text>}
+                    middle={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.CYLINDER_LEFT)
+                        }
+                        value={cylinderLeft}
+                      />
+                    }
+                    right={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.CYLINDER_RIGHT)
+                        }
+                        value={cylinderRight}
+                      />
+                    }
                   />
-                }
-                right={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={cylinderRight}
-                    onChangeText={setCylinderRight}
+                  <TableRow
+                    left={<Text style={styles.table_text}>Axis</Text>}
+                    middle={
+                      <TableCell
+                        onPress={() => setNumberSelectorType(nsTypes.AXIS_LEFT)}
+                        value={axisLeft}
+                      />
+                    }
+                    right={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.AXIS_RIGHT)
+                        }
+                        value={axisRight}
+                      />
+                    }
                   />
-                }
-              />
-              <TableRow
-                left={<Text style={styles.table_text}>Axis</Text>}
-                range={"0° to 180° (1° inc)"}
-                middle={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={axisLeft}
-                    onChangeText={setAxisLeft}
+                  <TableRow
+                    left={<Text style={styles.table_text}>Pupil Distance</Text>}
+                    middle={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.PUPIL_LEFT)
+                        }
+                        value={pupilLeft}
+                      />
+                    }
+                    right={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.PUPIL_RIGHT)
+                        }
+                        value={pupilRight}
+                      />
+                    }
                   />
-                }
-                right={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={axisRight}
-                    onChangeText={setAxisRight}
+                  <TableRow
+                    left={<Text style={styles.table_text}>Near Addition</Text>}
+                    middle={
+                      <TableCell
+                        onPress={() => setNumberSelectorType(nsTypes.NEAR_LEFT)}
+                        value={nearLeft}
+                      />
+                    }
+                    right={
+                      <TableCell
+                        onPress={() =>
+                          setNumberSelectorType(nsTypes.NEAR_RIGHT)
+                        }
+                        value={nearRight}
+                      />
+                    }
                   />
-                }
-              />
-              <TableRow
-                left={<Text style={styles.table_text}>Pupil Distance</Text>}
-                range={"25 to 40 (0.5 inc)"}
-                middle={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={pupilLeft}
-                    onChangeText={setPupilLeft}
-                  />
-                }
-                right={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={pupilRight}
-                    onChangeText={setPupilRight}
-                  />
-                }
-              />
-              <TableRow
-                left={<Text style={styles.table_text}>Near Addition</Text>}
-                range={"0.5 to 3  (0.25 inc)"}
-                middle={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={nearLeft}
-                    onChangeText={setNearLeft}
-                  />
-                }
-                right={
-                  <TextInput
-                    style={styles.value_btn}
-                    value={nearRight}
-                    onChangeText={setNearRight}
-                  />
-                }
-              />
-            </View>
+                </View>
+                <TouchableOpacity
+                  onPress={saveEyeRecord}
+                  style={{
+                    backgroundColor: customer_primary,
+                    alignSelf: "flex-end",
+                    paddingHorizontal: "2%",
+                    paddingVertical: "1%",
+                    marginRight: "10%",
+                    marginBottom: 50,
+                    borderRadius: 12,
+                  }}
+                >
+                  <Text style={{ fontSize: 24, color: "white" }}>Save</Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
-
-          <TouchableOpacity
-            onPress={saveEyeRecord}
-            style={{
-              backgroundColor: customer_primary,
-              alignSelf: "flex-end",
-              paddingHorizontal: "2%",
-              paddingVertical: "1%",
-              marginRight: "10%",
-              marginBottom: 50,
-              borderRadius: 12,
-            }}
-          >
-            <Text style={{ fontSize: 24, color: "white" }}>Save</Text>
-          </TouchableOpacity>
         </ScrollView>
       }
     />
@@ -332,5 +497,26 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: customer_primary,
     fontFamily: "Inter-Medium",
+  },
+  grid_container: {
+    width: "100%",
+    flexWrap: "wrap",
+    flexDirection: "row",
+  },
+  // ns -> number selector
+  ns_item: {
+    flexBasis: 75,
+    height: 75,
+    margin: "1%",
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: customer_primary,
+  },
+  ns_text: {
+    fontSize: 22,
+    fontFamily: "Inter-Medium",
+    color: text_color,
   },
 });
