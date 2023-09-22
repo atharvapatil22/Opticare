@@ -285,7 +285,7 @@ const SpecsDetails = ({ route, navigation }) => {
                 />
                 <AdditionalField
                   label={"Warranty"}
-                  value={specsData.spectacles.warranty + " years"}
+                  value={specsData.spectacles.warranty}
                   hideborder
                 />
               </View>

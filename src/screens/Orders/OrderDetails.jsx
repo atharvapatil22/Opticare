@@ -249,210 +249,215 @@ const OrderDetails = ({ route }) => {
       {!!orderData ? (
         <>
           <View style={styles.section}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                alignItems: "center",
-              }}
-            >
-              {orderData.payment_completed === orderData.payment_total &&
-              orderData.items_completed === orderData.items_total ? (
-                <View
-                  style={{
-                    ...styles.order_status,
-                    borderColor: customer_primary,
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="check-decagram"
-                    size={24}
-                    color={customer_primary}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginTop: 6,
-                      color: customer_primary,
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    COMPLETED
-                  </Text>
-                </View>
-              ) : (
-                <View
-                  style={{
-                    ...styles.order_status,
-
-                    borderColor: "#FF9800",
-                  }}
-                >
-                  <Feather name="clock" size={24} color="orange" />
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      marginTop: 6,
-                      color: "orange",
-                      fontFamily: "Inter-Medium",
-                    }}
-                  >
-                    INCOMPLETE
-                  </Text>
-                </View>
-              )}
-              {orderData.payment_completed != orderData.payment_total && (
-                <Text style={{ marginLeft: 12, fontSize: 18 }}>
-                  (Payment Remaining)
-                </Text>
-              )}
-              {orderData.items_completed != orderData.items_total && (
-                <Text style={{ marginLeft: 12, fontSize: 18 }}>
-                  (Delivery Remaining)
-                </Text>
-              )}
-            </View>
-            <Text
-              style={{
-                ...styles.text_big,
-                fontFamily: "Inter-Medium",
-                color: customer_primary,
-              }}
-            >
-              Order#: {orderData.order_number}
-            </Text>
-            {!!creationDate && (
-              <Text style={styles.text_big}>
-                Order Created at: {days[creationDate.getDay()]},{" "}
-                {months[creationDate.getMonth()]} {creationDate.getDate()},{" "}
-                {creationDate.getFullYear()}
-              </Text>
-            )}
-            {!!deliveryDate && (
-              <Text style={styles.text_big}>
-                Order Delivered at: {days[deliveryDate.getDay()]},{" "}
-                {months[deliveryDate.getMonth()]} {deliveryDate.getDate()},{" "}
-                {deliveryDate.getFullYear()}
-              </Text>
-            )}
-
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
-            >
-              <View style={{ ...styles.card, width: "49%" }}>
-                <Ionicons
-                  name="person"
-                  size={24}
-                  color="white"
-                  style={{
-                    borderRadius: 100,
-                    padding: 10,
-                    backgroundColor: customer_primary,
-                  }}
-                />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.text_small}>Buyer Details</Text>
-                  <Text style={styles.text_medium}>
-                    {orderData.customer_name}
-                  </Text>
-                  <Text style={styles.text_medium}>
-                    +91 {orderData.customer_number}
-                  </Text>
-                </View>
-              </View>
-              <View style={{ ...styles.card, width: "49%" }}>
-                <Ionicons
-                  name="person"
-                  size={24}
-                  color="white"
-                  style={{
-                    borderRadius: 100,
-                    padding: 10,
-                    backgroundColor: "orange",
-                  }}
-                />
-                <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.text_small}>Sales Person</Text>
-                  <Text style={styles.text_medium}>
-                    {orderData.sales_person}
-                  </Text>
-                </View>
-              </View>
-            </View>
-            <View style={styles.card}>
-              <Entypo
-                name="wallet"
-                size={24}
-                color="white"
+            <ScrollView>
+              <View
                 style={{
-                  borderRadius: 100,
-                  padding: 10,
-                  backgroundColor: grey2,
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
                 }}
-              />
-              <View style={{ marginLeft: 10 }}>
-                <Text style={styles.text_small}>Payment Details</Text>
-                <Text style={styles.text_medium}>
-                  {orderData.mode_of_payment} payment
-                </Text>
-                {orderData.payment_total == orderData.payment_completed ? (
-                  <Text style={styles.text_medium}>
-                    ₹{orderData.payment_total}
-                  </Text>
+              >
+                {orderData.payment_completed === orderData.payment_total &&
+                orderData.items_completed === orderData.items_total ? (
+                  <View
+                    style={{
+                      ...styles.order_status,
+                      borderColor: customer_primary,
+                    }}
+                  >
+                    <MaterialCommunityIcons
+                      name="check-decagram"
+                      size={24}
+                      color={customer_primary}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginTop: 6,
+                        color: customer_primary,
+                        fontFamily: "Inter-Medium",
+                      }}
+                    >
+                      COMPLETED
+                    </Text>
+                  </View>
                 ) : (
-                  <>
-                    <Text style={styles.text_medium}>
-                      Ammount Recieved: ₹{orderData.payment_completed}
+                  <View
+                    style={{
+                      ...styles.order_status,
+
+                      borderColor: "#FF9800",
+                    }}
+                  >
+                    <Feather name="clock" size={24} color="orange" />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        marginTop: 6,
+                        color: "orange",
+                        fontFamily: "Inter-Medium",
+                      }}
+                    >
+                      INCOMPLETE
                     </Text>
-                    <Text style={styles.text_medium}>
-                      Dues: ₹
-                      {orderData.payment_total - orderData.payment_completed}
-                    </Text>
-                    <TouchableOpacity style={styles.button}>
-                      <Text
-                        style={{ ...styles.text_medium, color: "white" }}
-                        onPress={() => setShowDuesModal(true)}
-                      >
-                        Update
-                      </Text>
-                    </TouchableOpacity>
-                  </>
+                  </View>
+                )}
+                {orderData.payment_completed != orderData.payment_total && (
+                  <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                    (Payment Remaining)
+                  </Text>
+                )}
+                {orderData.items_completed != orderData.items_total && (
+                  <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                    (Delivery Remaining)
+                  </Text>
                 )}
               </View>
-            </View>
-            <Text
-              style={{
-                marginTop: 16,
-                fontSize: 18,
-                fontFamily: "Inter-Medium",
-              }}
-            >
-              Order Summary
-            </Text>
-            <View
-              style={{
-                borderRadius: 12,
-                marginTop: 10,
-                backgroundColor: "white",
-                paddingHorizontal: "4%",
-                paddingVertical: 16,
-              }}
-            >
-              <SummaryRow
-                label={"Products total"}
-                value={orderData.bill_products_total}
-              />
-              <SummaryRow label={"Savings"} value={orderData.bill_savings} />
+              <Text
+                style={{
+                  ...styles.text_big,
+                  fontFamily: "Inter-Medium",
+                  color: customer_primary,
+                }}
+              >
+                Order#: {orderData.order_number}
+              </Text>
+              {!!creationDate && (
+                <Text style={styles.text_big}>
+                  Order Created at: {days[creationDate.getDay()]},{" "}
+                  {months[creationDate.getMonth()]} {creationDate.getDate()},{" "}
+                  {creationDate.getFullYear()}
+                </Text>
+              )}
+              {!!deliveryDate && (
+                <Text style={styles.text_big}>
+                  Order Delivered at: {days[deliveryDate.getDay()]},{" "}
+                  {months[deliveryDate.getMonth()]} {deliveryDate.getDate()},{" "}
+                  {deliveryDate.getFullYear()}
+                </Text>
+              )}
 
               <View
                 style={{
-                  borderBottomWidth: 1,
-                  marginVertical: 10,
-                  borderColor: grey2,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
                 }}
-              />
-              <SummaryRow label={"Total"} value={orderData.payment_total} />
-            </View>
+              >
+                <View style={{ ...styles.card, width: "49%" }}>
+                  <Ionicons
+                    name="person"
+                    size={24}
+                    color="white"
+                    style={{
+                      borderRadius: 100,
+                      padding: 10,
+                      backgroundColor: customer_primary,
+                    }}
+                  />
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={styles.text_small}>Buyer Details</Text>
+                    <Text style={styles.text_medium}>
+                      {orderData.customer_name}
+                    </Text>
+                    <Text style={styles.text_medium}>
+                      +91 {orderData.customer_number}
+                    </Text>
+                  </View>
+                </View>
+                <View style={{ ...styles.card, width: "49%" }}>
+                  <Ionicons
+                    name="person"
+                    size={24}
+                    color="white"
+                    style={{
+                      borderRadius: 100,
+                      padding: 10,
+                      backgroundColor: "orange",
+                    }}
+                  />
+                  <View style={{ marginLeft: 10 }}>
+                    <Text style={styles.text_small}>Sales Person</Text>
+                    <Text style={styles.text_medium}>
+                      {orderData.sales_person}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.card}>
+                <Entypo
+                  name="wallet"
+                  size={24}
+                  color="white"
+                  style={{
+                    borderRadius: 100,
+                    padding: 10,
+                    backgroundColor: grey2,
+                  }}
+                />
+                <View style={{ marginLeft: 10 }}>
+                  <Text style={styles.text_small}>Payment Details</Text>
+                  <Text style={styles.text_medium}>
+                    {orderData.mode_of_payment} payment
+                  </Text>
+                  {orderData.payment_total == orderData.payment_completed ? (
+                    <Text style={styles.text_medium}>
+                      ₹{orderData.payment_total}
+                    </Text>
+                  ) : (
+                    <>
+                      <Text style={styles.text_medium}>
+                        Ammount Recieved: ₹{orderData.payment_completed}
+                      </Text>
+                      <Text style={styles.text_medium}>
+                        Dues: ₹
+                        {orderData.payment_total - orderData.payment_completed}
+                      </Text>
+                      <TouchableOpacity style={styles.button}>
+                        <Text
+                          style={{ ...styles.text_medium, color: "white" }}
+                          onPress={() => setShowDuesModal(true)}
+                        >
+                          Update
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </View>
+              </View>
+              <Text
+                style={{
+                  marginTop: 16,
+                  fontSize: 18,
+                  fontFamily: "Inter-Medium",
+                }}
+              >
+                Order Summary
+              </Text>
+              <View
+                style={{
+                  borderRadius: 12,
+                  marginTop: 10,
+                  backgroundColor: "white",
+                  paddingHorizontal: "4%",
+                  paddingVertical: 16,
+                }}
+              >
+                <SummaryRow
+                  label={"Products total"}
+                  value={orderData.bill_products_total}
+                />
+                <SummaryRow label={"Savings"} value={orderData.bill_savings} />
+
+                <View
+                  style={{
+                    borderBottomWidth: 1,
+                    marginVertical: 10,
+                    borderColor: grey2,
+                  }}
+                />
+                <SummaryRow label={"Total"} value={orderData.payment_total} />
+              </View>
+            </ScrollView>
           </View>
           <View style={styles.section}>
             <Text style={styles.text_big}>

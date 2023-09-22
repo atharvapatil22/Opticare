@@ -127,6 +127,7 @@ const Sunglasses = ({ navigation }) => {
                 type={"sunglasses"}
               />
             ))}
+            <View style={{ width: "100%", height: 150 }} />
           </View>
         )}
       </ScrollView>

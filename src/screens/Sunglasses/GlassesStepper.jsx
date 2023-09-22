@@ -92,7 +92,7 @@ const GlassesStepper = ({ route, navigation }) => {
     setWidth(glassesData.sunglasses.width.toString());
     setDimensions(glassesData.sunglasses.dimensions);
     setSize(glassesData.sunglasses.size);
-    setWarranty(glassesData.sunglasses.warranty.toString());
+    setWarranty(glassesData.sunglasses.warranty);
 
     setLinkedSingle(glassesData.sunglasses.linked_single);
     setLinkedBifocal(glassesData.sunglasses.linked_bifocal);
@@ -187,7 +187,7 @@ const GlassesStepper = ({ route, navigation }) => {
       material: material,
       color: color,
       gender: gender,
-      warranty: parseInt(warranty),
+      warranty: warranty,
       size: size,
       dimensions: dimensions,
       weight: parseInt(weight),

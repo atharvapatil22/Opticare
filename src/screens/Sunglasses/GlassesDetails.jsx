@@ -328,7 +328,7 @@ const GlassesDetails = ({ route, navigation }) => {
                 />
                 <AdditionalField
                   label={"Warranty"}
-                  value={glassesData.sunglasses.warranty + " years"}
+                  value={glassesData.sunglasses.warranty}
                   hideborder
                 />
               </View>

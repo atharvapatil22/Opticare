@@ -95,7 +95,7 @@ const SpecsStepper = ({ route, navigation }) => {
     setWidth(specsData.spectacles.width.toString());
     setDimensions(specsData.spectacles.dimensions);
     setSize(specsData.spectacles.size);
-    setWarranty(specsData.spectacles.warranty.toString());
+    setWarranty(specsData.spectacles.warranty);
 
     setLinkedSingle(specsData.spectacles.linked_single);
     setLinkedBifocal(specsData.spectacles.linked_bifocal);
@@ -190,7 +190,7 @@ const SpecsStepper = ({ route, navigation }) => {
       material: material,
       color: color,
       gender: gender,
-      warranty: parseInt(warranty),
+      warranty: warranty,
       size: size,
       dimensions: dimensions,
       weight: parseInt(weight),
