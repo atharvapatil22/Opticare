@@ -207,9 +207,7 @@ const LensesDetails = ({ route, navigation }) => {
                 <Text style={{ fontSize: 24, color: text_color }}>
                   Avg. Price:
                 </Text>
-                <Text style={styles.price}>
-                  ₹{lensData.price * ((100 - lensData.discount) / 100)}
-                </Text>
+                <Text style={styles.price}>₹{lensData.price}</Text>
                 <Text
                   style={{
                     fontSize: 24,
@@ -227,8 +225,7 @@ const LensesDetails = ({ route, navigation }) => {
                   }}
                 >
                   (₹
-                  {lensData.price * 2 * ((100 - lensData.discount) / 100)} for
-                  pair)
+                  {lensData.price * 2} for pair)
                 </Text>
               </View>
 

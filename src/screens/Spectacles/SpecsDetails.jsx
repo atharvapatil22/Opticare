@@ -204,7 +204,11 @@ const SpecsDetails = ({ route, navigation }) => {
                     style={{ flexDirection: "row", alignItems: "baseline" }}
                   >
                     <Text style={styles.price}>
-                      ₹{specsData.price * ((100 - specsData.discount) / 100)}
+                      ₹
+                      {(
+                        specsData.price *
+                        ((100 - specsData.discount) / 100)
+                      ).toFixed(2)}
                     </Text>
                     <Text
                       style={{

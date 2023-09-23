@@ -34,7 +34,7 @@ const OrderCheckout = ({ route, navigation }) => {
   const [salesPerson, setSalesPerson] = useState("");
   const [paymentInfo, setPaymentInfo] = useState("");
   const [ammountPaid, setAmmountPaid] = useState(
-    Math.round(billingInfo.productsDiscounted) - globalData.couponDiscount
+    billingInfo.productsDiscounted - globalData.couponDiscount
   );
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -93,7 +93,9 @@ const OrderCheckout = ({ route, navigation }) => {
 
     // 2] Prepare order Items
     const orderItems = globalData.orderItems.map((item) => {
-      const effectivePrice = item.price * ((100 - item.discount) / 100);
+      const effectivePrice = parseInt(
+        item.price * ((100 - item.discount) / 100)
+      );
       let isDelivered = true;
       let linkedLens = null;
 
@@ -130,13 +132,12 @@ const OrderCheckout = ({ route, navigation }) => {
       customer_number: customerNumber,
       sales_person: salesPerson,
       mode_of_payment: paymentInfo,
-      payment_total:
-        Math.round(billingInfo.productsDiscounted) - globalData.couponDiscount,
+      payment_total: billingInfo.productsDiscounted - globalData.couponDiscount,
       payment_completed: ammountPaid,
       items_total: orderItems.length,
       items_completed: orderItems.length - unDeliveredItems,
-      bill_products_total: Math.round(billingInfo.productsTotal),
-      bill_products_savings: Math.round(billingInfo.savings),
+      bill_products_total: billingInfo.productsTotal,
+      bill_products_savings: billingInfo.savings,
       bill_coupon_discount: globalData.couponDiscount,
     };
 

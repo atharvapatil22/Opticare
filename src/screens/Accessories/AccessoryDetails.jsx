@@ -221,8 +221,10 @@ const AccessoryDetails = ({ route, navigation }) => {
                   >
                     <Text style={styles.price}>
                       ₹
-                      {accessoryData.price *
-                        ((100 - accessoryData.discount) / 100)}
+                      {(
+                        accessoryData.price *
+                        ((100 - accessoryData.discount) / 100)
+                      ).toFixed(2)}
                     </Text>
                     <Text
                       style={{

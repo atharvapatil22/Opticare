@@ -214,6 +214,8 @@ const LensesStepper = ({ route, navigation }) => {
         if (price.trim().length === 0) errorMessage = "Price cannot be blank.";
         else if (!/^\d+$/.test(price) || parseInt(price) < 1)
           errorMessage = "Price must be valid non-zero number";
+        else if (parseInt(discount) < 0 || parseInt(discount) > 100)
+          errorMessage = "Discount must be between 0-100";
         break;
       default:
         break;

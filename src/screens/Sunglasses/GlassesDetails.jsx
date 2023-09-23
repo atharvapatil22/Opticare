@@ -252,7 +252,10 @@ const GlassesDetails = ({ route, navigation }) => {
                   >
                     <Text style={styles.price}>
                       ₹
-                      {glassesData.price * ((100 - glassesData.discount) / 100)}
+                      {(
+                        glassesData.price *
+                        ((100 - glassesData.discount) / 100)
+                      ).toFixed(2)}
                     </Text>
                     <Text
                       style={{

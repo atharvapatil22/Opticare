@@ -67,9 +67,9 @@ const MyCart = ({ navigation }) => {
       }
     });
 
-    setProductsTotal(total);
-    setSavings(savings);
-    setProductsDiscounted(total - savings);
+    setProductsTotal(Math.round(total));
+    setSavings(Math.round(savings));
+    setProductsDiscounted(Math.round(total - savings));
     setHasLensPowers(total_lenses - power_set_for_lenses === 0);
   };
 
@@ -82,7 +82,7 @@ const MyCart = ({ navigation }) => {
       )
         Alert.alert("Invalid coupon code");
       else {
-        dispatch(addCouponDiscount(discountVal));
+        dispatch(addCouponDiscount(parseInt(discountVal)));
         setShowCouponModal(false);
       }
     } else {
