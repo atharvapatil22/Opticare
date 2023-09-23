@@ -110,6 +110,7 @@ const LensesDetails = ({ route, navigation }) => {
           discount: lensData.discount,
           quantity: 1,
           linkedLens: {
+            id: lensData.id,
             type: lensData.lenses.type,
             eye_power: null,
             name: lensData.name,

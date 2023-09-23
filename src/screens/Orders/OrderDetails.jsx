@@ -199,10 +199,13 @@ const OrderDetails = ({ route }) => {
               {data.name}
             </InterMedium>
             <InterRegular style={styles.cart_item_text}>
-              ₹{data.price} x {data.quantity}
+              ₹{parseInt(data.price * ((100 - data.discount) / 100))} x{" "}
+              {data.quantity}
             </InterRegular>
             <InterRegular style={styles.cart_item_text}>
-              Subtotal: ₹{data.price * data.quantity}
+              Subtotal: ₹
+              {parseInt(data.price * ((100 - data.discount) / 100)) *
+                data.quantity}
             </InterRegular>
           </View>
 
@@ -227,7 +230,7 @@ const OrderDetails = ({ route }) => {
             </TouchableOpacity>
           )}
         </View>
-        {!!data.linked_lens && (
+        {!!data.linked_lens && data.category != "lenses" && (
           <View
             style={{
               backgroundColor: gradient_start,

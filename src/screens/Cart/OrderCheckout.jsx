@@ -97,9 +97,6 @@ const OrderCheckout = ({ route, navigation }) => {
 
     // 2] Prepare order Items
     const orderItems = globalData.orderItems.map((item) => {
-      const effectivePrice = parseInt(
-        item.price * ((100 - item.discount) / 100)
-      );
       let isDelivered = true;
       let linkedLens = null;
 
@@ -112,8 +109,7 @@ const OrderCheckout = ({ route, navigation }) => {
         linkedLens = {
           id: item.linkedLens.id,
           name: item.linkedLens.name,
-          effective_price:
-            item.linkedLens.price * ((100 - item.linkedLens.discount) / 100),
+          effective_price: item.linkedLens.price,
           quantity: item.linkedLens.quantity,
           eye_power: item.linkedLens.eye_power,
           type: item.linkedLens.type,
@@ -122,8 +118,10 @@ const OrderCheckout = ({ route, navigation }) => {
 
       return {
         product_id: item.product_id,
+        category: item.category,
         name: item.name,
-        price: effectivePrice,
+        price: item.price,
+        discount: item.discount,
         quantity: item.quantity,
         is_delivered: isDelivered,
         linked_lens: linkedLens,
