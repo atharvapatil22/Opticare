@@ -54,9 +54,17 @@ const OrderDetails = ({ route }) => {
   };
 
   const handleDuesUpdate = async () => {
+    let payload = { payment_completed: parseInt(paymentCompleted) };
+    // If this marks the completion of the order, then enter delivery date also
+    if (
+      orderData.items_completed === orderData.items_total &&
+      orderData.payment_total == paymentCompleted
+    ) {
+      payload["delivered_at"] = new Date();
+    }
     const { data, error } = await supabase
       .from("orders")
-      .update({ payment_completed: paymentCompleted })
+      .update(payload)
       .eq("id", orderData.id)
       .select();
 
@@ -121,9 +129,19 @@ const OrderDetails = ({ route }) => {
       } else {
         // __api_success
         console.log("marked item as completed");
+
+        let payload = { items_completed: orderData.items_completed + 1 };
+        // If this marks the completion of the order, then enter delivery date also
+        if (
+          orderData.payment_completed === orderData.payment_total &&
+          orderData.items_completed == orderData.items_total - 1
+        ) {
+          payload["delivered_at"] = new Date();
+        }
+
         const response2 = await supabase
           .from("orders")
-          .update({ items_completed: orderData.items_completed + 1 })
+          .update(payload)
           .eq("id", orderData.id)
           .select();
 
