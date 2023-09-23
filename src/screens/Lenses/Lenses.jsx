@@ -23,6 +23,10 @@ import { supabase } from "../../supabase/client";
 import { AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import { Portal, Snackbar } from "react-native-paper";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const Lenses = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -88,23 +92,25 @@ const Lenses = ({ navigation }) => {
         }}
       >
         <View>
-          <Text style={{ fontSize: 24, color: customer_primary }}>
+          <InterMedium style={{ fontSize: 24, color: customer_primary }}>
             {data.name}
-          </Text>
-          <Text style={{ fontSize: 20, color: text_color, marginTop: 8 }}>
+          </InterMedium>
+          <InterRegular
+            style={{ fontSize: 20, color: text_color, marginTop: 8 }}
+          >
             {data.lenses.type}
-          </Text>
+          </InterRegular>
           <View style={{ flexDirection: "row", marginTop: 8 }}>
-            <Text style={{ fontSize: 20, color: text_color }}>
+            <InterRegular style={{ fontSize: 20, color: text_color }}>
               Avg. Cost: ₹{parseInt(data.price) * 2}
-            </Text>
-            <Text style={{ fontSize: 20, color: grey2, marginLeft: 6 }}>
+            </InterRegular>
+            <InterRegular style={{ fontSize: 20, color: grey2, marginLeft: 6 }}>
               (for pair)
-            </Text>
+            </InterRegular>
           </View>
-          <Text style={{ fontSize: 18, color: grey2, marginTop: 8 }}>
+          <InterRegular style={{ fontSize: 18, color: grey2, marginTop: 8 }}>
             {data.lenses.material}
-          </Text>
+          </InterRegular>
         </View>
         <AntDesign name="arrowright" size={26} color={text_color} />
       </TouchableOpacity>
@@ -114,7 +120,7 @@ const Lenses = ({ navigation }) => {
   return (
     <View style={{ backgroundColor: app_bg }}>
       {/* Screen Title */}
-      <Text
+      <InterMedium
         style={{
           marginHorizontal: "2%",
           fontSize: 26,
@@ -123,7 +129,7 @@ const Lenses = ({ navigation }) => {
         }}
       >
         Shopping for Lenses
-      </Text>
+      </InterMedium>
       <Portal>
         <Snackbar
           visible={showSnackbar}
@@ -181,9 +187,9 @@ const Lenses = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
+            <InterRegular style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No lenses found!
-            </Text>
+            </InterRegular>
           </View>
         ) : (
           <View style={styles.grid_container}>

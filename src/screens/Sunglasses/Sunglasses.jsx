@@ -14,6 +14,7 @@ import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
 import { Portal, Snackbar } from "react-native-paper";
+import { InterMedium } from "../../components/StyledText/StyledText";
 
 const Sunglasses = ({ navigation }) => {
   const store = useSelector((state) => state.globalData);
@@ -67,7 +68,7 @@ const Sunglasses = ({ navigation }) => {
   return (
     <View style={{ backgroundColor: app_bg }}>
       {/* Screen Title */}
-      <Text
+      <InterMedium
         style={{
           marginHorizontal: "2%",
           fontSize: 26,
@@ -76,7 +77,7 @@ const Sunglasses = ({ navigation }) => {
         }}
       >
         Shopping for Sunglasses
-      </Text>
+      </InterMedium>
       <Portal>
         <Snackbar
           visible={showSnackbar}
@@ -134,9 +135,9 @@ const Sunglasses = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
+            <InterRegular style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No sunglasses found!
-            </Text>
+            </InterRegular>
           </View>
         ) : (
           <View style={styles.grid_container}>

@@ -29,6 +29,10 @@ import LensSelector from "../../components/LensSelector";
 import { addCartItem } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const GlassesDetails = ({ route, navigation }) => {
   const { id: glassesId } = route.params;
@@ -230,34 +234,38 @@ const GlassesDetails = ({ route, navigation }) => {
                 paddingLeft: "3%",
               }}
             >
-              <Text style={styles.name}>{glassesData.name}</Text>
+              <InterMedium style={styles.name}>{glassesData.name}</InterMedium>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Product ID: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>
+                  Product ID:{" "}
+                </InterRegular>
+                <InterMedium
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {glassesData.id_label}
-                </Text>
+                </InterMedium>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>From </Text>
-                <Text
+                <InterRegular style={styles.text_regular}>From </InterRegular>
+                <InterRegular
                   style={{ ...styles.text_regular, color: customer_primary }}
                 >
                   {glassesData.brand}
-                </Text>
+                </InterRegular>
               </View>
               <>
                 {!!glassesData.discount ? (
                   <View
                     style={{ flexDirection: "row", alignItems: "baseline" }}
                   >
-                    <Text style={styles.price}>
+                    <InterMedium style={styles.price}>
                       ₹
                       {(
                         glassesData.price *
                         ((100 - glassesData.discount) / 100)
                       ).toFixed(2)}
-                    </Text>
-                    <Text
+                    </InterMedium>
+                    <InterRegular
                       style={{
                         ...styles.text_small,
                         textDecorationLine: "line-through",
@@ -266,35 +274,41 @@ const GlassesDetails = ({ route, navigation }) => {
                       }}
                     >
                       ₹{glassesData.price}
-                    </Text>
-                    <Text style={{ ...styles.text_small, marginLeft: 8 }}>
+                    </InterRegular>
+                    <InterRegular
+                      style={{ ...styles.text_small, marginLeft: 8 }}
+                    >
                       ({glassesData.discount}% off)
-                    </Text>
+                    </InterRegular>
                   </View>
                 ) : (
-                  <Text style={styles.price}>₹{glassesData.price}</Text>
+                  <InterMedium style={styles.price}>
+                    ₹{glassesData.price}
+                  </InterMedium>
                 )}
               </>
 
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Size: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>Size: </InterRegular>
+                <InterRegular
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {glassesData.sunglasses.size}
-                </Text>
+                </InterRegular>
               </View>
               {store.userLevel === "CUSTOMER" && (
                 <TouchableOpacity style={styles.cart_btn} onPress={handleCTA}>
                   <AntDesign name="shoppingcart" size={28} color="white" />
-                  <Text
+                  <InterRegular
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}
                   >
                     Add to cart
-                  </Text>
+                  </InterRegular>
                 </TouchableOpacity>
               )}
               {/* Additional Information */}
               <View style={styles.additional_info}>
-                <Text
+                <InterRegular
                   style={{
                     ...styles.text_small,
                     color: grey1,
@@ -304,7 +318,7 @@ const GlassesDetails = ({ route, navigation }) => {
                   }}
                 >
                   Additional Information:
-                </Text>
+                </InterRegular>
                 <AdditionalField
                   label={"Gender"}
                   value={glassesData.sunglasses.gender}
@@ -348,18 +362,22 @@ const GlassesDetails = ({ route, navigation }) => {
                   backgroundColor: gradient_start,
                 }}
               >
-                <Text style={{ fontSize: 24 }}>Available lens options</Text>
+                <InterRegular style={{ fontSize: 24 }}>
+                  Available lens options
+                </InterRegular>
                 {!glassesData.sunglasses.linked_single &&
                 !glassesData.sunglasses.linked_bifocal ? (
                   <View style={{ alignItems: "center", marginVertical: 40 }}>
-                    <Text style={{ ...styles.text_small, color: grey1 }}>
+                    <InterRegular
+                      style={{ ...styles.text_small, color: grey1 }}
+                    >
                       These sunglasses are not customisable, hence lenses cannot
                       be added externally.
-                    </Text>
+                    </InterRegular>
                   </View>
                 ) : (
                   <View>
-                    <Text
+                    <InterRegular
                       style={{
                         ...styles.text_small,
                         color: grey4,
@@ -370,7 +388,7 @@ const GlassesDetails = ({ route, navigation }) => {
                         "• Single Vision"}
                       {!!glassesData.sunglasses.linked_bifocal &&
                         "\n• Bifocal / Progressive"}
-                    </Text>
+                    </InterRegular>
                   </View>
                 )}
               </View>
@@ -392,7 +410,7 @@ const GlassesDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -400,10 +418,10 @@ const GlassesDetails = ({ route, navigation }) => {
                       }}
                     >
                       Available stock for sale
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {glassesData.sunglasses.stock}
-                    </Text>
+                    </InterRegular>
                   </View>
                   <View
                     style={{
@@ -413,7 +431,7 @@ const GlassesDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -421,10 +439,10 @@ const GlassesDetails = ({ route, navigation }) => {
                       }}
                     >
                       Stock sold till date
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {glassesData.stock_sold}
-                    </Text>
+                    </InterRegular>
                   </View>
                 </View>
               )}
@@ -437,14 +455,14 @@ const GlassesDetails = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          <Text
+          <InterRegular
             style={{
               fontSize: 30,
               marginTop: 250,
             }}
           >
             Loading...
-          </Text>
+          </InterRegular>
         </View>
       )}
     </ScrollView>

@@ -28,6 +28,11 @@ import { AntDesign } from "@expo/vector-icons";
 import LensSelector from "../../components/LensSelector";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
+import {
+  InterMedium,
+  InterRegular,
+  InterSemiBold,
+} from "../../components/StyledText/StyledText";
 
 const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
@@ -183,34 +188,38 @@ const SpecsDetails = ({ route, navigation }) => {
                 paddingLeft: "3%",
               }}
             >
-              <Text style={styles.name}>{specsData.name}</Text>
+              <InterMedium style={styles.name}>{specsData.name}</InterMedium>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Product ID: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>
+                  Product ID:{" "}
+                </InterRegular>
+                <InterMedium
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {specsData.id_label}
-                </Text>
+                </InterMedium>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>From </Text>
-                <Text
+                <InterRegular style={styles.text_regular}>From </InterRegular>
+                <InterRegular
                   style={{ ...styles.text_regular, color: customer_primary }}
                 >
                   {specsData.brand}
-                </Text>
+                </InterRegular>
               </View>
               <>
                 {!!specsData.discount ? (
                   <View
                     style={{ flexDirection: "row", alignItems: "baseline" }}
                   >
-                    <Text style={styles.price}>
+                    <InterMedium style={styles.price}>
                       ₹
                       {(
                         specsData.price *
                         ((100 - specsData.discount) / 100)
                       ).toFixed(2)}
-                    </Text>
-                    <Text
+                    </InterMedium>
+                    <InterRegular
                       style={{
                         ...styles.text_small,
                         textDecorationLine: "line-through",
@@ -219,21 +228,27 @@ const SpecsDetails = ({ route, navigation }) => {
                       }}
                     >
                       ₹{specsData.price}
-                    </Text>
-                    <Text style={{ ...styles.text_small, marginLeft: 8 }}>
+                    </InterRegular>
+                    <InterRegular
+                      style={{ ...styles.text_small, marginLeft: 8 }}
+                    >
                       ({specsData.discount}% off)
-                    </Text>
+                    </InterRegular>
                   </View>
                 ) : (
-                  <Text style={styles.price}>₹{specsData.price}</Text>
+                  <InterMedium style={styles.price}>
+                    ₹{specsData.price}
+                  </InterMedium>
                 )}
               </>
 
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Size: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>Size: </InterRegular>
+                <InterSemiBold
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {specsData.spectacles.size}
-                </Text>
+                </InterSemiBold>
               </View>
 
               {store.userLevel === "CUSTOMER" && (
@@ -242,17 +257,17 @@ const SpecsDetails = ({ route, navigation }) => {
                   onPress={() => setShowLensSelector(true)}
                 >
                   <AntDesign name="shoppingcart" size={28} color="white" />
-                  <Text
+                  <InterRegular
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}
                   >
                     Add to cart
-                  </Text>
+                  </InterRegular>
                 </TouchableOpacity>
               )}
 
               {/* Additional Information */}
               <View style={styles.additional_info}>
-                <Text
+                <InterRegular
                   style={{
                     ...styles.text_small,
                     color: grey1,
@@ -262,7 +277,7 @@ const SpecsDetails = ({ route, navigation }) => {
                   }}
                 >
                   Additional Information:
-                </Text>
+                </InterRegular>
                 <AdditionalField
                   label={"Gender"}
                   value={specsData.spectacles.gender}
@@ -307,19 +322,23 @@ const SpecsDetails = ({ route, navigation }) => {
                   backgroundColor: gradient_start,
                 }}
               >
-                <Text style={{ fontSize: 24 }}>Available lens options</Text>
+                <InterRegular style={{ fontSize: 24 }}>
+                  Available lens options
+                </InterRegular>
 
                 {!specsData.spectacles.linked_single &&
                 !specsData.spectacles.linked_bifocal &&
                 !specsData.spectacles.linked_zero ? (
                   <View style={{ alignItems: "center", marginVertical: 40 }}>
-                    <Text style={{ ...styles.text_small, color: grey1 }}>
+                    <InterRegular
+                      style={{ ...styles.text_small, color: grey1 }}
+                    >
                       No lenses available
-                    </Text>
+                    </InterRegular>
                   </View>
                 ) : (
                   <View>
-                    <Text
+                    <InterRegular
                       style={{
                         ...styles.text_small,
                         color: grey4,
@@ -331,7 +350,7 @@ const SpecsDetails = ({ route, navigation }) => {
                       {!!specsData.spectacles.linked_bifocal &&
                         "\n• Bifocal / Progressive"}
                       {!!specsData.spectacles.linked_zero && "\n• Zero Power"}
-                    </Text>
+                    </InterRegular>
                   </View>
                 )}
               </View>
@@ -353,7 +372,7 @@ const SpecsDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -361,10 +380,10 @@ const SpecsDetails = ({ route, navigation }) => {
                       }}
                     >
                       Available stock for sale
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {specsData.spectacles.stock}
-                    </Text>
+                    </InterRegular>
                   </View>
                   <View
                     style={{
@@ -374,7 +393,7 @@ const SpecsDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -382,10 +401,10 @@ const SpecsDetails = ({ route, navigation }) => {
                       }}
                     >
                       Stock sold till date
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {specsData.stock_sold}
-                    </Text>
+                    </InterRegular>
                   </View>
                 </View>
               )}
@@ -398,14 +417,14 @@ const SpecsDetails = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          <Text
+          <InterRegular
             style={{
               fontSize: 30,
               marginTop: 250,
             }}
           >
             Loading...
-          </Text>
+          </InterRegular>
         </View>
       )}
     </ScrollView>

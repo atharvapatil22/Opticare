@@ -26,6 +26,10 @@ import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import SelectDropdown from "react-native-select-dropdown";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Portal, Snackbar } from "react-native-paper";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const LensesStepper = ({ route, navigation }) => {
   const { editing, lensesData } = route.params;
@@ -346,35 +350,45 @@ const LensesStepper = ({ route, navigation }) => {
             {steps.map((step, index) => (
               <ProgressStep label={step} removeBtnRow key={index}>
                 <View style={styles.step_container}>
-                  <Text style={styles.form_title}>{steps[currentStep]}</Text>
+                  <InterMedium style={styles.form_title}>
+                    {steps[currentStep]}
+                  </InterMedium>
                   {currentStep === 0 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product ID</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Product ID
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
                           value={idLabel}
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Name</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Product Name
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setProductName}
                           value={productName}
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Brand Name</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Brand Name
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setBrand}
                           value={brand}
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Type</Text>
+                        <InterRegular style={styles.form_label}>
+                          Type
+                        </InterRegular>
                         <SelectDropdown
                           renderDropdownIcon={() => (
                             <Entypo
@@ -392,7 +406,9 @@ const LensesStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Material</Text>
+                        <InterRegular style={styles.form_label}>
+                          Material
+                        </InterRegular>
                         <SelectDropdown
                           renderDropdownIcon={() => (
                             <Entypo
@@ -420,7 +436,9 @@ const LensesStepper = ({ route, navigation }) => {
                     >
                       {type === "Bifocal / Progressive" && (
                         <View style={{ width: "48%" }}>
-                          <Text style={styles.form_label}>Preview Image</Text>
+                          <InterRegular style={styles.form_label}>
+                            Preview Image
+                          </InterRegular>
                           <View style={{ alignItems: "center" }}>
                             {!!previewImage && (
                               <Image
@@ -444,8 +462,10 @@ const LensesStepper = ({ route, navigation }) => {
                       )}
 
                       <View style={{ width: "48%" }}>
-                        <Text style={styles.form_label}>Features</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Features
+                        </InterRegular>
+                        <InterRegularInput
                           style={{
                             borderWidth: 1,
                             borderRadius: 8,
@@ -466,10 +486,10 @@ const LensesStepper = ({ route, navigation }) => {
                   ) : currentStep === 2 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>
+                        <InterRegular style={styles.form_label}>
                           Avg. Price For Single Lens
-                        </Text>
-                        <TextInput
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setPrice}
                           value={price}
@@ -477,10 +497,10 @@ const LensesStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>
+                        <InterRegular style={styles.form_label}>
                           Avg. Price For Pair
-                        </Text>
-                        <TextInput
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           editable={false}
                           value={
@@ -491,8 +511,8 @@ const LensesStepper = ({ route, navigation }) => {
                         />
                       </View>
                       {/* <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Discount (in %)</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>Discount (in %)</InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
                           value={discount}
@@ -502,7 +522,7 @@ const LensesStepper = ({ route, navigation }) => {
                     </View>
                   ) : (
                     <>
-                      <Text>Invalid Step</Text>
+                      <InterRegular>Invalid Step</InterRegular>
                     </>
                   )}
                   <FormButtons />

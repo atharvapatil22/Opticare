@@ -167,22 +167,26 @@ const LensesDetails = ({ route, navigation }) => {
                 paddingLeft: "3%",
               }}
             >
-              <Text style={styles.name}>{lensData.name}</Text>
+              <InterMedium style={styles.name}>{lensData.name}</InterMedium>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Product ID: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>
+                  Product ID:{" "}
+                </InterRegular>
+                <InterMedium
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {lensData.id_label}
-                </Text>
+                </InterMedium>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>From </Text>
-                <Text
+                <InterRegular style={styles.text_regular}>From </InterRegular>
+                <InterRegular
                   style={{ ...styles.text_regular, color: customer_primary }}
                 >
                   {lensData.brand}
-                </Text>
+                </InterRegular>
               </View>
-              <Text
+              <InterRegular
                 style={{
                   color: text_color,
                   backgroundColor: gradient_start,
@@ -195,7 +199,7 @@ const LensesDetails = ({ route, navigation }) => {
                 }}
               >
                 {lensData.lenses.type}
-              </Text>
+              </InterRegular>
 
               <View
                 style={{
@@ -204,11 +208,13 @@ const LensesDetails = ({ route, navigation }) => {
                   marginTop: 12,
                 }}
               >
-                <Text style={{ fontSize: 24, color: text_color }}>
+                <InterRegular style={{ fontSize: 24, color: text_color }}>
                   Avg. Price:
-                </Text>
-                <Text style={styles.price}>₹{lensData.price}</Text>
-                <Text
+                </InterRegular>
+                <InterMedium style={styles.price}>
+                  ₹{lensData.price}
+                </InterMedium>
+                <InterRegular
                   style={{
                     fontSize: 24,
                     color: text_color,
@@ -216,8 +222,8 @@ const LensesDetails = ({ route, navigation }) => {
                   }}
                 >
                   per lens
-                </Text>
-                <Text
+                </InterRegular>
+                <InterRegular
                   style={{
                     marginLeft: 8,
                     color: grey1,
@@ -226,28 +232,28 @@ const LensesDetails = ({ route, navigation }) => {
                 >
                   (₹
                   {lensData.price * 2} for pair)
-                </Text>
+                </InterRegular>
               </View>
 
-              <Text style={styles.text_regular}>
+              <InterRegular style={styles.text_regular}>
                 Material: {lensData.lenses.material}
-              </Text>
+              </InterRegular>
               {store.userLevel === "CUSTOMER" && (
                 <TouchableOpacity
                   style={styles.cart_btn}
                   onPress={addLensestoCart}
                 >
                   <AntDesign name="shoppingcart" size={28} color="white" />
-                  <Text
+                  <InterRegular
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}
                   >
                     Add to cart
-                  </Text>
+                  </InterRegular>
                 </TouchableOpacity>
               )}
               {/* Additional Information */}
               <View style={styles.additional_info}>
-                <Text
+                <InterRegular
                   style={{
                     ...styles.text_regular,
                     color: admin_primary,
@@ -257,10 +263,10 @@ const LensesDetails = ({ route, navigation }) => {
                   }}
                 >
                   Features:
-                </Text>
-                <Text style={{ fontSize: 22, color: text_color }}>
+                </InterRegular>
+                <InterRegular style={{ fontSize: 22, color: text_color }}>
                   {lensData.lenses.features}
-                </Text>
+                </InterRegular>
               </View>
             </View>
             <View
@@ -278,7 +284,7 @@ const LensesDetails = ({ route, navigation }) => {
                     alignItems: "center",
                   }}
                 >
-                  <Text
+                  <InterRegular
                     style={{
                       fontSize: 22,
                       color: customer_primary,
@@ -286,10 +292,10 @@ const LensesDetails = ({ route, navigation }) => {
                     }}
                   >
                     Stock sold till date
-                  </Text>
-                  <Text style={{ fontSize: 45, color: text_color }}>
+                  </InterRegular>
+                  <InterRegular style={{ fontSize: 45, color: text_color }}>
                     {lensData.stock_sold}
-                  </Text>
+                  </InterRegular>
                 </View>
               )}
 
@@ -298,7 +304,7 @@ const LensesDetails = ({ route, navigation }) => {
                   style={styles.side_container}
                   onPress={() => setShowPreviewImage(true)}
                 >
-                  <Text
+                  <InterRegular
                     style={{
                       fontSize: 20,
                       textDecorationLine: "underline",
@@ -306,7 +312,7 @@ const LensesDetails = ({ route, navigation }) => {
                     }}
                   >
                     Preview Image:
-                  </Text>
+                  </InterRegular>
                   <Image
                     source={{
                       uri: lensData.lenses.preview_image,
@@ -329,14 +335,14 @@ const LensesDetails = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          <Text
+          <InterRegular
             style={{
               fontSize: 30,
               marginTop: 250,
             }}
           >
             Loading...
-          </Text>
+          </InterRegular>
         </View>
       )}
       {!!showPreviewImage && (

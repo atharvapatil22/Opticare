@@ -20,6 +20,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { addCartItem, updateItemQuantity2 } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
+import { InterRegular } from "../../components/StyledText/StyledText";
 
 const AccessoryDetails = ({ route, navigation }) => {
   const { id: accessoryId } = route.params;
@@ -199,34 +200,40 @@ const AccessoryDetails = ({ route, navigation }) => {
                 paddingLeft: "3%",
               }}
             >
-              <Text style={styles.name}>{accessoryData.name}</Text>
+              <InterMedium style={styles.name}>
+                {accessoryData.name}
+              </InterMedium>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>Product ID: </Text>
-                <Text style={{ ...styles.text_regular, fontWeight: "600" }}>
+                <InterRegular style={styles.text_regular}>
+                  Product ID:{" "}
+                </InterRegular>
+                <InterMedium
+                  style={{ ...styles.text_regular, fontWeight: "600" }}
+                >
                   {accessoryData.id_label}
-                </Text>
+                </InterMedium>
               </View>
               <View style={{ flexDirection: "row" }}>
-                <Text style={styles.text_regular}>From </Text>
-                <Text
+                <InterRegular style={styles.text_regular}>From </InterRegular>
+                <InterRegular
                   style={{ ...styles.text_regular, color: customer_primary }}
                 >
                   {accessoryData.brand}
-                </Text>
+                </InterRegular>
               </View>
               <>
                 {!!accessoryData.discount ? (
                   <View
                     style={{ flexDirection: "row", alignItems: "baseline" }}
                   >
-                    <Text style={styles.price}>
+                    <InterMedium style={styles.price}>
                       ₹
                       {(
                         accessoryData.price *
                         ((100 - accessoryData.discount) / 100)
                       ).toFixed(2)}
-                    </Text>
-                    <Text
+                    </InterMedium>
+                    <InterRegular
                       style={{
                         ...styles.text_small,
                         textDecorationLine: "line-through",
@@ -235,13 +242,17 @@ const AccessoryDetails = ({ route, navigation }) => {
                       }}
                     >
                       ₹{accessoryData.price}
-                    </Text>
-                    <Text style={{ ...styles.text_small, marginLeft: 8 }}>
+                    </InterRegular>
+                    <InterRegular
+                      style={{ ...styles.text_small, marginLeft: 8 }}
+                    >
                       ({accessoryData.discount}% off)
-                    </Text>
+                    </InterRegular>
                   </View>
                 ) : (
-                  <Text style={styles.price}>₹{accessoryData.price}</Text>
+                  <InterMedium style={styles.price}>
+                    ₹{accessoryData.price}
+                  </InterMedium>
                 )}
               </>
 
@@ -251,17 +262,17 @@ const AccessoryDetails = ({ route, navigation }) => {
                   onPress={addAccessorytoCart}
                 >
                   <AntDesign name="shoppingcart" size={28} color="white" />
-                  <Text
+                  <InterRegular
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}
                   >
                     Add to cart
-                  </Text>
+                  </InterRegular>
                 </TouchableOpacity>
               )}
 
               {/* Additional Information */}
               <View style={styles.additional_info}>
-                <Text
+                <InterRegular
                   style={{
                     ...styles.text_small,
                     color: grey1,
@@ -271,10 +282,10 @@ const AccessoryDetails = ({ route, navigation }) => {
                   }}
                 >
                   Additional Information:
-                </Text>
-                <Text style={{ fontSize: 20, color: text_color }}>
+                </InterRegular>
+                <InterRegular style={{ fontSize: 20, color: text_color }}>
                   {accessoryData.accessories.additional_info}
-                </Text>
+                </InterRegular>
               </View>
             </View>
             <View
@@ -300,7 +311,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -308,10 +319,10 @@ const AccessoryDetails = ({ route, navigation }) => {
                       }}
                     >
                       Available stock for sale
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {accessoryData.accessories.stock}
-                    </Text>
+                    </InterRegular>
                   </View>
                   <View
                     style={{
@@ -321,7 +332,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                       alignItems: "center",
                     }}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: customer_primary,
@@ -329,10 +340,10 @@ const AccessoryDetails = ({ route, navigation }) => {
                       }}
                     >
                       Stock sold till date
-                    </Text>
-                    <Text style={{ fontSize: 45, color: text_color }}>
+                    </InterRegular>
+                    <InterRegular style={{ fontSize: 45, color: text_color }}>
                       {accessoryData.stock_sold}
-                    </Text>
+                    </InterRegular>
                   </View>
                 </View>
               )}
@@ -345,14 +356,14 @@ const AccessoryDetails = ({ route, navigation }) => {
             alignItems: "center",
           }}
         >
-          <Text
+          <InterRegular
             style={{
               fontSize: 30,
               marginTop: 250,
             }}
           >
             Loading...
-          </Text>
+          </InterRegular>
         </View>
       )}
     </ScrollView>

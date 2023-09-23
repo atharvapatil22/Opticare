@@ -25,6 +25,7 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import { Portal, Snackbar } from "react-native-paper";
+import { InterMedium } from "../../components/StyledText/StyledText";
 
 const AccessoryStepper = ({ route, navigation }) => {
   const { editing, accessoryData } = route.params;
@@ -372,28 +373,36 @@ const AccessoryStepper = ({ route, navigation }) => {
             {steps.map((step, index) => (
               <ProgressStep label={step} removeBtnRow key={index}>
                 <View style={styles.step_container}>
-                  <Text style={styles.form_title}>{steps[currentStep]}</Text>
+                  <InterMedium style={styles.form_title}>
+                    {steps[currentStep]}
+                  </InterMedium>
                   {currentStep === 0 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product ID</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Product ID
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
                           value={idLabel}
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Name</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Product Name
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setProductName}
                           value={productName}
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Brand Name</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Brand Name
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setBrand}
                           value={brand}
@@ -405,10 +414,10 @@ const AccessoryStepper = ({ route, navigation }) => {
                       {productImages.length === 0 ? (
                         <View style={{ alignItems: "center", paddingTop: 65 }}>
                           <UploadImageButton />
-                          <Text style={{ fontSize: 18, marginTop: 50 }}>
+                          <InterRegular style={{ fontSize: 18, marginTop: 50 }}>
                             Please upload 1 or more images for the product
-                          </Text>
-                          <Text
+                          </InterRegular>
+                          <InterRegular
                             style={{
                               fontSize: 16,
                               color: grey1,
@@ -417,13 +426,13 @@ const AccessoryStepper = ({ route, navigation }) => {
                             }}
                           >
                             Note: Images must be uploaded in 16:9 aspect ratio.
-                          </Text>
+                          </InterRegular>
                         </View>
                       ) : (
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ width: "20%" }}>
                             <UploadImageButton />
-                            <Text
+                            <InterRegular
                               style={{
                                 fontSize: 16,
                                 color: "black",
@@ -433,8 +442,8 @@ const AccessoryStepper = ({ route, navigation }) => {
                             >
                               Note: Images must be uploaded in 16:9 aspect
                               ratio.
-                            </Text>
-                            <Text
+                            </InterRegular>
+                            <InterRegular
                               style={{
                                 fontSize: 16,
                                 color: grey1,
@@ -444,7 +453,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                             >
                               Star mark an Image to set it as the featured image
                               for this product.
-                            </Text>
+                            </InterRegular>
                           </View>
 
                           <View
@@ -519,8 +528,10 @@ const AccessoryStepper = ({ route, navigation }) => {
                     </>
                   ) : currentStep === 2 ? (
                     <View style={{ width: "100%" }}>
-                      <Text style={styles.form_label}>About Product</Text>
-                      <TextInput
+                      <InterRegular style={styles.form_label}>
+                        About Product
+                      </InterRegular>
+                      <InterRegularInput
                         style={{
                           borderWidth: 1,
                           borderRadius: 8,
@@ -540,8 +551,10 @@ const AccessoryStepper = ({ route, navigation }) => {
                   ) : currentStep === 3 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Price</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Price
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setPrice}
                           value={price}
@@ -549,8 +562,10 @@ const AccessoryStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Discount (in %)</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Discount (in %)
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
                           value={discount}
@@ -558,8 +573,10 @@ const AccessoryStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Stock</Text>
-                        <TextInput
+                        <InterRegular style={styles.form_label}>
+                          Product Stock
+                        </InterRegular>
+                        <InterRegularInput
                           style={styles.text_field}
                           onChangeText={setStock}
                           value={stock}
@@ -568,7 +585,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                     </View>
                   ) : (
                     <>
-                      <Text>Invalid Step</Text>
+                      <InterRegular>Invalid Step</InterRegular>
                     </>
                   )}
                   <FormButtons />

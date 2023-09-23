@@ -14,6 +14,10 @@ import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
 import { Portal, Snackbar } from "react-native-paper";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const Spectacles = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -65,7 +69,7 @@ const Spectacles = ({ navigation }) => {
   return (
     <View style={{ backgroundColor: app_bg }}>
       {/* Screen Title */}
-      <Text
+      <InterMedium
         style={{
           marginHorizontal: "2%",
           fontSize: 26,
@@ -74,7 +78,7 @@ const Spectacles = ({ navigation }) => {
         }}
       >
         Shopping for Spectacles
-      </Text>
+      </InterMedium>
       <Portal>
         <Snackbar
           visible={showSnackbar}
@@ -132,9 +136,9 @@ const Spectacles = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
+            <InterRegular style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No spectacles found!
-            </Text>
+            </InterRegular>
           </View>
         ) : (
           <View style={styles.grid_container}>

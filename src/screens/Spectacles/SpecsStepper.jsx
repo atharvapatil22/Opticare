@@ -32,6 +32,10 @@ import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import SelectDropdown from "react-native-select-dropdown";
 import { Portal, Snackbar } from "react-native-paper";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
@@ -448,11 +452,15 @@ const SpecsStepper = ({ route, navigation }) => {
             {steps.map((step, index) => (
               <ProgressStep label={step} removeBtnRow key={index}>
                 <View style={styles.step_container}>
-                  <Text style={styles.form_title}>{steps[currentStep]}</Text>
+                  <InterMedium style={styles.form_title}>
+                    {steps[currentStep]}
+                  </InterMedium>
                   {currentStep === 0 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product ID</Text>
+                        <InterRegular style={styles.form_label}>
+                          Product ID
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
@@ -460,7 +468,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Name</Text>
+                        <InterRegular style={styles.form_label}>
+                          Product Name
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setProductName}
@@ -468,7 +478,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Brand Name</Text>
+                        <InterRegular style={styles.form_label}>
+                          Brand Name
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setBrand}
@@ -476,7 +488,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Gender</Text>
+                        <InterRegular style={styles.form_label}>
+                          Gender
+                        </InterRegular>
                         <SelectDropdown
                           renderDropdownIcon={() => (
                             <Entypo
@@ -499,10 +513,10 @@ const SpecsStepper = ({ route, navigation }) => {
                       {productImages.length === 0 ? (
                         <View style={{ alignItems: "center", paddingTop: 65 }}>
                           <UploadImageButton />
-                          <Text style={{ fontSize: 18, marginTop: 50 }}>
+                          <InterRegular style={{ fontSize: 18, marginTop: 50 }}>
                             Please upload 1 or more images for the product
-                          </Text>
-                          <Text
+                          </InterRegular>
+                          <InterRegular
                             style={{
                               fontSize: 16,
                               color: grey1,
@@ -511,13 +525,13 @@ const SpecsStepper = ({ route, navigation }) => {
                             }}
                           >
                             Note: Images must be uploaded in 16:9 aspect ratio.
-                          </Text>
+                          </InterRegular>
                         </View>
                       ) : (
                         <View style={{ flexDirection: "row" }}>
                           <View style={{ width: "20%" }}>
                             <UploadImageButton />
-                            <Text
+                            <InterRegular
                               style={{
                                 fontSize: 16,
                                 color: "black",
@@ -527,8 +541,8 @@ const SpecsStepper = ({ route, navigation }) => {
                             >
                               Note: Images must be uploaded in 16:9 aspect
                               ratio.
-                            </Text>
-                            <Text
+                            </InterRegular>
+                            <InterRegular
                               style={{
                                 fontSize: 16,
                                 color: grey1,
@@ -538,7 +552,7 @@ const SpecsStepper = ({ route, navigation }) => {
                             >
                               Star mark an Image to set it as the featured image
                               for this product.
-                            </Text>
+                            </InterRegular>
                           </View>
 
                           <View
@@ -614,7 +628,9 @@ const SpecsStepper = ({ route, navigation }) => {
                   ) : currentStep === 2 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Frame Color</Text>
+                        <InterRegular style={styles.form_label}>
+                          Frame Color
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setColor}
@@ -623,7 +639,9 @@ const SpecsStepper = ({ route, navigation }) => {
                       </View>
 
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Material</Text>
+                        <InterRegular style={styles.form_label}>
+                          Material
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setMaterial}
@@ -631,7 +649,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Size</Text>
+                        <InterRegular style={styles.form_label}>
+                          Size
+                        </InterRegular>
 
                         <SelectDropdown
                           renderDropdownIcon={() => (
@@ -656,7 +676,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Weight (in grams)</Text>
+                        <InterRegular style={styles.form_label}>
+                          Weight (in grams)
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setWeight}
@@ -665,7 +687,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Width (in cms)</Text>
+                        <InterRegular style={styles.form_label}>
+                          Width (in cms)
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setWidth}
@@ -674,7 +698,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Dimensions</Text>
+                        <InterRegular style={styles.form_label}>
+                          Dimensions
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setDimensions}
@@ -682,7 +708,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Warranty</Text>
+                        <InterRegular style={styles.form_label}>
+                          Product Warranty
+                        </InterRegular>
 
                         <SelectDropdown
                           renderDropdownIcon={() => (
@@ -703,7 +731,7 @@ const SpecsStepper = ({ route, navigation }) => {
                     </View>
                   ) : currentStep === 3 ? (
                     <View>
-                      <Text
+                      <InterRegular
                         style={{
                           textDecorationLine: "underline",
                           fontSize: 18,
@@ -711,7 +739,7 @@ const SpecsStepper = ({ route, navigation }) => {
                         }}
                       >
                         Available Lenses:
-                      </Text>
+                      </InterRegular>
                       <View
                         style={{
                           flexDirection: "row",
@@ -727,9 +755,9 @@ const SpecsStepper = ({ route, navigation }) => {
                               setLinkedSingle(val);
                             }}
                           />
-                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                          <InterRegular style={{ fontSize: 20, marginLeft: 8 }}>
                             Single Vision
-                          </Text>
+                          </InterRegular>
                         </View>
                         <View style={styles.lens_item}>
                           <Checkbox
@@ -739,9 +767,9 @@ const SpecsStepper = ({ route, navigation }) => {
                               setLinkedBifocal(val);
                             }}
                           />
-                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                          <InterRegular style={{ fontSize: 20, marginLeft: 8 }}>
                             Bifocal / Progressive
-                          </Text>
+                          </InterRegular>
                         </View>
                         <View style={styles.lens_item}>
                           <Checkbox
@@ -751,16 +779,18 @@ const SpecsStepper = ({ route, navigation }) => {
                               setLinkedZero(val);
                             }}
                           />
-                          <Text style={{ fontSize: 20, marginLeft: 8 }}>
+                          <InterRegular style={{ fontSize: 20, marginLeft: 8 }}>
                             Zero Power
-                          </Text>
+                          </InterRegular>
                         </View>
                       </View>
                     </View>
                   ) : currentStep === 4 ? (
                     <View style={styles.form_container}>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Price</Text>
+                        <InterRegular style={styles.form_label}>
+                          Price
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setPrice}
@@ -769,7 +799,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Discount (in %)</Text>
+                        <InterRegular style={styles.form_label}>
+                          Discount (in %)
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
@@ -778,7 +810,9 @@ const SpecsStepper = ({ route, navigation }) => {
                         />
                       </View>
                       <View style={styles.form_field}>
-                        <Text style={styles.form_label}>Product Stock</Text>
+                        <InterRegular style={styles.form_label}>
+                          Product Stock
+                        </InterRegular>
                         <TextInput
                           style={styles.text_field}
                           onChangeText={setStock}
@@ -788,7 +822,7 @@ const SpecsStepper = ({ route, navigation }) => {
                     </View>
                   ) : (
                     <>
-                      <Text>Invalid Step</Text>
+                      <InterRegular>Invalid Step</InterRegular>
                     </>
                   )}
                   <FormButtons />

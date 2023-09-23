@@ -31,7 +31,7 @@ const ProductCard = ({ data, type, onPress }) => {
       <Text style={{ fontSize: 18, color: "black" }}>{data.name}</Text>
       <View style={{ flexDirection: "row" }}>
         <Text style={{ fontSize: 16, color: "black" }}>
-          ₹{data.price * ((100 - data.discount) / 100)}
+          ₹{(data.price * ((100 - data.discount) / 100)).toFixed(2)}
         </Text>
         {type === "spectacles" && (
           <Text style={{ fontSize: 16, color: grey1, marginLeft: 8 }}>
