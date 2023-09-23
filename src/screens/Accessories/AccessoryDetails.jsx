@@ -20,7 +20,10 @@ import { AntDesign } from "@expo/vector-icons";
 import { addCartItem, updateItemQuantity2 } from "../../redux/actions";
 import { deleteProductAPI } from "../../apiCalls/productAPIs";
 import EditDeleteButtons from "../../components/EditDeleteButtons";
-import { InterRegular } from "../../components/StyledText/StyledText";
+import {
+  InterRegular,
+  InterMedium,
+} from "../../components/StyledText/StyledText";
 
 const AccessoryDetails = ({ route, navigation }) => {
   const { id: accessoryId } = route.params;

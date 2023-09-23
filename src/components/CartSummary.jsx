@@ -10,6 +10,11 @@ import React from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { customer_primary, grey1, text_color } from "../constants";
 import { useSelector } from "react-redux";
+import {
+  InterMedium,
+  InterRegular,
+  InterSemiBold,
+} from "./StyledText/StyledText";
 
 const CartSummary = ({
   disableCTA = false,
@@ -22,29 +27,34 @@ const CartSummary = ({
 
   return (
     <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
-      <Text
+      <InterMedium
         style={{
-          fontFamily: "Inter-Medium",
           fontSize: 20,
           color: customer_primary,
         }}
       >
         {screen === "MyCart" ? "Cart Summary" : "Order Total"}
-      </Text>
+      </InterMedium>
       <View style={styles.summary_body}>
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Items Total</Text>
-          <Text style={styles.summary_text}>₹{billingInfo.productsTotal}</Text>
+          <InterRegular style={styles.summary_text}>Items Total</InterRegular>
+          <InterRegular style={styles.summary_text}>
+            ₹{billingInfo.productsTotal}
+          </InterRegular>
         </View>
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Savings</Text>
-          <Text style={styles.summary_text}>-₹{billingInfo.savings}</Text>
+          <InterRegular style={styles.summary_text}>Savings</InterRegular>
+          <InterRegular style={styles.summary_text}>
+            -₹{billingInfo.savings}
+          </InterRegular>
         </View>
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Effective Items Total</Text>
-          <Text style={styles.summary_text}>
+          <InterRegular style={styles.summary_text}>
+            Effective Items Total
+          </InterRegular>
+          <InterRegular style={styles.summary_text}>
             ₹{billingInfo.productsDiscounted}
-          </Text>
+          </InterRegular>
         </View>
         <View
           style={{
@@ -54,21 +64,20 @@ const CartSummary = ({
           }}
         />
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Other Charges</Text>
-          <Text style={styles.summary_text}>0</Text>
+          <InterRegular style={styles.summary_text}>Other Charges</InterRegular>
+          <InterRegular style={styles.summary_text}>0</InterRegular>
         </View>
         {screen === "MyCart" && globalData.couponDiscount == 0 && (
           <TouchableOpacity onPress={onApplyCoupon}>
-            <Text
+            <InterSemiBold
               style={{
                 ...styles.summary_text,
                 color: customer_primary,
-                fontFamily: "Inter-SemiBold",
                 textDecorationLine: "underline",
               }}
             >
               Apply coupon
-            </Text>
+            </InterSemiBold>
           </TouchableOpacity>
         )}
         {globalData.couponDiscount > 0 && (
@@ -76,11 +85,13 @@ const CartSummary = ({
             style={styles.summary_field}
             onPress={onApplyCoupon}
           >
-            <Text style={styles.summary_text}>Coupon Discount</Text>
+            <InterRegular style={styles.summary_text}>
+              Coupon Discount
+            </InterRegular>
 
-            <Text style={styles.summary_text}>
+            <InterRegular style={styles.summary_text}>
               -₹{globalData.couponDiscount}
-            </Text>
+            </InterRegular>
           </TouchableOpacity>
         )}
 
@@ -92,19 +103,19 @@ const CartSummary = ({
           }}
         />
         <View style={styles.summary_field}>
-          <Text style={styles.summary_text}>Grand Total</Text>
-          <Text style={styles.summary_text}>
+          <InterRegular style={styles.summary_text}>Grand Total</InterRegular>
+          <InterRegular style={styles.summary_text}>
             ₹{billingInfo.productsDiscounted - globalData.couponDiscount}
-          </Text>
+          </InterRegular>
         </View>
 
         {screen === "MyCart" && (
           <>
-            <Text
+            <InterRegular
               style={{ ...styles.summary_text, color: grey1, marginTop: 20 }}
             >
               We accept
-            </Text>
+            </InterRegular>
             <View
               style={{
                 flexDirection: "row",
@@ -138,16 +149,15 @@ const CartSummary = ({
               }}
             >
               <FontAwesome5 name="rupee-sign" size={20} color="black" />
-              <Text
+              <InterMedium
                 style={{
                   fontSize: 20,
-                  fontFamily: "Inter-Medium",
                   marginLeft: 4,
                   color: text_color,
                 }}
               >
                 Cash
-              </Text>
+              </InterMedium>
             </View>
           </>
         )}
@@ -161,15 +171,14 @@ const CartSummary = ({
           if (!disableCTA) handleCTA();
         }}
       >
-        <Text
+        <InterMedium
           style={{
             fontSize: 20,
             color: "white",
-            fontFamily: "Inter-Medium",
           }}
         >
           {screen === "MyCart" ? "Proceed to buy" : "PLACE ORDER"}
-        </Text>
+        </InterMedium>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -191,7 +200,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   summary_text: {
-    fontFamily: "Inter-Regular",
     fontSize: 18,
     color: text_color,
     marginBottom: 8,

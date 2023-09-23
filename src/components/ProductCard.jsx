@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { grey1 } from "../constants";
+import { InterRegular } from "./StyledText/StyledText";
 
 const ProductCard = ({ data, type, onPress }) => {
   return (
@@ -28,16 +29,18 @@ const ProductCard = ({ data, type, onPress }) => {
           borderRadius: 30,
         }}
       />
-      <Text style={{ fontSize: 18, color: "black" }}>{data.name}</Text>
+      <InterRegular style={{ fontSize: 18, color: "black" }}>
+        {data.name}
+      </InterRegular>
       <View style={{ flexDirection: "row" }}>
-        <Text style={{ fontSize: 16, color: "black" }}>
+        <InterRegular style={{ fontSize: 16, color: "black" }}>
           ₹{(data.price * ((100 - data.discount) / 100)).toFixed(2)}
-        </Text>
-        {type === "spectacles" && (
+        </InterRegular>
+        {/* {type === "spectacles" && (
           <Text style={{ fontSize: 16, color: grey1, marginLeft: 8 }}>
             ({data.lens_options} Lens options)
           </Text>
-        )}
+        )} */}
       </View>
     </TouchableOpacity>
   );

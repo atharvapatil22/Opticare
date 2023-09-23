@@ -19,6 +19,7 @@ import {
 } from "../constants";
 import AddPowerRecord from "./EyePowerModals/AddPowerRecord";
 import EditLensPower from "./EyePowerModals/EditLensPower";
+import { InterMedium, InterRegular } from "./StyledText/StyledText";
 
 const CartItemCard = ({ data }) => {
   const dispatch = useDispatch();
@@ -50,29 +51,26 @@ const CartItemCard = ({ data }) => {
           />
         </View>
         <View style={{ marginLeft: "2%" }}>
-          <Text
+          <InterMedium
             style={{
-              fontFamily: "Inter-Medium",
               color: customer_primary,
               fontSize: 24,
             }}
           >
             {data.linkedLens.name}
-          </Text>
-          <Text
+          </InterMedium>
+          <InterRegular
             style={{
-              fontFamily: "Inter-Regular",
               color: text_color,
               fontSize: 18,
             }}
           >
             Quantity: {data.linkedLens.quantity}
-          </Text>
-          <Text
+          </InterRegular>
+          <InterRegular
             style={{
               fontSize: 18,
               color: text_color,
-              fontFamily: "Inter-Regular",
               marginTop: 6,
             }}
           >
@@ -80,24 +78,23 @@ const CartItemCard = ({ data }) => {
             {data.linkedLens.price *
               ((100 - data.linkedLens.discount) / 100) *
               data.linkedLens.quantity}
-          </Text>
-          <Text
+          </InterRegular>
+          <InterMedium
             style={{
-              fontFamily: "Inter-Medium",
               color: grey2,
               fontSize: 18,
             }}
           >
             {data.linkedLens.type} Lens
-          </Text>
+          </InterMedium>
           <View style={{ flexDirection: "row", marginTop: 10 }}>
             <TouchableOpacity
               style={styles.power_buttons}
               onPress={() => setShowEditModal(true)}
             >
-              <Text style={styles.power_btn_text}>
+              <InterRegular style={styles.power_btn_text}>
                 {!!data.linkedLens.eye_power ? "Edit power" : "Add power"}
-              </Text>
+              </InterRegular>
             </TouchableOpacity>
           </View>
         </View>
@@ -122,15 +119,14 @@ const CartItemCard = ({ data }) => {
           )}
         </View>
         <View style={{ width: "62%" }}>
-          <Text
+          <InterMedium
             style={{
-              fontFamily: "Inter-Medium",
               color: customer_primary,
               fontSize: 24,
             }}
           >
             {data.name}
-          </Text>
+          </InterMedium>
           <View
             style={{
               flexDirection: "row",
@@ -138,19 +134,18 @@ const CartItemCard = ({ data }) => {
               marginTop: 6,
             }}
           >
-            <Text style={{ fontSize: 20, fontFamily: "Inter-Regular" }}>₹</Text>
-            <Text
+            <InterRegular style={{ fontSize: 20 }}>₹</InterRegular>
+            <InterRegular
               style={{
                 fontSize: 20,
                 color: customer_primary,
-                fontFamily: "Inter-Regular",
               }}
             >
               {data.price * ((100 - data.discount) / 100)}
-            </Text>
+            </InterRegular>
             {!!data.discount && (
               <>
-                <Text
+                <InterRegular
                   style={{
                     fontSize: 16,
                     color: grey1,
@@ -159,36 +154,34 @@ const CartItemCard = ({ data }) => {
                   }}
                 >
                   ₹{data.price}
-                </Text>
-                <Text
+                </InterRegular>
+                <InterRegular
                   style={{ fontSize: 16, color: text_color, marginLeft: 4 }}
                 >
                   {data.discount}% off
-                </Text>
+                </InterRegular>
               </>
             )}
           </View>
-          <Text
+          <InterRegular
             style={{
               fontSize: 18,
               color: text_color,
-              fontFamily: "Inter-Regular",
               marginTop: 6,
             }}
           >
             Subtotal: ₹
             {data.price * ((100 - data.discount) / 100) * data.quantity}
-          </Text>
+          </InterRegular>
           {data.category === "lenses" && (
-            <Text
+            <InterMedium
               style={{
-                fontFamily: "Inter-Medium",
                 color: grey2,
                 fontSize: 18,
               }}
             >
               {/* {data.linkedlens.type} Lens */}
-            </Text>
+            </InterMedium>
           )}
           {data.category === "lenses" && (
             <View style={{ flexDirection: "row", marginTop: 10 }}>
@@ -196,9 +189,9 @@ const CartItemCard = ({ data }) => {
                 style={styles.power_buttons}
                 onPress={() => setShowEditModal(true)}
               >
-                <Text style={styles.power_btn_text}>
+                <InterRegular style={styles.power_btn_text}>
                   {!!data.linkedLens.eye_power ? "Edit power" : "Add power"}
-                </Text>
+                </InterRegular>
               </TouchableOpacity>
             </View>
           )}
@@ -269,17 +262,16 @@ const CartItemCard = ({ data }) => {
                 color={data.quantity === 1 ? grey1 : customer_primary}
               />
             </TouchableOpacity>
-            <Text
+            <InterRegular
               style={{
                 width: "40%",
                 textAlign: "center",
                 fontSize: 24,
-                fontFamily: "Inter-Regular",
                 color: text_color,
               }}
             >
               {data.quantity}
-            </Text>
+            </InterRegular>
             <TouchableOpacity
               onPress={() =>
                 dispatch(

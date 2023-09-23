@@ -2,6 +2,7 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { grey1, text_color } from "../constants";
+import { InterMedium } from "./StyledText/StyledText";
 
 const CustomModal = ({ body, bodyStyles, heading, onClose }) => {
   return (
@@ -32,15 +33,14 @@ const CustomModal = ({ body, bodyStyles, heading, onClose }) => {
               paddingVertical: "1.5%",
             }}
           >
-            <Text
+            <InterMedium
               style={{
                 fontSize: 24,
-                fontFamily: "Inter-Medium",
                 color: text_color,
               }}
             >
               {heading}
-            </Text>
+            </InterMedium>
             <TouchableOpacity onPress={onClose}>
               <Ionicons name="md-close" size={30} color="black" />
             </TouchableOpacity>

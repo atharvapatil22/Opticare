@@ -14,7 +14,10 @@ import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
 import { Portal, Snackbar } from "react-native-paper";
-import { InterMedium } from "../../components/StyledText/StyledText";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const Accessories = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -70,7 +73,6 @@ const Accessories = ({ navigation }) => {
           marginHorizontal: "2%",
           fontSize: 26,
           marginTop: 16,
-          fontFamily: "Inter-Medium",
         }}
       >
         Shopping for Accessories

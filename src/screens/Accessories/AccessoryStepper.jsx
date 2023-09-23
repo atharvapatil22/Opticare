@@ -25,7 +25,10 @@ import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import { Portal, Snackbar } from "react-native-paper";
-import { InterMedium } from "../../components/StyledText/StyledText";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const AccessoryStepper = ({ route, navigation }) => {
   const { editing, accessoryData } = route.params;

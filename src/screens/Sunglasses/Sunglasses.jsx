@@ -14,7 +14,10 @@ import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
 import { useSelector } from "react-redux";
 import { Portal, Snackbar } from "react-native-paper";
-import { InterMedium } from "../../components/StyledText/StyledText";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const Sunglasses = ({ navigation }) => {
   const store = useSelector((state) => state.globalData);
@@ -73,7 +76,6 @@ const Sunglasses = ({ navigation }) => {
           marginHorizontal: "2%",
           fontSize: 26,
           marginTop: 16,
-          fontFamily: "Inter-Medium",
         }}
       >
         Shopping for Sunglasses

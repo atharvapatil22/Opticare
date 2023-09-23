@@ -5,6 +5,7 @@ import { gradient_end } from "../constants";
 import { Pressable, StyleSheet, Text, Image } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
+import { InterRegular } from "../components/StyledText/StyledText";
 
 const CustomerDrawer = (props) => {
   const dispatch = useDispatch();
@@ -105,7 +106,7 @@ const CustomerDrawer = (props) => {
         labelStyle={styles.label}
       />
       <Pressable onPress={handleAdminLogin}>
-        <Text
+        <InterRegular
           style={{
             fontSize: 20,
             color: "blue",
@@ -114,7 +115,7 @@ const CustomerDrawer = (props) => {
           }}
         >
           Admin Login
-        </Text>
+        </InterRegular>
       </Pressable>
     </DrawerContentScrollView>
   );

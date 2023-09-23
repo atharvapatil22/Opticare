@@ -17,6 +17,7 @@ import {
   text_color,
 } from "../../constants";
 import { supabase } from "../../supabase/client";
+import { InterMedium, InterRegular } from "../StyledText/StyledText";
 
 const AddPowerRecord = ({ onClose }) => {
   const [customerName, setCustomerName] = useState("");
@@ -134,7 +135,7 @@ const AddPowerRecord = ({ onClose }) => {
   const TableCell = ({ onPress, value }) => {
     return (
       <TouchableOpacity onPress={onPress}>
-        <Text style={styles.value_btn}>{value.toFixed(2)}</Text>
+        <InterMedium style={styles.value_btn}>{value.toFixed(2)}</InterMedium>
       </TouchableOpacity>
     );
   };
@@ -272,7 +273,9 @@ const AddPowerRecord = ({ onClose }) => {
                 style={styles.ns_item}
                 onPress={() => handleNumberSelect(num)}
               >
-                <Text style={styles.ns_text}>{num.toFixed(2)}</Text>
+                <InterMedium style={styles.ns_text}>
+                  {num.toFixed(2)}
+                </InterMedium>
               </TouchableOpacity>
             ))}
           </View>
@@ -290,12 +293,12 @@ const AddPowerRecord = ({ onClose }) => {
               style={styles.ns_item}
               onPress={() => handleNumberSelect(num)}
             >
-              <Text style={styles.ns_text}>
+              <InterMedium style={styles.ns_text}>
                 {numberSelectorType === nsTypes.AXIS_LEFT ||
                 numberSelectorType === nsTypes.AXIS_RIGHT
                   ? `${num}°`
                   : num.toFixed(2)}
-              </Text>
+              </InterMedium>
             </TouchableOpacity>
           ))}
         </View>
@@ -318,7 +321,7 @@ const AddPowerRecord = ({ onClose }) => {
             }}
           >
             <View style={{ width: "48%" }}>
-              <Text style={styles.label}>Customer name</Text>
+              <InterRegular style={styles.label}>Customer name</InterRegular>
               <TextInput
                 style={styles.inputbox}
                 value={customerName}
@@ -326,7 +329,7 @@ const AddPowerRecord = ({ onClose }) => {
               />
             </View>
             <View style={{ width: "48%" }}>
-              <Text style={styles.label}>Customer number</Text>
+              <InterRegular style={styles.label}>Customer number</InterRegular>
               <TextInput
                 style={styles.inputbox}
                 maxLength={10}
@@ -343,13 +346,27 @@ const AddPowerRecord = ({ onClose }) => {
               <>
                 <View style={styles.table}>
                   <TableRow
-                    left={<Text style={styles.table_text}>Rx</Text>}
-                    middle={<Text style={styles.table_text}>Left</Text>}
-                    right={<Text style={styles.table_text}>Right</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>Rx</InterRegular>
+                    }
+                    middle={
+                      <InterRegular style={styles.table_text}>
+                        Left
+                      </InterRegular>
+                    }
+                    right={
+                      <InterRegular style={styles.table_text}>
+                        Right
+                      </InterRegular>
+                    }
                     heading
                   />
                   <TableRow
-                    left={<Text style={styles.table_text}>Sphere</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Sphere
+                      </InterRegular>
+                    }
                     middle={
                       <TableCell
                         onPress={() =>
@@ -368,7 +385,11 @@ const AddPowerRecord = ({ onClose }) => {
                     }
                   />
                   <TableRow
-                    left={<Text style={styles.table_text}>Cylinder</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Cylinder
+                      </InterRegular>
+                    }
                     middle={
                       <TableCell
                         onPress={() =>
@@ -387,7 +408,11 @@ const AddPowerRecord = ({ onClose }) => {
                     }
                   />
                   <TableRow
-                    left={<Text style={styles.table_text}>Axis</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Axis
+                      </InterRegular>
+                    }
                     middle={
                       <TableCell
                         onPress={() => setNumberSelectorType(nsTypes.AXIS_LEFT)}
@@ -404,7 +429,11 @@ const AddPowerRecord = ({ onClose }) => {
                     }
                   />
                   <TableRow
-                    left={<Text style={styles.table_text}>Pupil Distance</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Pupil Distance
+                      </InterRegular>
+                    }
                     middle={
                       <TableCell
                         onPress={() =>
@@ -423,7 +452,11 @@ const AddPowerRecord = ({ onClose }) => {
                     }
                   />
                   <TableRow
-                    left={<Text style={styles.table_text}>Near Addition</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Near Addition
+                      </InterRegular>
+                    }
                     middle={
                       <TableCell
                         onPress={() => setNumberSelectorType(nsTypes.NEAR_LEFT)}
@@ -452,7 +485,9 @@ const AddPowerRecord = ({ onClose }) => {
                     borderRadius: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 24, color: "white" }}>Save</Text>
+                  <InterRegular style={{ fontSize: 24, color: "white" }}>
+                    Save
+                  </InterRegular>
                 </TouchableOpacity>
               </>
             )}
@@ -482,7 +517,7 @@ const styles = StyleSheet.create({
     width: "80%",
     marginBottom: 50,
   },
-  table_text: { fontSize: 18, fontFamily: "Inter-Regular" },
+  table_text: { fontSize: 18 },
   table_cell: {
     width: "33%",
     alignItems: "center",
@@ -496,7 +531,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     fontSize: 20,
     color: customer_primary,
-    fontFamily: "Inter-Medium",
   },
   grid_container: {
     width: "100%",
@@ -516,7 +550,6 @@ const styles = StyleSheet.create({
   },
   ns_text: {
     fontSize: 22,
-    fontFamily: "Inter-Medium",
     color: text_color,
   },
 });

@@ -20,6 +20,10 @@ import {
 } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native";
 import CustomModal from "../../components/CustomModal";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const OrderDetails = ({ route }) => {
   const { id: orderId } = route.params;
@@ -88,22 +92,20 @@ const OrderDetails = ({ route }) => {
           marginTop: 8,
         }}
       >
-        <Text
+        <InterRegular
           style={{
             ...styles.text_medium,
-            fontFamily: label === "Total" ? "Inter-Medium" : "Inter-Regular",
           }}
         >
           {label}
-        </Text>
-        <Text
+        </InterRegular>
+        <InterRegular
           style={{
             ...styles.text_medium,
-            fontFamily: label === "Total" ? "Inter-Medium" : "Inter-Regular",
           }}
         >
           ₹{value || 0}
-        </Text>
+        </InterRegular>
       </View>
     );
   };
@@ -187,22 +189,21 @@ const OrderDetails = ({ route }) => {
             )}
           </View> */}
           <View style={{ marginLeft: 12 }}>
-            <Text
+            <InterMedium
               style={{
                 fontSize: 20,
-                fontFamily: "Inter-Medium",
                 color: text_color,
               }}
             >
               {data.name}
-            </Text>
-            <Text style={styles.cart_item_text}>
+            </InterMedium>
+            <InterRegular style={styles.cart_item_text}>
               ₹{data.price * ((100 - data.discount) / 100)} x {data.quantity}
-            </Text>
-            <Text style={styles.cart_item_text}>
+            </InterRegular>
+            <InterRegular style={styles.cart_item_text}>
               Subtotal: ₹
               {data.price * ((100 - data.discount) / 100) * data.quantity}
-            </Text>
+            </InterRegular>
           </View>
 
           {!data.is_delivered && (
@@ -215,15 +216,14 @@ const OrderDetails = ({ route }) => {
               }}
               onPress={markAsDelivered}
             >
-              <Text
+              <InterMedium
                 style={{
                   fontSize: 18,
-                  fontFamily: "Inter-Medium",
                   color: customer_primary,
                 }}
               >
                 Mark as delivered
-              </Text>
+              </InterMedium>
             </TouchableOpacity>
           )}
         </View>
@@ -236,7 +236,7 @@ const OrderDetails = ({ route }) => {
               padding: "2%",
             }}
           >
-            <Text
+            <InterMedium
               style={{
                 ...styles.text_small,
                 fontSize: 18,
@@ -244,16 +244,16 @@ const OrderDetails = ({ route }) => {
               }}
             >
               Linked Lens
-            </Text>
-            <Text style={styles.cart_item_text}>
+            </InterMedium>
+            <InterRegular style={styles.cart_item_text}>
               {data.linked_lens.type} - {data.linked_lens.name}
-            </Text>
-            <Text style={styles.cart_item_text}>
+            </InterRegular>
+            <InterRegular style={styles.cart_item_text}>
               Quantity: {data.linked_lens.quantity}
-            </Text>
-            <Text style={styles.cart_item_text}>
+            </InterRegular>
+            <InterRegular style={styles.cart_item_text}>
               Subtotal: ₹{data.linked_lens.price * data.linked_lens.quantity}
-            </Text>
+            </InterRegular>
           </View>
         )}
       </View>
@@ -288,16 +288,15 @@ const OrderDetails = ({ route }) => {
                       size={24}
                       color={customer_primary}
                     />
-                    <Text
+                    <InterMedium
                       style={{
                         fontSize: 14,
                         marginTop: 6,
                         color: customer_primary,
-                        fontFamily: "Inter-Medium",
                       }}
                     >
                       COMPLETED
-                    </Text>
+                    </InterMedium>
                   </View>
                 ) : (
                   <View
@@ -308,51 +307,49 @@ const OrderDetails = ({ route }) => {
                     }}
                   >
                     <Feather name="clock" size={24} color="orange" />
-                    <Text
+                    <InterMedium
                       style={{
                         fontSize: 14,
                         marginTop: 6,
                         color: "orange",
-                        fontFamily: "Inter-Medium",
                       }}
                     >
                       INCOMPLETE
-                    </Text>
+                    </InterMedium>
                   </View>
                 )}
                 {orderData.payment_completed != orderData.payment_total && (
-                  <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                  <InterRegular style={{ marginLeft: 12, fontSize: 18 }}>
                     (Payment Remaining)
-                  </Text>
+                  </InterRegular>
                 )}
                 {orderData.items_completed != orderData.items_total && (
-                  <Text style={{ marginLeft: 12, fontSize: 18 }}>
+                  <InterRegular style={{ marginLeft: 12, fontSize: 18 }}>
                     (Delivery Remaining)
-                  </Text>
+                  </InterRegular>
                 )}
               </View>
-              <Text
+              <InterMedium
                 style={{
                   ...styles.text_big,
-                  fontFamily: "Inter-Medium",
                   color: customer_primary,
                 }}
               >
                 Order#: {orderData.order_number}
-              </Text>
+              </InterMedium>
               {!!creationDate && (
-                <Text style={styles.text_big}>
+                <InterRegular style={styles.text_big}>
                   Order Created at: {days[creationDate.getDay()]},{" "}
                   {months[creationDate.getMonth()]} {creationDate.getDate()},{" "}
                   {creationDate.getFullYear()}
-                </Text>
+                </InterRegular>
               )}
               {!!deliveryDate && (
-                <Text style={styles.text_big}>
+                <InterRegular style={styles.text_big}>
                   Order Delivered at: {days[deliveryDate.getDay()]},{" "}
                   {months[deliveryDate.getMonth()]} {deliveryDate.getDate()},{" "}
                   {deliveryDate.getFullYear()}
-                </Text>
+                </InterRegular>
               )}
 
               <View
@@ -373,13 +370,15 @@ const OrderDetails = ({ route }) => {
                     }}
                   />
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={styles.text_small}>Buyer Details</Text>
-                    <Text style={styles.text_medium}>
+                    <InterMedium style={styles.text_small}>
+                      Buyer Details
+                    </InterMedium>
+                    <InterRegular style={styles.text_medium}>
                       {orderData.customer_name}
-                    </Text>
-                    <Text style={styles.text_medium}>
+                    </InterRegular>
+                    <InterRegular style={styles.text_medium}>
                       +91 {orderData.customer_number}
-                    </Text>
+                    </InterRegular>
                   </View>
                 </View>
                 <View style={{ ...styles.card, width: "49%" }}>
@@ -394,10 +393,12 @@ const OrderDetails = ({ route }) => {
                     }}
                   />
                   <View style={{ marginLeft: 10 }}>
-                    <Text style={styles.text_small}>Sales Person</Text>
-                    <Text style={styles.text_medium}>
+                    <InterMedium style={styles.text_small}>
+                      Sales Person
+                    </InterMedium>
+                    <InterRegular style={styles.text_medium}>
                       {orderData.sales_person}
-                    </Text>
+                    </InterRegular>
                   </View>
                 </View>
               </View>
@@ -413,44 +414,45 @@ const OrderDetails = ({ route }) => {
                   }}
                 />
                 <View style={{ marginLeft: 10 }}>
-                  <Text style={styles.text_small}>Payment Details</Text>
-                  <Text style={styles.text_medium}>
+                  <InterMedium style={styles.text_small}>
+                    Payment Details
+                  </InterMedium>
+                  <InterRegular style={styles.text_medium}>
                     {orderData.mode_of_payment} payment
-                  </Text>
+                  </InterRegular>
                   {orderData.payment_total == orderData.payment_completed ? (
-                    <Text style={styles.text_medium}>
+                    <InterRegular style={styles.text_medium}>
                       ₹{orderData.payment_total}
-                    </Text>
+                    </InterRegular>
                   ) : (
                     <>
-                      <Text style={styles.text_medium}>
+                      <InterRegular style={styles.text_medium}>
                         Ammount Recieved: ₹{orderData.payment_completed}
-                      </Text>
-                      <Text style={styles.text_medium}>
+                      </InterRegular>
+                      <InterRegular style={styles.text_medium}>
                         Dues: ₹
                         {orderData.payment_total - orderData.payment_completed}
-                      </Text>
+                      </InterRegular>
                       <TouchableOpacity style={styles.button}>
-                        <Text
+                        <InterRegular
                           style={{ ...styles.text_medium, color: "white" }}
                           onPress={() => setShowDuesModal(true)}
                         >
                           Update
-                        </Text>
+                        </InterRegular>
                       </TouchableOpacity>
                     </>
                   )}
                 </View>
               </View>
-              <Text
+              <InterMedium
                 style={{
                   marginTop: 16,
                   fontSize: 18,
-                  fontFamily: "Inter-Medium",
                 }}
               >
                 Order Summary
-              </Text>
+              </InterMedium>
               <View
                 style={{
                   borderRadius: 12,
@@ -478,9 +480,9 @@ const OrderDetails = ({ route }) => {
             </ScrollView>
           </View>
           <View style={styles.section}>
-            <Text style={styles.text_big}>
+            <InterRegular style={styles.text_big}>
               Order Items ({orderData.items_total})
-            </Text>
+            </InterRegular>
             <ScrollView>
               {/* Undelivered Items */}
               {orderData.items_total - orderData.items_completed > 0 && (
@@ -491,7 +493,7 @@ const OrderDetails = ({ route }) => {
                     borderColor: grey2,
                   }}
                 >
-                  <Text
+                  <InterMedium
                     style={{
                       ...styles.text_small,
                       fontSize: 18,
@@ -500,7 +502,7 @@ const OrderDetails = ({ route }) => {
                   >
                     Undelivered Items (
                     {orderData.items_total - orderData.items_completed})
-                  </Text>
+                  </InterMedium>
                   {orderData.orderItems.map((item, index) => {
                     if (!item.is_delivered)
                       return <ItemCard key={index} data={item} />;
@@ -511,7 +513,7 @@ const OrderDetails = ({ route }) => {
               {/* Delivered Items */}
               {orderData.items_completed > 0 && (
                 <View>
-                  <Text
+                  <InterMedium
                     style={{
                       ...styles.text_small,
                       fontSize: 18,
@@ -519,7 +521,7 @@ const OrderDetails = ({ route }) => {
                     }}
                   >
                     Delivered Items ({orderData.items_completed})
-                  </Text>
+                  </InterMedium>
                   {orderData.orderItems.map((item, index) => {
                     if (item.is_delivered)
                       return <ItemCard key={index} data={item} />;
@@ -538,7 +540,9 @@ const OrderDetails = ({ route }) => {
               onClose={() => setShowDuesModal(false)}
               body={
                 <View style={{ paddingHorizontal: "4%", paddingTop: 10 }}>
-                  <Text style={styles.text_medium}>Ammount Paid</Text>
+                  <InterRegular style={styles.text_medium}>
+                    Ammount Paid
+                  </InterRegular>
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <TextInput
                       keyboardType="numeric"
@@ -548,16 +552,15 @@ const OrderDetails = ({ route }) => {
                         setPaymentCompleted(parseInt(txt) || 0);
                       }}
                     />
-                    <Text
+                    <InterRegular
                       style={{
                         fontSize: 22,
                         color: text_color,
-                        fontFamily: "Inter-Regular",
                         marginLeft: "3%",
                       }}
                     >
                       out of ₹{orderData.payment_total}
-                    </Text>
+                    </InterRegular>
                   </View>
                   <TouchableOpacity
                     style={{
@@ -567,7 +570,7 @@ const OrderDetails = ({ route }) => {
                     }}
                     onPress={() => handleDuesUpdate()}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         color: "white",
                         fontSize: 20,
@@ -575,7 +578,7 @@ const OrderDetails = ({ route }) => {
                       }}
                     >
                       Save
-                    </Text>
+                    </InterRegular>
                   </TouchableOpacity>
                 </View>
               }
@@ -588,14 +591,14 @@ const OrderDetails = ({ route }) => {
             alignItems: "center",
           }}
         >
-          <Text
+          <InterRegular
             style={{
               fontSize: 30,
               marginTop: 250,
             }}
           >
             Loading...
-          </Text>
+          </InterRegular>
         </View>
       )}
     </View>
@@ -625,12 +628,11 @@ const styles = StyleSheet.create({
 
   text_big: {
     fontSize: 22,
-    fontFamily: "Inter-Regular",
     color: text_color,
     marginTop: 10,
   },
-  text_medium: { fontSize: 18, fontFamily: "Inter-Regular", color: text_color },
-  text_small: { fontSize: 16, fontFamily: "Inter-Medium", color: grey2 },
+  text_medium: { fontSize: 18, color: text_color },
+  text_small: { fontSize: 16, color: grey2 },
   image_container: {
     aspectRatio: 1 / 1,
     width: "18%",
@@ -639,7 +641,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "center",
   },
-  cart_item_text: { fontSize: 17, marginTop: 4, fontFamily: "Inter-Regular" },
+  cart_item_text: { fontSize: 17, marginTop: 4 },
   text_input: {
     borderWidth: 1,
     borderColor: grey2,

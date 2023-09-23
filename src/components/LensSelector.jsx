@@ -21,6 +21,7 @@ import { supabase } from "../supabase/client";
 import Button from "./Button";
 import { useDispatch } from "react-redux";
 import { addCartItem } from "../redux/actions";
+import { InterRegular } from "./StyledText/StyledText";
 
 const LensSelector = ({
   setShowLensSelector,
@@ -114,13 +115,13 @@ const LensSelector = ({
         }}
       >
         <View style={{ width: "92%" }}>
-          <Text style={{ fontSize: 22 }}>{lens.name}</Text>
-          <Text style={{ fontSize: 16, marginTop: 10 }}>
+          <InterRegular style={{ fontSize: 22 }}>{lens.name}</InterRegular>
+          <InterRegular style={{ fontSize: 16, marginTop: 10 }}>
             {lens.lenses.features}
-          </Text>
-          <Text style={{ fontSize: 18, color: grey2, marginTop: 10 }}>
+          </InterRegular>
+          <InterRegular style={{ fontSize: 18, color: grey2, marginTop: 10 }}>
             Approx. ₹{lens.price * 2} for 2 lenses
-          </Text>
+          </InterRegular>
         </View>
         <View
           style={{
@@ -166,9 +167,9 @@ const LensSelector = ({
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 24, color: text_color }}>
+            <InterRegular style={{ fontSize: 24, color: text_color }}>
               Choose what to buy with this...
-            </Text>
+            </InterRegular>
             <TouchableOpacity
               style={{ padding: 4 }}
               onPress={() => setShowLensSelector(false)}
@@ -191,9 +192,9 @@ const LensSelector = ({
                   style={styles.lens_category}
                   onPress={() => setModalState("Single Vision")}
                 >
-                  <Text style={{ fontSize: 24, color: text_color }}>
+                  <InterRegular style={{ fontSize: 24, color: text_color }}>
                     Single Vision Lens
-                  </Text>
+                  </InterRegular>
                   <Ionicons
                     name="arrow-forward"
                     size={34}
@@ -206,9 +207,9 @@ const LensSelector = ({
                   style={styles.lens_category}
                   onPress={() => setModalState("Bifocal / Progressive")}
                 >
-                  <Text style={{ fontSize: 24, color: text_color }}>
+                  <InterRegular style={{ fontSize: 24, color: text_color }}>
                     Progressive / Bifocal Lens
-                  </Text>
+                  </InterRegular>
                   <Ionicons
                     name="arrow-forward"
                     size={34}
@@ -223,9 +224,9 @@ const LensSelector = ({
                       style={styles.lens_category}
                       onPress={() => setModalState("Zero Power")}
                     >
-                      <Text style={{ fontSize: 24, color: text_color }}>
+                      <InterRegular style={{ fontSize: 24, color: text_color }}>
                         Zero Power Lens
-                      </Text>
+                      </InterRegular>
                       <Ionicons
                         name="arrow-forward"
                         size={34}
@@ -238,9 +239,9 @@ const LensSelector = ({
                     // null param indicates that no lens was linked
                     onPress={() => addItemtoCart(null)}
                   >
-                    <Text style={{ fontSize: 24, color: text_color }}>
+                    <InterRegular style={{ fontSize: 24, color: text_color }}>
                       Only Spectacle Frame
-                    </Text>
+                    </InterRegular>
                     <Ionicons
                       name="arrow-forward"
                       size={34}
@@ -264,11 +265,11 @@ const LensSelector = ({
                   size={34}
                   color={customer_primary}
                 />
-                <Text
+                <InterRegular
                   style={{ fontSize: 24, color: text_color, marginLeft: 10 }}
                 >
                   {modalState} lenses
-                </Text>
+                </InterRegular>
               </TouchableOpacity>
               <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
                 {modalState === "Single Vision" ||

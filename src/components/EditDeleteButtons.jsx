@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
 import { customer_primary, grey2 } from "../constants";
+import { InterRegular } from "./StyledText/StyledText";
 
 const EditDeleteButtons = ({ onEdit, onDelete }) => {
   return (
@@ -27,9 +28,9 @@ const EditDeleteButtons = ({ onEdit, onDelete }) => {
         }}
       >
         <Feather name="edit-3" size={26} color="white" />
-        <Text style={{ fontSize: 20, color: "white", marginLeft: 10 }}>
+        <InterRegular style={{ fontSize: 20, color: "white", marginLeft: 10 }}>
           EDIT
-        </Text>
+        </InterRegular>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={onDelete}

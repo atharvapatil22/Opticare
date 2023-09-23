@@ -32,7 +32,10 @@ import { createProductAPI, editProductAPI } from "../../apiCalls/productAPIs";
 import { uploadImagesToCloudinary } from "../../apiCalls/imageAPIs";
 import SelectDropdown from "react-native-select-dropdown";
 import { Portal, Snackbar } from "react-native-paper";
-import { InterMedium } from "../../components/StyledText/StyledText";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const GlassesStepper = ({ route, navigation }) => {
   const { editing, glassesData } = route.params;

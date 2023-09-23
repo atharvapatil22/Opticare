@@ -74,7 +74,6 @@ const Spectacles = ({ navigation }) => {
           marginHorizontal: "2%",
           fontSize: 26,
           marginTop: 16,
-          fontFamily: "Inter-Medium",
         }}
       >
         Shopping for Spectacles

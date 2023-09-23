@@ -24,6 +24,10 @@ import { LinearGradient } from "expo-linear-gradient";
 import CartSummary from "../../components/CartSummary";
 import CustomModal from "../../components/CustomModal";
 import { addCouponDiscount } from "../../redux/actions";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const MyCart = ({ navigation }) => {
   const globalData = useSelector((state) => state.globalData);
@@ -95,14 +99,14 @@ const MyCart = ({ navigation }) => {
       {globalData.orderItems.length === 0 ? (
         <>
           {/* Screen Title */}
-          <Text
+          <InterMedium
             style={{
               marginHorizontal: "2%",
               ...styles.screen_title,
             }}
           >
             My Cart
-          </Text>
+          </InterMedium>
           <View
             style={{
               marginTop: 100,
@@ -113,21 +117,23 @@ const MyCart = ({ navigation }) => {
               source={require("../../assets/empty_cart.png")}
               style={{ width: 350, height: 350 }}
             />
-            <Text style={styles.empty_cart_text}>Your cart is empty.</Text>
+            <InterMedium style={styles.empty_cart_text}>
+              Your cart is empty.
+            </InterMedium>
           </View>
         </>
       ) : (
         <View style={{ flexDirection: "row", height: "100%" }}>
           <View style={{ width: "67%", paddingHorizontal: "2%" }}>
             {/* Screen Title */}
-            <Text style={styles.screen_title}>
+            <InterMedium style={styles.screen_title}>
               My Cart ({globalData.orderItems.length})
-            </Text>
+            </InterMedium>
             {/* Cart Items */}
             <ScrollView>
               {true && (
                 <View>
-                  {/* <Text style={styles.section_title}>Eyeware</Text> */}
+                  {/* <InterMedium style={styles.section_title}>Eyeware</InterMedium> */}
                   {globalData.orderItems.map((item, index) => (
                     <CartItemCard data={item} key={index} />
                   ))}
@@ -135,7 +141,7 @@ const MyCart = ({ navigation }) => {
               )}
               {/* {globalData.currentOrder.accessories.length !== 0 && (
                 <View>
-                  <Text style={styles.section_title}>Accessories</Text>
+                  <InterMedium style={styles.section_title}>Accessories</InterMedium>
                   {globalData.currentOrder.accessories.map((item, index) => (
                     <CartItemCard
                       data={item}
@@ -187,7 +193,9 @@ const MyCart = ({ navigation }) => {
               onClose={() => setShowCouponModal(false)}
               body={
                 <View style={{ paddingHorizontal: "5%" }}>
-                  <Text style={styles.section_title}>Enter coupon code</Text>
+                  <InterMedium style={styles.section_title}>
+                    Enter coupon code
+                  </InterMedium>
                   <TextInput
                     style={styles.text_input}
                     value={couponCode}
@@ -201,7 +209,7 @@ const MyCart = ({ navigation }) => {
                     }}
                     onPress={() => applyCouponDiscount()}
                   >
-                    <Text
+                    <InterRegular
                       style={{
                         color: "white",
                         fontSize: 20,
@@ -209,7 +217,7 @@ const MyCart = ({ navigation }) => {
                       }}
                     >
                       Apply
-                    </Text>
+                    </InterRegular>
                   </TouchableOpacity>
                 </View>
               }
@@ -227,10 +235,8 @@ const styles = StyleSheet.create({
   screen_title: {
     fontSize: 26,
     marginTop: 16,
-    fontFamily: "Inter-Medium",
   },
   empty_cart_text: {
-    fontFamily: "Inter-Medium",
     fontStyle: "italic",
     fontSize: 20,
     marginTop: 30,
@@ -238,7 +244,6 @@ const styles = StyleSheet.create({
 
   section_title: {
     fontSize: 18,
-    fontFamily: "Inter-Medium",
     color: grey2,
     marginVertical: 10,
   },

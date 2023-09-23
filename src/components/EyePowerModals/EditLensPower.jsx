@@ -10,6 +10,7 @@ import { StyleSheet } from "react-native";
 import Button from "../Button";
 import { useDispatch } from "react-redux";
 import { editLensPower } from "../../redux/actions";
+import { InterMedium, InterRegular } from "../StyledText/StyledText";
 
 const EditLensPower = ({ data, onClose, onAddRecord }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -90,86 +91,109 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
           {/* If Editing eye power */}
           {!!data.linkedLens.eye_power && (
             <>
-              <Text
+              <InterMedium
                 style={{
                   fontSize: 18,
-                  fontFamily: "Inter-Medium",
                   color: grey2,
                 }}
               >
                 Current Lens Power:
-              </Text>
+              </InterMedium>
               <View style={styles.table}>
                 <TableRow
-                  left={<Text style={styles.table_text}>Rx</Text>}
-                  middle={<Text style={styles.table_text}>Left</Text>}
-                  right={<Text style={styles.table_text}>Right</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>Rx</InterRegular>
+                  }
+                  middle={
+                    <InterRegular style={styles.table_text}>Left</InterRegular>
+                  }
+                  right={
+                    <InterRegular style={styles.table_text}>Right</InterRegular>
+                  }
                   heading
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Sphere</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Sphere
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.sphere[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.sphere[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Cylinder</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Cylinder
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.cylinder[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.cylinder[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Axis</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>Axis</InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.axis[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.axis[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Pupil distance</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Pupil distance
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.pupil_distance[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {data.linkedLens.eye_power.pupil_distance[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 {data.linkedLens.type === "Bifocal / Progressive" && (
                   <TableRow
-                    left={<Text style={styles.table_text}>Near addition</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Near addition
+                      </InterRegular>
+                    }
                     middle={
-                      <Text style={styles.table_text}>
+                      <InterRegular style={styles.table_text}>
                         {data.linkedLens.eye_power.near_addition[0]}
-                      </Text>
+                      </InterRegular>
                     }
                     right={
-                      <Text style={styles.table_text}>
+                      <InterRegular style={styles.table_text}>
                         {data.linkedLens.eye_power.near_addition[1]}
-                      </Text>
+                      </InterRegular>
                     }
                   />
                 )}
@@ -177,7 +201,7 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
               <View style={{ borderBottomWidth: 1 }} />
             </>
           )}
-          <Text
+          <InterRegular
             style={{
               fontSize: 16,
               color: grey2,
@@ -186,7 +210,7 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
             }}
           >
             Search eye power record (by customer phone number)
-          </Text>
+          </InterRegular>
 
           <View
             style={{
@@ -227,18 +251,18 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
               }}
               style={{ ...styles.edit_modal_btn }}
             >
-              <Text
+              <InterRegular
                 style={{
                   fontSize: 20,
                   color: "white",
                 }}
               >
                 Add new +
-              </Text>
+              </InterRegular>
             </TouchableOpacity>
           </View>
           {!!recordNotFound && (
-            <Text
+            <InterRegular
               style={{
                 fontSize: 20,
                 alignSelf: "center",
@@ -247,81 +271,105 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
               }}
             >
               Record not found!
-            </Text>
+            </InterRegular>
           )}
           {!!searchedRecord && (
             <>
               <View style={styles.table}>
                 <TableRow
-                  left={<Text style={styles.table_text}>Rx</Text>}
-                  middle={<Text style={styles.table_text}>Left</Text>}
-                  right={<Text style={styles.table_text}>Right</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>Rx</InterRegular>
+                  }
+                  middle={
+                    <InterRegular style={styles.table_text}>Left</InterRegular>
+                  }
+                  right={
+                    <InterRegular style={styles.table_text}>Right</InterRegular>
+                  }
                   heading
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Sphere</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Sphere
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.sphere[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.sphere[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Cylinder</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Cylinder
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.cylinder[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.cylinder[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Axis</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>Axis</InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.axis[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.axis[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 <TableRow
-                  left={<Text style={styles.table_text}>Pupil distance</Text>}
+                  left={
+                    <InterRegular style={styles.table_text}>
+                      Pupil distance
+                    </InterRegular>
+                  }
                   middle={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.pupil_distance[0]}
-                    </Text>
+                    </InterRegular>
                   }
                   right={
-                    <Text style={styles.table_text}>
+                    <InterRegular style={styles.table_text}>
                       {searchedRecord.power_details.pupil_distance[1]}
-                    </Text>
+                    </InterRegular>
                   }
                 />
                 {data.linkedLens.type === "Bifocal / Progressive" && (
                   <TableRow
-                    left={<Text style={styles.table_text}>Near addition</Text>}
+                    left={
+                      <InterRegular style={styles.table_text}>
+                        Near addition
+                      </InterRegular>
+                    }
                     middle={
-                      <Text style={styles.table_text}>
+                      <InterRegular style={styles.table_text}>
                         {searchedRecord.power_details.near_addition[0]}
-                      </Text>
+                      </InterRegular>
                     }
                     right={
-                      <Text style={styles.table_text}>
+                      <InterRegular style={styles.table_text}>
                         {searchedRecord.power_details.near_addition[1]}
-                      </Text>
+                      </InterRegular>
                     }
                   />
                 )}
@@ -366,5 +414,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     minHeight: 60,
   },
-  table_text: { fontSize: 18, fontFamily: "Inter-Regular" },
+  table_text: { fontSize: 18 },
 });

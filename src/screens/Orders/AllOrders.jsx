@@ -19,6 +19,10 @@ import { supabase } from "../../supabase/client";
 import { Image } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { AntDesign, Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const AllOrders = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
@@ -64,30 +68,28 @@ const AllOrders = ({ navigation }) => {
                 size={24}
                 color={customer_primary}
               />
-              <Text
+              <InterMedium
                 style={{
                   fontSize: 14,
                   marginTop: 6,
                   color: customer_primary,
-                  fontFamily: "Inter-Medium",
                 }}
               >
                 COMPLETED
-              </Text>
+              </InterMedium>
             </>
           ) : (
             <>
               <Feather name="clock" size={24} color="orange" />
-              <Text
+              <InterMedium
                 style={{
                   fontSize: 14,
                   marginTop: 6,
                   color: "orange",
-                  fontFamily: "Inter-Medium",
                 }}
               >
                 INCOMPLETE
-              </Text>
+              </InterMedium>
             </>
           )}
         </View>
@@ -97,43 +99,39 @@ const AllOrders = ({ navigation }) => {
             height: "100%",
           }}
         >
-          <Text
+          <InterMedium
             style={{
               fontSize: 24,
               color: customer_primary,
-              fontFamily: "Inter-Medium",
             }}
           >
             Order#: {data.order_number}
-          </Text>
-          <Text
+          </InterMedium>
+          <InterRegular
             style={{
-              fontFamily: "Inter-Regular",
               color: grey2,
               fontSize: 18,
             }}
           >
             {data.items_total} items (₹{data.payment_total})
-          </Text>
-          <Text
+          </InterRegular>
+          <InterRegular
             style={{
               fontSize: 18,
               color: text_color,
-              fontFamily: "Inter-Regular",
             }}
           >
             {days[creationDate.getDay()]}, {months[creationDate.getMonth()]}{" "}
             {creationDate.getDate()}, {creationDate.getFullYear()}
-          </Text>
-          <Text
+          </InterRegular>
+          <InterRegular
             style={{
-              fontFamily: "Inter-Regular",
               color: grey2,
               fontSize: 18,
             }}
           >
             {data.customer_name}
-          </Text>
+          </InterRegular>
         </View>
         <AntDesign name="arrowright" size={26} color={text_color} />
       </TouchableOpacity>
@@ -143,16 +141,15 @@ const AllOrders = ({ navigation }) => {
   return (
     <View style={{ backgroundColor: app_bg, height: "100%" }}>
       {/* Screen Title */}
-      <Text
+      <InterMedium
         style={{
           marginHorizontal: "2%",
           fontSize: 26,
           marginTop: 16,
-          fontFamily: "Inter-Medium",
         }}
       >
         All Orders
-      </Text>
+      </InterMedium>
       {/* TOPBAR */}
       <View style={styles.topbar}>
         <TextInput
@@ -180,9 +177,9 @@ const AllOrders = ({ navigation }) => {
             }}
           >
             <Image source={require("../../assets/empty.png")} />
-            <Text style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
+            <InterRegular style={{ fontSize: 24, color: grey1, marginTop: 20 }}>
               No orders found!
-            </Text>
+            </InterRegular>
           </View>
         ) : (
           <View style={styles.grid_container}>

@@ -23,6 +23,10 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "../../supabase/client";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart2 } from "../../redux/actions";
+import {
+  InterMedium,
+  InterRegular,
+} from "../../components/StyledText/StyledText";
 
 const OrderCheckout = ({ route, navigation }) => {
   const { billingInfo } = route.params;
@@ -169,7 +173,9 @@ const OrderCheckout = ({ route, navigation }) => {
           {/* Customer Information */}
           <View style={styles.section_container}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.section_title}>Customer Information</Text>
+              <InterMedium style={styles.section_title}>
+                Customer Information
+              </InterMedium>
               {currentStep > 0 && (
                 <Ionicons
                   name="checkmark-circle"
@@ -190,7 +196,9 @@ const OrderCheckout = ({ route, navigation }) => {
                   }}
                 >
                   <View style={{ width: "48%" }}>
-                    <Text style={styles.section_label}>Contact Number</Text>
+                    <InterRegular style={styles.section_label}>
+                      Contact Number
+                    </InterRegular>
                     <TextInput
                       keyboardType="numeric"
                       maxLength={10}
@@ -200,7 +208,9 @@ const OrderCheckout = ({ route, navigation }) => {
                     />
                   </View>
                   <View style={{ width: "48%" }}>
-                    <Text style={styles.section_label}>Full Name</Text>
+                    <InterRegular style={styles.section_label}>
+                      Full Name
+                    </InterRegular>
                     <TextInput
                       style={styles.text_input}
                       value={customerName}
@@ -227,15 +237,21 @@ const OrderCheckout = ({ route, navigation }) => {
               </>
             ) : (
               <>
-                <Text style={styles.saved_field}>{customerNumber}</Text>
-                <Text style={styles.saved_field}>{customerName}</Text>
+                <InterRegular style={styles.saved_field}>
+                  {customerNumber}
+                </InterRegular>
+                <InterRegular style={styles.saved_field}>
+                  {customerName}
+                </InterRegular>
               </>
             )}
           </View>
           {/* Salesperson */}
           <View style={styles.section_container}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.section_title}>Sales Person</Text>
+              <InterMedium style={styles.section_title}>
+                Sales Person
+              </InterMedium>
               {currentStep > 1 && (
                 <Ionicons
                   name="checkmark-circle"
@@ -265,9 +281,9 @@ const OrderCheckout = ({ route, navigation }) => {
                         size={28}
                         color={isSelected ? customer_primary : grey2}
                       />
-                      <Text style={{ fontSize: 20, marginLeft: "2%" }}>
+                      <InterRegular style={{ fontSize: 20, marginLeft: "2%" }}>
                         {option}
-                      </Text>
+                      </InterRegular>
                     </TouchableOpacity>
                   );
                 })}
@@ -288,7 +304,9 @@ const OrderCheckout = ({ route, navigation }) => {
           {/* Payment Info */}
           <View style={styles.section_container}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={styles.section_title}>Payment Info</Text>
+              <InterMedium style={styles.section_title}>
+                Payment Info
+              </InterMedium>
               {currentStep > 2 && (
                 <Ionicons
                   name="checkmark-circle"
@@ -300,9 +318,11 @@ const OrderCheckout = ({ route, navigation }) => {
             </View>
             {currentStep === 2 && (
               <>
-                <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                <InterRegular
+                  style={{ ...styles.section_label, marginTop: 15 }}
+                >
                   Ammount paid
-                </Text>
+                </InterRegular>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                   <TextInput
                     keyboardType="numeric"
@@ -312,21 +332,22 @@ const OrderCheckout = ({ route, navigation }) => {
                       setAmmountPaid(parseInt(txt) || 0);
                     }}
                   />
-                  <Text
+                  <InterRegular
                     style={{
                       fontSize: 22,
                       color: text_color,
-                      fontFamily: "Inter-Regular",
                       marginLeft: "3%",
                     }}
                   >
                     out of ₹
                     {billingInfo.productsDiscounted - globalData.couponDiscount}
-                  </Text>
+                  </InterRegular>
                 </View>
-                <Text style={{ ...styles.section_label, marginTop: 15 }}>
+                <InterRegular
+                  style={{ ...styles.section_label, marginTop: 15 }}
+                >
                   Mode of Payment
-                </Text>
+                </InterRegular>
                 {["UPI", "Credit card", "Cash"].map((option, index) => {
                   const isSelected = option === paymentInfo;
                   return (
@@ -345,9 +366,9 @@ const OrderCheckout = ({ route, navigation }) => {
                         size={28}
                         color={isSelected ? customer_primary : grey2}
                       />
-                      <Text style={{ fontSize: 20, marginLeft: "2%" }}>
+                      <InterRegular style={{ fontSize: 20, marginLeft: "2%" }}>
                         {option}
-                      </Text>
+                      </InterRegular>
                     </TouchableOpacity>
                   );
                 })}
@@ -400,9 +421,8 @@ const styles = StyleSheet.create({
   section_title: {
     fontSize: 22,
     color: text_color,
-    fontFamily: "Inter-Medium",
   },
-  section_label: { fontSize: 18, color: grey2, fontFamily: "Inter-Regular" },
+  section_label: { fontSize: 18, color: grey2 },
   text_input: {
     borderWidth: 1,
     borderColor: grey2,
@@ -417,7 +437,6 @@ const styles = StyleSheet.create({
   saved_field: {
     fontSize: 20,
     color: text_color,
-    fontFamily: "Inter-Regular",
     marginTop: 8,
   },
   radio_option: {

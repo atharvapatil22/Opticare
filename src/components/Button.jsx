@@ -1,6 +1,7 @@
 import { Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { customer_primary, gradient_start, grey1 } from "../constants";
+import { InterRegular } from "./StyledText/StyledText";
 
 const Button = ({ text, variant, onPress, rounded, disabled, style, icon }) => {
   return (
@@ -27,14 +28,14 @@ const Button = ({ text, variant, onPress, rounded, disabled, style, icon }) => {
       }}
     >
       {!!icon && icon}
-      <Text
+      <InterRegular
         style={{
           fontSize: 18,
           color: disabled ? grey1 : variant === "aqua" ? "white" : "black",
         }}
       >
         {text}
-      </Text>
+      </InterRegular>
     </TouchableOpacity>
   );
 };

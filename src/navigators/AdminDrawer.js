@@ -4,6 +4,7 @@ import { gradient_end, grey1 } from "../constants";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
+import { InterRegular } from "../components/StyledText/StyledText";
 
 const AdminDrawer = (props) => {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const AdminDrawer = (props) => {
   };
   return (
     <DrawerContentScrollView {...props}>
-      <Text style={styles.section_title}>Operations</Text>
+      <InterRegular style={styles.section_title}>Operations</InterRegular>
       <DrawerItem
         focused={props.state.index === 0}
         label={"Dashboard"}
@@ -57,7 +58,9 @@ const AdminDrawer = (props) => {
           marginHorizontal: "4%",
         }}
       />
-      <Text style={{ ...styles.section_title }}>Manage Products</Text>
+      <InterRegular style={{ ...styles.section_title }}>
+        Manage Products
+      </InterRegular>
       <DrawerItem
         focused={props.state.index === 2}
         label={"Spectacles"}
@@ -131,7 +134,7 @@ const AdminDrawer = (props) => {
         labelStyle={styles.label}
       />
       <Pressable onPress={handleLogout}>
-        <Text
+        <InterRegular
           style={{
             fontSize: 20,
             color: "blue",
@@ -140,7 +143,7 @@ const AdminDrawer = (props) => {
           }}
         >
           Logout
-        </Text>
+        </InterRegular>
       </Pressable>
     </DrawerContentScrollView>
   );

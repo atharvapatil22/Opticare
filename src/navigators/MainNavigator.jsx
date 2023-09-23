@@ -1,7 +1,6 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import Dashboard from "../screens/Dashboard";
-import Orders from "../screens/Orders";
 import AdminDrawer from "./AdminDrawer";
 import CustomerDrawer from "./CustomerDrawer";
 import { useSelector } from "react-redux";

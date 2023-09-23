@@ -1,10 +1,11 @@
 import { View, Text } from "react-native";
 import React from "react";
+import { InterRegular } from "../components/StyledText/StyledText";
 
 const Dashboard = () => {
   return (
     <View>
-      <Text>Dashboard Screen</Text>
+      <InterRegular>Dashboard Screen</InterRegular>
     </View>
   );
 };
