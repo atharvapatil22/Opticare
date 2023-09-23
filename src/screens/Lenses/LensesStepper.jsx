@@ -359,7 +359,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product ID
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
                           value={idLabel}
@@ -369,7 +369,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setProductName}
                           value={productName}
@@ -379,7 +379,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Brand Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setBrand}
                           value={brand}
@@ -465,7 +465,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Features
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={{
                             borderWidth: 1,
                             borderRadius: 8,
@@ -489,7 +489,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Avg. Price For Single Lens
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setPrice}
                           value={price}
@@ -500,7 +500,7 @@ const LensesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Avg. Price For Pair
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           editable={false}
                           value={
@@ -512,7 +512,7 @@ const LensesStepper = ({ route, navigation }) => {
                       </View>
                       {/* <View style={styles.form_field}>
                         <InterRegular style={styles.form_label}>Discount (in %)</InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
                           value={discount}

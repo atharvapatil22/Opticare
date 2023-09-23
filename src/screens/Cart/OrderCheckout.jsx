@@ -116,6 +116,7 @@ const OrderCheckout = ({ route, navigation }) => {
             item.linkedLens.price * ((100 - item.linkedLens.discount) / 100),
           quantity: item.linkedLens.quantity,
           eye_power: item.linkedLens.eye_power,
+          type: item.linkedLens.type,
         };
       }
 

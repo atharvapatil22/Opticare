@@ -104,7 +104,8 @@ const OrderDetails = ({ route }) => {
             ...styles.text_medium,
           }}
         >
-          ₹{value || 0}
+          {label === "Savings" || label === "Coupon Discount" ? "-" : ""}₹
+          {value || 0}
         </InterRegular>
       </View>
     );
@@ -198,11 +199,10 @@ const OrderDetails = ({ route }) => {
               {data.name}
             </InterMedium>
             <InterRegular style={styles.cart_item_text}>
-              ₹{data.price * ((100 - data.discount) / 100)} x {data.quantity}
+              ₹{data.price} x {data.quantity}
             </InterRegular>
             <InterRegular style={styles.cart_item_text}>
-              Subtotal: ₹
-              {data.price * ((100 - data.discount) / 100) * data.quantity}
+              Subtotal: ₹{data.price * data.quantity}
             </InterRegular>
           </View>
 
@@ -252,7 +252,8 @@ const OrderDetails = ({ route }) => {
               Quantity: {data.linked_lens.quantity}
             </InterRegular>
             <InterRegular style={styles.cart_item_text}>
-              Subtotal: ₹{data.linked_lens.price * data.linked_lens.quantity}
+              Subtotal: ₹
+              {data.linked_lens.effective_price * data.linked_lens.quantity}
             </InterRegular>
           </View>
         )}
@@ -466,8 +467,22 @@ const OrderDetails = ({ route }) => {
                   label={"Products total"}
                   value={orderData.bill_products_total}
                 />
-                <SummaryRow label={"Savings"} value={orderData.bill_savings} />
+                <SummaryRow
+                  label={"Savings"}
+                  value={orderData.bill_products_savings}
+                />
+                <SummaryRow
+                  label={"Effective Items Total"}
+                  value={
+                    orderData.bill_products_total -
+                    orderData.bill_products_savings
+                  }
+                />
 
+                <SummaryRow
+                  label={"Coupon Discount"}
+                  value={orderData.bill_coupon_discount}
+                />
                 <View
                   style={{
                     borderBottomWidth: 1,
@@ -475,7 +490,10 @@ const OrderDetails = ({ route }) => {
                     borderColor: grey2,
                   }}
                 />
-                <SummaryRow label={"Total"} value={orderData.payment_total} />
+                <SummaryRow
+                  label={"Grand Total"}
+                  value={orderData.payment_total}
+                />
               </View>
             </ScrollView>
           </View>

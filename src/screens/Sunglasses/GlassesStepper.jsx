@@ -457,7 +457,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product ID
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
                           value={idLabel}
@@ -467,7 +467,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setProductName}
                           value={productName}
@@ -477,7 +477,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Brand Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setBrand}
                           value={brand}
@@ -627,7 +627,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Frame Color
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setColor}
                           value={color}
@@ -638,7 +638,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Material
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setMaterial}
                           value={material}
@@ -675,7 +675,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Weight (in grams)
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setWeight}
                           value={weight}
@@ -686,7 +686,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Width (in cms)
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setWidth}
                           value={width}
@@ -697,7 +697,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Dimensions
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setDimensions}
                           value={dimensions}
@@ -775,7 +775,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Price
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setPrice}
                           value={price}
@@ -786,7 +786,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Discount (in %)
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
                           value={discount}
@@ -797,7 +797,7 @@ const GlassesStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product Stock
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setStock}
                           value={stock}

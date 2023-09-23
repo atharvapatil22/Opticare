@@ -385,7 +385,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product ID
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setIdLabel}
                           value={idLabel}
@@ -395,7 +395,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setProductName}
                           value={productName}
@@ -405,7 +405,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Brand Name
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setBrand}
                           value={brand}
@@ -534,7 +534,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                       <InterRegular style={styles.form_label}>
                         About Product
                       </InterRegular>
-                      <InterRegularInput
+                      <TextInput
                         style={{
                           borderWidth: 1,
                           borderRadius: 8,
@@ -557,7 +557,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Price
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setPrice}
                           value={price}
@@ -568,7 +568,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Discount (in %)
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setDiscount}
                           value={discount}
@@ -579,7 +579,7 @@ const AccessoryStepper = ({ route, navigation }) => {
                         <InterRegular style={styles.form_label}>
                           Product Stock
                         </InterRegular>
-                        <InterRegularInput
+                        <TextInput
                           style={styles.text_field}
                           onChangeText={setStock}
                           value={stock}
