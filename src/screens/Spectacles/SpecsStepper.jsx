@@ -107,7 +107,7 @@ const SpecsStepper = ({ route, navigation }) => {
     setLinkedBifocal(specsData.spectacles.linked_bifocal);
     setLinkedZero(specsData.spectacles.linked_zero);
 
-    setStock(specsData.spectacles.stock.toString());
+    setStock(specsData.stock_available.toString());
     setPrice(specsData.price.toString());
     setDiscount(specsData.discount.toString());
   };
@@ -190,6 +190,7 @@ const SpecsStepper = ({ route, navigation }) => {
       price: parseInt(price),
       discount: parseInt(discount),
       featured_image: prodImagesFinal[featuredImage],
+      stock_available: parseInt(stock),
     };
 
     const specsFields = {
@@ -201,7 +202,6 @@ const SpecsStepper = ({ route, navigation }) => {
       dimensions: dimensions,
       weight: parseInt(weight),
       width: parseInt(width),
-      stock: parseInt(stock),
       images: prodImagesFinal,
       linked_single: linkedSingle,
       linked_bifocal: linkedBifocal,

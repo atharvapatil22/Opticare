@@ -77,7 +77,7 @@ const AccessoryStepper = ({ route, navigation }) => {
 
     setAdditionalInfo(accessoryData.accessories.additional_info);
 
-    setStock(accessoryData.accessories.stock.toString());
+    setStock(accessoryData.stock_available.toString());
     setPrice(accessoryData.price.toString());
     setDiscount(accessoryData.discount.toString());
   };
@@ -160,10 +160,10 @@ const AccessoryStepper = ({ route, navigation }) => {
       price: parseInt(price),
       discount: parseInt(discount),
       featured_image: prodImagesFinal[featuredImage],
+      stock_available: parseInt(stock),
     };
 
     const accessoryFields = {
-      stock: parseInt(stock),
       images: prodImagesFinal,
       additional_info: additionalInfo,
     };

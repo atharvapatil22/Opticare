@@ -64,7 +64,6 @@ const reducer = (state = initialState, action) => {
       };
 
     case EDIT_LENS_POWER:
-      console.log("came here");
       const { power } = action.payload;
       product_id = action.payload.product_id;
 
@@ -73,7 +72,6 @@ const reducer = (state = initialState, action) => {
         (obj) => obj.product_id == product_id
       );
       new_state.orderItems[item_to_update].linkedLens.eye_power = power;
-      console.log("finished opps", new_state);
       return new_state;
 
     case ADD_COUPON_DISCOUNT:

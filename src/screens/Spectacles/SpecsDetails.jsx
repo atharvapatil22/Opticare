@@ -382,7 +382,7 @@ const SpecsDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </InterRegular>
                     <InterRegular style={{ fontSize: 45, color: text_color }}>
-                      {specsData.spectacles.stock}
+                      {specsData.stock_available}
                     </InterRegular>
                   </View>
                   <View

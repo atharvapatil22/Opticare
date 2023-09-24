@@ -15,6 +15,7 @@ import {
   gradient_end,
   gradient_start,
   grey2,
+  productCategories,
   text_color,
 } from "../../constants";
 import CartSummary from "../../components/CartSummary";
@@ -82,7 +83,142 @@ const OrderCheckout = ({ route, navigation }) => {
     }
   };
 
+  const validateProductStock = async () => {
+    /* This function will =>
+      i) check if sufficient stock is present to fulfil the order
+      ii) if stock is sufficient, it will decrement available stock from database
+    */
+    const cartItems = globalData.orderItems;
+
+    // 1] Get the product ids for all unique items in cart (including linked lenses)
+    let cartProductIds = [];
+    cartItems.forEach((item) => {
+      if (item.linkedLens && item.category != productCategories.LENSES)
+        cartProductIds.push(item.product_id, item.linkedLens.id);
+      cartProductIds.push(item.product_id);
+    });
+
+    // 2] For all productIds, fetch info about stock_available and stock_sold
+    const { data, error } = await supabase
+      .from("products")
+      .select("stock_available,stock_sold,id")
+      .in("id", cartProductIds);
+
+    if (error) {
+      // __api_error
+      console.log("api_error");
+      return false;
+    }
+
+    // 3] Append the stock info to existing cartItem objects
+    let cartItemsPlus = [];
+    cartItems.map((item) => {
+      let modifiedCartItem = {};
+      let stockObj = [];
+
+      stockObj = data.filter((dataItem) => dataItem.id === item.product_id);
+      if (stockObj.length === 0) {
+        // __logical error;
+        console.log("logical error");
+        return false;
+      }
+      modifiedCartItem = { ...item, ...stockObj[0] };
+
+      if (!!item.linkedLens && item.category != productCategories.LENSES) {
+        stockObj = data.filter(
+          (dataItem) => dataItem.id === item.linkedLens.id
+        );
+        if (stockObj.length === 0) {
+          // __logical error;
+          console.log("logical error");
+          return false;
+        }
+        modifiedCartItem.linkedLens = {
+          ...modifiedCartItem.linkedLens,
+          ...stockObj[0],
+        };
+      }
+      cartItemsPlus.push(modifiedCartItem);
+    });
+
+    let upsertData = [];
+    let invalidProds = [];
+
+    // 4] Check if sufficient stock is available -> prepare updated data for stock_sold and stock_available
+    cartItemsPlus.forEach((item) => {
+      if (
+        item.stock_available < item.quantity &&
+        item.category != productCategories.LENSES
+      ) {
+        invalidProds.push({
+          name: item.name,
+          stock_available: item.stock_available,
+          stock_requested: item.quantity,
+        });
+      } else {
+        upsertData.push({
+          id: item.product_id,
+          stock_available:
+            item.category === productCategories.LENSES
+              ? 0
+              : item.stock_available - item.quantity,
+          stock_sold: item.stock_sold + item.quantity,
+        });
+      }
+    });
+
+    // 4b] Do the same for linked lenses
+    cartItemsPlus.forEach((item) => {
+      if (!!item.linkedLens && item.category != productCategories.LENSES) {
+        const isPresent = upsertData.findIndex(
+          (upsertItem) => upsertItem.id === item.linkedLens.id
+        );
+
+        if (isPresent == -1)
+          upsertData.push({
+            id: item.linkedLens.id,
+            stock_sold: item.linkedLens.stock_sold + item.linkedLens.quantity,
+            stock_available: 0,
+          });
+        else {
+          upsertData[isPresent].stock_sold += item.linkedLens.quantity;
+        }
+      }
+    });
+
+    if (invalidProds.length != 0) {
+      let errMsg = "Order cant be placed due to Insufficient stock!";
+      invalidProds.forEach((item) => {
+        errMsg += `\n${item.stock_available} ${item.name} ${
+          item.stock_available < 2 ? "is" : "are"
+        } available (Required ${item.stock_requested})`;
+      });
+      console.log(errMsg);
+      Alert.alert(errMsg);
+      return false;
+    }
+
+    // 5] Push updated data to DB
+    const response2 = await supabase
+      .from("products")
+      .upsert(upsertData)
+      .select();
+
+    if (response2.error) {
+      // __api_error
+      console.log("api_error2", response2.error);
+      return false;
+    } else {
+      // __api_success
+      console.log("Successfully Decremented stock!", response2.data);
+      return true;
+    }
+  };
+
   const placeOrder = async () => {
+    const isValid = await validateProductStock();
+    if (!isValid) return;
+
     let unDeliveredItems = 0;
 
     // 1] Make Order ID

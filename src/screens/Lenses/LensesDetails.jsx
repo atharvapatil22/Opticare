@@ -91,6 +91,11 @@ const LensesDetails = ({ route, navigation }) => {
   };
 
   const addLensestoCart = () => {
+    if (lensData.stock_available < 1) {
+      // __alert
+      console.log("Out of stock");
+    }
+
     let itemInCart = 0;
     // Check if item is already in cart
     const cartLenses = store.orderItems.filter(

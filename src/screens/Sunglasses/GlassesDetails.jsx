@@ -95,6 +95,11 @@ const GlassesDetails = ({ route, navigation }) => {
   };
 
   const addGlassestoCart = () => {
+    if (glassesData.stock_available < 1) {
+      // __alert
+      console.log("Out of stock");
+    }
+
     dispatch(
       addCartItem({
         product_id: glassesData.id,
@@ -420,7 +425,7 @@ const GlassesDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </InterRegular>
                     <InterRegular style={{ fontSize: 45, color: text_color }}>
-                      {glassesData.sunglasses.stock}
+                      {glassesData.stock_available}
                     </InterRegular>
                   </View>
                   <View

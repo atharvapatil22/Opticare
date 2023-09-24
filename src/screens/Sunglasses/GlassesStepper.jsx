@@ -104,7 +104,7 @@ const GlassesStepper = ({ route, navigation }) => {
     setLinkedSingle(glassesData.sunglasses.linked_single);
     setLinkedBifocal(glassesData.sunglasses.linked_bifocal);
 
-    setStock(glassesData.sunglasses.stock.toString());
+    setStock(glassesData.stock_available.toString());
     setPrice(glassesData.price.toString());
     setDiscount(glassesData.discount.toString());
   };
@@ -188,6 +188,7 @@ const GlassesStepper = ({ route, navigation }) => {
       price: parseInt(price),
       discount: parseInt(discount),
       featured_image: prodImagesFinal[featuredImage],
+      stock_available: parseInt(stock),
     };
 
     const glassesFields = {
@@ -199,7 +200,6 @@ const GlassesStepper = ({ route, navigation }) => {
       dimensions: dimensions,
       weight: parseInt(weight),
       width: parseInt(width),
-      stock: parseInt(stock),
       images: prodImagesFinal,
       linked_single: linkedSingle,
       linked_bifocal: linkedBifocal,

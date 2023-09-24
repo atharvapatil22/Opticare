@@ -85,6 +85,11 @@ const AccessoryDetails = ({ route, navigation }) => {
   };
 
   const addAccessorytoCart = () => {
+    if (accessoryData.stock_available < 1) {
+      // __alert
+      console.log("Out of stock");
+    }
+
     let itemInCart = 0;
     // Check if item is already in cart
     const cartAccessories = store.orderItems.filter(
@@ -324,7 +329,7 @@ const AccessoryDetails = ({ route, navigation }) => {
                       Available stock for sale
                     </InterRegular>
                     <InterRegular style={{ fontSize: 45, color: text_color }}>
-                      {accessoryData.accessories.stock}
+                      {accessoryData.stock_available}
                     </InterRegular>
                   </View>
                   <View
