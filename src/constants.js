@@ -16,6 +16,12 @@ export const admin_primary = "#008D80";
 export const app_bg = "#F5F8FA";
 export const text_color = "#262E2E";
 
+// Chart Colors
+export const chart1 = "#FFCA7C";
+export const chart2 = "#FF9800";
+export const chart3 = "#B16A00";
+export const chart4 = "#6B4000";
+
 export const CLOUDINARY_CLOUDNAME = "dspkp4krz";
 export const CLOUDINARY_API_KEY = "545919893297958";
 export const CLOUDINARY_API_SECRET = "F65gy4UPQzSfI9y7Gk6BVjilCL0";
