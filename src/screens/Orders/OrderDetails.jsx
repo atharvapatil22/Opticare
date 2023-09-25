@@ -33,6 +33,7 @@ const OrderDetails = ({ route }) => {
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [showDuesModal, setShowDuesModal] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(0);
+  const [salesPersonName, setSalesPersonName] = useState("");
 
   useEffect(() => {
     fetchOrderDetails();
@@ -47,6 +48,7 @@ const OrderDetails = ({ route }) => {
       // __api_error
       console.log("api_error");
     } else {
+      getSalesPersonName(data[0].sales_person);
       // __api_success
       setOrderData(data[0]);
       setPaymentCompleted(data[0].payment_completed);
@@ -54,6 +56,23 @@ const OrderDetails = ({ route }) => {
       if (!!data[0].delivered_at)
         setDeliveryDate(new Date(data[0].delivered_at));
       console.log("Successfully fetched order: ", data);
+    }
+  };
+
+  const getSalesPersonName = async (id) => {
+    const { data, error } = await supabase
+      .from("salesPeople")
+      .select("*")
+      // Filters
+      .eq("id", id);
+
+    if (error) {
+      // __api_error
+      console.log("api_error");
+    } else {
+      console.log("got data", data);
+      setSalesPersonName(data[0].name);
+      // __api_success
     }
   };
 
@@ -401,7 +420,7 @@ const OrderDetails = ({ route }) => {
                       Sales Person
                     </InterMedium>
                     <InterRegular style={styles.text_medium}>
-                      {orderData.sales_person}
+                      {salesPersonName}
                     </InterRegular>
                   </View>
                 </View>

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import {
   app_bg,
@@ -36,13 +36,30 @@ const OrderCheckout = ({ route, navigation }) => {
 
   const [customerNumber, setCustomerNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
-  const [salesPerson, setSalesPerson] = useState("");
+  const [salesPeopleOptions, setSalesPeopleOptions] = useState([]);
+  const [salesPerson, setSalesPerson] = useState(null);
   const [paymentInfo, setPaymentInfo] = useState("");
   const [ammountPaid, setAmmountPaid] = useState(
     billingInfo.productsDiscounted - globalData.couponDiscount
   );
-
   const [currentStep, setCurrentStep] = useState(0);
+  const [disableCTA, setDisableCTA] = useState(false);
+  useEffect(() => {
+    fetchAllSalesPeople();
+  }, []);
+
+  const fetchAllSalesPeople = async () => {
+    const { data, error } = await supabase.from("salesPeople").select("*");
+
+    if (error) {
+      // __api_error
+      console.log("api_error", error);
+    } else {
+      // __api_success
+      console.log("data", data);
+      setSalesPeopleOptions(data);
+    }
+  };
 
   const saveCustomerInfo = () => {
     if (customerName.trim() === "" || customerNumber.trim().length != 10)
@@ -216,8 +233,12 @@ const OrderCheckout = ({ route, navigation }) => {
   };
 
   const placeOrder = async () => {
+    setDisableCTA(true);
     const isValid = await validateProductStock();
-    if (!isValid) return;
+    if (!isValid) {
+      setDisableCTA(false);
+      return;
+    }
 
     let unDeliveredItems = 0;
 
@@ -398,31 +419,36 @@ const OrderCheckout = ({ route, navigation }) => {
             </View>
             {currentStep === 1 && (
               <>
-                {["Salesperson 1", "Salesperson 2"].map((option, index) => {
-                  const isSelected = option === salesPerson;
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => setSalesPerson(option)}
-                      style={{
-                        ...styles.radio_option,
-                        backgroundColor: isSelected ? gradient_start : "white",
-                      }}
-                    >
-                      <MaterialIcons
-                        name={
-                          isSelected ? "radio-button-on" : "radio-button-off"
-                        }
-                        size={28}
-                        color={isSelected ? customer_primary : grey2}
-                      />
-                      <InterRegular style={{ fontSize: 20, marginLeft: "2%" }}>
-                        {option}
-                      </InterRegular>
-                    </TouchableOpacity>
-                  );
-                })}
-
+                {!!salesPeopleOptions &&
+                  salesPeopleOptions.map((option, index) => {
+                    if (!option.is_active) return null;
+                    const isSelected = option.id === salesPerson;
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => setSalesPerson(option.id)}
+                        style={{
+                          ...styles.radio_option,
+                          backgroundColor: isSelected
+                            ? gradient_start
+                            : "white",
+                        }}
+                      >
+                        <MaterialIcons
+                          name={
+                            isSelected ? "radio-button-on" : "radio-button-off"
+                          }
+                          size={28}
+                          color={isSelected ? customer_primary : grey2}
+                        />
+                        <InterRegular
+                          style={{ fontSize: 20, marginLeft: "2%" }}
+                        >
+                          {option.name}
+                        </InterRegular>
+                      </TouchableOpacity>
+                    );
+                  })}
                 <View style={styles.section_btns}>
                   <Button
                     text="SAVE"
@@ -532,7 +558,7 @@ const OrderCheckout = ({ route, navigation }) => {
       >
         <CartSummary
           screen={"OrderCheckout"}
-          disableCTA={currentStep < 3}
+          disableCTA={currentStep < 3 || disableCTA}
           handleCTA={placeOrder}
           billingInfo={billingInfo}
         />
