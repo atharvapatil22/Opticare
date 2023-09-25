@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { InterMedium, InterRegular } from "../components/StyledText/StyledText";
 import {
@@ -11,10 +11,13 @@ import {
   gradient_start,
   grey1,
   productCategories,
+  text_color,
 } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../supabase/client";
 import { PieChart } from "react-native-chart-kit";
+import { Feather } from "@expo/vector-icons";
+import SalesPeopleModal from "../components/SalesPeopleModal";
 
 const Dashboard = () => {
   const [specsSales, setSpecsSales] = useState(0);
@@ -27,6 +30,8 @@ const Dashboard = () => {
 
   const [totalPayments, setTotalPayments] = useState(0);
   const [paymentsDistribution, setPaymentsDistribution] = useState([]);
+
+  const [showSalesPeopleModal, setShowSalesPeopleModal] = useState(false);
 
   const chartConfig = {
     backgroundGradientFrom: "red",
@@ -340,7 +345,27 @@ const Dashboard = () => {
           paddingHorizontal: "1.5%",
           paddingVertical: 16,
         }}
-      ></LinearGradient>
+      >
+        <TouchableOpacity
+          style={{
+            backgroundColor: "white",
+            paddingVertical: 15,
+            paddingHorizontal: "5%",
+            alignItems: "center",
+            borderRadius: 10,
+            flexDirection: "row",
+          }}
+          onPress={() => setShowSalesPeopleModal(true)}
+        >
+          <Feather name="edit-3" size={26} color={text_color} />
+          <InterRegular style={{ fontSize: 18, marginLeft: "3%" }}>
+            Edit Sales people
+          </InterRegular>
+        </TouchableOpacity>
+      </LinearGradient>
+      {!!showSalesPeopleModal && (
+        <SalesPeopleModal onClose={() => setShowSalesPeopleModal(false)} />
+      )}
     </View>
   );
 };
