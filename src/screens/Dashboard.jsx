@@ -7,17 +7,23 @@ import {
   chart2,
   chart3,
   chart4,
+  customer_primary,
   gradient_end,
   gradient_start,
   grey1,
+  grey2,
   productCategories,
   text_color,
 } from "../constants";
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../supabase/client";
 import { PieChart } from "react-native-chart-kit";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Entypo } from "@expo/vector-icons";
 import SalesPeopleModal from "../components/SalesPeopleModal";
+import { BarChart } from "react-native-gifted-charts";
+import SelectDropdown from "react-native-select-dropdown";
+import DateTimePicker from "@react-native-community/datetimepicker";
+const moment = require("moment");
 
 const Dashboard = () => {
   const [specsSales, setSpecsSales] = useState(0);
@@ -32,27 +38,50 @@ const Dashboard = () => {
   const [paymentsDistribution, setPaymentsDistribution] = useState([]);
 
   const [showSalesPeopleModal, setShowSalesPeopleModal] = useState(false);
+  const [salesData, setSalesData] = useState([]);
+  const [totalSales, setTotalSales] = useState(0);
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [timeRange, setTimeRange] = useState("Previous Month");
+  // options -> HIDE,START,END
+  const [showDatePicker, setShowDatePicker] = useState("HIDE");
 
   const chartConfig = {
-    backgroundGradientFrom: "red",
+    backgroundGradientFrom: "white",
     backgroundGradientFromOpacity: 1,
-    backgroundGradientTo: "blue",
+    backgroundGradientTo: "white",
     backgroundGradientToOpacity: 1,
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    color: (opacity = 1) => `rgba(1, 20, 51, ${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 1,
     useShadowColorFromDataset: false, // optional
   };
 
   useEffect(() => {
+    if (!startDate || !endDate) return;
     getProductsAnalytics();
     getOrderAnalytics();
-  }, []);
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    if (timeRange === "Previous Month") {
+      setStartDate(
+        moment().subtract(1, "month").toISOString().substring(0, 10)
+      );
+      setEndDate(moment().toISOString().substring(0, 10));
+    } else if (timeRange === "Previous Year") {
+      setStartDate(moment().subtract(1, "year").toISOString().substring(0, 10));
+      setEndDate(moment().toISOString().substring(0, 10));
+    }
+  }, [timeRange]);
 
   const getProductsAnalytics = async () => {
     const { data, error } = await supabase
       .from("orderItems")
-      .select("category,price,discount,quantity,linked_lens");
+      .select("category,price,discount,quantity,linked_lens")
+      .gt("created_at", startDate)
+      .lte("created_at", endDate);
 
     if (error) {
       // __api_error
@@ -60,7 +89,6 @@ const Dashboard = () => {
       return;
     }
     // __api_success
-    // console.log("data", data);
 
     let specsTotalSales = 0,
       glassesTotalSales = 0,
@@ -146,23 +174,42 @@ const Dashboard = () => {
   };
 
   const getOrderAnalytics = async () => {
-    const { data, error } = await supabase
-      .from("orders")
-      .select("mode_of_payment");
+    const response = await supabase
+      .from("salesPeople")
+      .select("*")
+      .eq("is_active", true);
 
-    if (error) {
+    if (response.error) {
       // __api_error
-      console.log("api_error", error);
+      console.log("api_error", response.error);
+      return;
+    }
+
+    const response2 = await supabase
+      .from("orders")
+      .select("mode_of_payment,sales_person,payment_total")
+      .gt("created_at", startDate)
+      .lte("created_at", endDate);
+
+    if (response2.error) {
+      // __api_error
+      console.log("api_error", response2.error);
       return;
     }
     // __api_success
     // console.log("data", data);
 
-    upiQty = 0;
-    cashQty = 0;
-    cardQty = 0;
+    const activeSalespeople = response.data;
+    const orders = response2.data;
 
-    data.forEach((order) => {
+    let upiQty = 0,
+      cashQty = 0,
+      cardQty = 0;
+
+    let totalSales = 0,
+      tempSalesData = {};
+
+    orders.forEach((order) => {
       switch (order.mode_of_payment) {
         case "UPI":
           upiQty += 1;
@@ -176,9 +223,18 @@ const Dashboard = () => {
         default:
           break;
       }
+
+      activeSalespeople.forEach((salesPerson) => {
+        if (order.sales_person === salesPerson.id) {
+          if (!!tempSalesData[salesPerson.name])
+            tempSalesData[salesPerson.name] += order.payment_total;
+          else tempSalesData[salesPerson.name] = order.payment_total;
+        }
+      });
+      totalSales += order.payment_total;
     });
 
-    setTotalPayments(data.length);
+    setTotalPayments(orders.length);
     setPaymentsDistribution([
       {
         name: "UPI",
@@ -196,6 +252,19 @@ const Dashboard = () => {
         color: chart1,
       },
     ]);
+
+    const tempSalesData2 = Object.keys(tempSalesData).map((salesPersonName) => {
+      return {
+        stacks: [
+          { value: tempSalesData[salesPersonName], color: chart2 },
+          { value: totalSales - tempSalesData[salesPersonName], color: chart1 },
+        ],
+        label: salesPersonName,
+      };
+    });
+
+    setTotalSales(totalSales);
+    setSalesData(tempSalesData2);
   };
 
   const SalesCard = ({ text, value }) => {
@@ -261,13 +330,70 @@ const Dashboard = () => {
     <View
       style={{ flexDirection: "row", height: "100%", backgroundColor: app_bg }}
     >
-      <View style={{ width: "67%" }}>
+      <View style={{ width: "67%", paddingHorizontal: "2%" }}>
         <ScrollView
           contentContainerStyle={{
-            paddingHorizontal: "3%",
             paddingBottom: 70,
           }}
         >
+          <InterMedium
+            style={{
+              fontSize: 26,
+              marginTop: 16,
+            }}
+          >
+            Dashboard
+          </InterMedium>
+          {/* TOP BAR */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: 16,
+            }}
+          >
+            <SelectDropdown
+              renderDropdownIcon={() => (
+                <Entypo name="chevron-down" size={24} color="black" />
+              )}
+              defaultValue={"Previous Month"}
+              data={["Previous Month", "Previous Year", "Custom"]}
+              onSelect={(selectedItem, index) => {
+                setTimeRange(selectedItem);
+              }}
+              buttonStyle={styles.dropdown}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <InterRegular style={{ fontSize: 20, marginRight: 10 }}>
+                From
+              </InterRegular>
+              <TouchableOpacity
+                style={styles.date}
+                disabled={timeRange != "Custom"}
+                onPress={() => setShowDatePicker("START")}
+              >
+                <InterRegular style={{ fontSize: 20, marginRight: 6 }}>
+                  {startDate}
+                </InterRegular>
+                <Feather name="calendar" size={28} color={customer_primary} />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <InterRegular style={{ fontSize: 20, marginRight: 10 }}>
+                To
+              </InterRegular>
+              <TouchableOpacity
+                style={styles.date}
+                disabled={timeRange != "Custom"}
+                onPress={() => setShowDatePicker("END")}
+              >
+                <InterRegular style={{ fontSize: 20, marginRight: 6 }}>
+                  {endDate}
+                </InterRegular>
+                <Feather name="calendar" size={28} color={customer_primary} />
+              </TouchableOpacity>
+            </View>
+          </View>
           <View style={styles.grid_container}>
             <SalesCard text="Spectacles Sales" value={specsSales} />
             <SalesCard text="Lens Sales" value={lensSales} />
@@ -336,6 +462,68 @@ const Dashboard = () => {
               </View>
             )}
           </View>
+
+          <View style={styles.big_card}>
+            <InterMedium style={styles.card_title}>
+              Total sales by salesperson
+            </InterMedium>
+            {salesData.length != 0 && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "100%",
+                  paddingVertical: 35,
+                }}
+              >
+                <View style={{ width: "60%" }}>
+                  <BarChart
+                    width={300}
+                    height={300}
+                    initialSpacing={50}
+                    spacing={100}
+                    noOfSections={4}
+                    barWidth={50}
+                    stackData={salesData}
+                    xAxisLabelTextStyle={{ fontFamily: "Inter-Regular" }}
+                  />
+                </View>
+
+                <View>
+                  {salesData.map((item, index) => (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        marginLeft: 25,
+                        marginTop: 20,
+                      }}
+                      key={index}
+                    >
+                      <InterRegular style={{ fontSize: 18 }}>
+                        {item.label}:
+                      </InterRegular>
+                      <InterMedium style={{ fontSize: 20, marginLeft: 10 }}>
+                        ₹{item.stacks[0].value}
+                      </InterMedium>
+                    </View>
+                  ))}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginLeft: 25,
+                      marginTop: 20,
+                    }}
+                  >
+                    <InterRegular style={{ fontSize: 18 }}>Total:</InterRegular>
+                    <InterMedium style={{ fontSize: 20, marginLeft: 10 }}>
+                      ₹{totalSales}
+                    </InterMedium>
+                  </View>
+                </View>
+              </View>
+            )}
+          </View>
         </ScrollView>
       </View>
       <LinearGradient
@@ -365,6 +553,18 @@ const Dashboard = () => {
       </LinearGradient>
       {!!showSalesPeopleModal && (
         <SalesPeopleModal onClose={() => setShowSalesPeopleModal(false)} />
+      )}
+      {showDatePicker !== "HIDE" && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={new Date()}
+          onChange={(event, selectedDate) => {
+            const formattedDate = selectedDate.toISOString().substring(0, 10);
+            setShowDatePicker("HIDE");
+            if (showDatePicker === "START") setStartDate(formattedDate);
+            else if (showDatePicker === "END") setEndDate(formattedDate);
+          }}
+        />
       )}
     </View>
   );
@@ -397,5 +597,20 @@ const styles = StyleSheet.create({
     paddingVertical: "3%",
     borderBottomWidth: 0.5,
     borderColor: grey1,
+  },
+  dropdown: {
+    borderWidth: 1,
+    width: "30%",
+    borderColor: grey2,
+    borderRadius: 8,
+    backgroundColor: "white",
+  },
+  date: {
+    flexDirection: "row",
+    backgroundColor: gradient_start,
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 10,
   },
 });
