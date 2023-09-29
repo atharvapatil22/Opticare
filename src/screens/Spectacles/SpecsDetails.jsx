@@ -18,6 +18,7 @@ import {
   grey1,
   text_color,
   grey4,
+  productCategories,
 } from "../../constants";
 import Carousel, { Pagination } from "react-native-snap-carousel";
 import Button from "../../components/Button";
@@ -91,6 +92,25 @@ const SpecsDetails = ({ route, navigation }) => {
         onDismiss: () => {},
       }
     );
+  };
+
+  const handleAddtoCart = () => {
+    if (specsData.stock_available < 1) {
+      // __alert
+      console.log("Out of stock");
+      return;
+    }
+
+    const itemInCart = store.orderItems.filter(
+      (item) => item.product_id === specsData.id
+    );
+
+    if (itemInCart.length === 0) {
+      setShowLensSelector(true);
+    } else {
+      console.log("Item is already in cart!");
+      //  __alert
+    }
   };
 
   return (
@@ -254,7 +274,7 @@ const SpecsDetails = ({ route, navigation }) => {
               {store.userLevel === "CUSTOMER" && (
                 <TouchableOpacity
                   style={styles.cart_btn}
-                  onPress={() => setShowLensSelector(true)}
+                  onPress={handleAddtoCart}
                 >
                   <AntDesign name="shoppingcart" size={28} color="white" />
                   <InterRegular

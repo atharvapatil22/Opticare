@@ -98,6 +98,7 @@ const GlassesDetails = ({ route, navigation }) => {
     if (glassesData.stock_available < 1) {
       // __alert
       console.log("Out of stock");
+      return;
     }
 
     dispatch(
@@ -115,30 +116,41 @@ const GlassesDetails = ({ route, navigation }) => {
     Alert.alert(`Success`, "Added to cart");
   };
 
-  const handleCTA = () => {
-    if (
-      !glassesData.sunglasses.linked_single &&
-      !glassesData.sunglasses.linked_bifocal
-    ) {
-      addGlassestoCart();
+  const handleAddtoCart = () => {
+    const itemInCart = store.orderItems.filter(
+      (item) => item.product_id === glassesData.id
+    );
+
+    if (itemInCart.length === 0) {
+      if (
+        !glassesData.sunglasses.linked_single &&
+        !glassesData.sunglasses.linked_bifocal
+      ) {
+        addGlassestoCart();
+      } else {
+        Alert.alert(
+          "Add power?",
+          "Do you want to add custom powered lens to these sunglasses",
+          [
+            {
+              text: "No thanks",
+              onPress: () => addGlassestoCart(),
+            },
+            {
+              text: "Add custom power",
+              onPress: () => setShowLensSelector(true),
+            },
+          ],
+          { cancelable: false }
+        );
+      }
     } else {
-      Alert.alert(
-        "Add power?",
-        "Do you want to add custom powered lens to these sunglasses",
-        [
-          {
-            text: "No thanks",
-            onPress: () => addGlassestoCart(),
-          },
-          {
-            text: "Add custom power",
-            onPress: () => setShowLensSelector(true),
-          },
-        ],
-        { cancelable: false }
-      );
+      console.log("Item is already in cart!");
+      //  __alert
     }
   };
+
+  const handleCTA = () => {};
 
   return (
     <ScrollView
@@ -302,7 +314,10 @@ const GlassesDetails = ({ route, navigation }) => {
                 </InterRegular>
               </View>
               {store.userLevel === "CUSTOMER" && (
-                <TouchableOpacity style={styles.cart_btn} onPress={handleCTA}>
+                <TouchableOpacity
+                  style={styles.cart_btn}
+                  onPress={handleAddtoCart}
+                >
                   <AntDesign name="shoppingcart" size={28} color="white" />
                   <InterRegular
                     style={{ fontSize: 24, color: "white", marginLeft: 20 }}

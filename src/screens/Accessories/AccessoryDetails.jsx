@@ -88,6 +88,7 @@ const AccessoryDetails = ({ route, navigation }) => {
     if (accessoryData.stock_available < 1) {
       // __alert
       console.log("Out of stock");
+      return;
     }
 
     let itemInCart = 0;

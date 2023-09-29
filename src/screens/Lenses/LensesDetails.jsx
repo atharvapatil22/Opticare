@@ -94,6 +94,7 @@ const LensesDetails = ({ route, navigation }) => {
     if (lensData.stock_available < 1) {
       // __alert
       console.log("Out of stock");
+      return;
     }
 
     let itemInCart = 0;
