@@ -83,6 +83,9 @@ const GlassesStepper = ({ route, navigation }) => {
   }, []);
 
   const initalizeValues = () => {
+    const _weight = glassesData.sunglasses.weight;
+    const _width = glassesData.sunglasses.width;
+
     setIdLabel(glassesData.id_label);
     setProductName(glassesData.name);
     setBrand(glassesData.brand);
@@ -95,8 +98,8 @@ const GlassesStepper = ({ route, navigation }) => {
 
     setColor(glassesData.sunglasses.color);
     setMaterial(glassesData.sunglasses.material);
-    setWeight(glassesData.sunglasses.weight.toString());
-    setWidth(glassesData.sunglasses.width.toString());
+    setWeight(!!_weight ? _weight.toString() : "");
+    setWidth(!!_width ? _width.toString() : "");
     setDimensions(glassesData.sunglasses.dimensions);
     setSize(glassesData.sunglasses.size);
     setWarranty(glassesData.sunglasses.warranty);

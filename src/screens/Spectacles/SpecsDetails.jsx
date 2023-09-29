@@ -292,11 +292,19 @@ const SpecsDetails = ({ route, navigation }) => {
                 />
                 <AdditionalField
                   label={"Weight"}
-                  value={specsData.spectacles.weight + " grams"}
+                  value={
+                    !!specsData.spectacles.weight
+                      ? `${specsData.spectacles.weight} grams`
+                      : ""
+                  }
                 />
                 <AdditionalField
                   label={"Width"}
-                  value={specsData.spectacles.width + " cms"}
+                  value={
+                    !!specsData.spectacles.width
+                      ? `${specsData.spectacles.width} cms`
+                      : ""
+                  }
                 />
                 <AdditionalField
                   label={"Dimensions"}

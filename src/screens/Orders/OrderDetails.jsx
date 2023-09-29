@@ -34,6 +34,7 @@ const OrderDetails = ({ route }) => {
   const [showDuesModal, setShowDuesModal] = useState(false);
   const [paymentCompleted, setPaymentCompleted] = useState(0);
   const [salesPersonName, setSalesPersonName] = useState("");
+  const [lensPowerData, setLensPowerData] = useState(null);
 
   useEffect(() => {
     fetchOrderDetails();
@@ -100,6 +101,32 @@ const OrderDetails = ({ route }) => {
       fetchOrderDetails();
       setShowDuesModal(false);
     }
+  };
+
+  const TableRow = ({ left, right, middle, heading }) => {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottomWidth: heading ? 1 : 0,
+        }}
+      >
+        <View style={{ ...styles.table_cell, width: "50%" }}>{left}</View>
+        <View
+          style={{
+            ...styles.table_cell,
+            borderLeftWidth: 1,
+            borderRightWidth: 1,
+            width: "25%",
+          }}
+        >
+          {middle}
+        </View>
+        <View style={{ ...styles.table_cell, width: "25%" }}>{right}</View>
+      </View>
+    );
   };
 
   const SummaryRow = ({ label, value }) => {
@@ -226,6 +253,23 @@ const OrderDetails = ({ route }) => {
               {parseInt(data.price * ((100 - data.discount) / 100)) *
                 data.quantity}
             </InterRegular>
+            {data.category === "lenses" && (
+              <View
+                style={{
+                  alignSelf: "flex-start",
+                  marginTop: 10,
+                }}
+              >
+                <TouchableOpacity
+                  style={styles.view_rx_btn}
+                  onPress={() => setLensPowerData(data.linked_lens.eye_power)}
+                >
+                  <InterRegular style={styles.view_rx_text}>
+                    View Rx
+                  </InterRegular>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           {!data.is_delivered && (
@@ -256,27 +300,39 @@ const OrderDetails = ({ route }) => {
               marginTop: 10,
               borderRadius: 12,
               padding: "2%",
+              flexDirection: "row",
+              justifyContent: "space-between",
             }}
           >
-            <InterMedium
-              style={{
-                ...styles.text_small,
-                fontSize: 18,
-                color: customer_primary,
-              }}
-            >
-              Linked Lens
-            </InterMedium>
-            <InterRegular style={styles.cart_item_text}>
-              {data.linked_lens.type} - {data.linked_lens.name}
-            </InterRegular>
-            <InterRegular style={styles.cart_item_text}>
-              Quantity: {data.linked_lens.quantity}
-            </InterRegular>
-            <InterRegular style={styles.cart_item_text}>
-              Subtotal: ₹
-              {data.linked_lens.effective_price * data.linked_lens.quantity}
-            </InterRegular>
+            <View>
+              <InterMedium
+                style={{
+                  ...styles.text_small,
+                  fontSize: 18,
+                  color: customer_primary,
+                }}
+              >
+                Linked Lens
+              </InterMedium>
+              <InterRegular style={styles.cart_item_text}>
+                {data.linked_lens.type} - {data.linked_lens.name}
+              </InterRegular>
+              <InterRegular style={styles.cart_item_text}>
+                Quantity: {data.linked_lens.quantity}
+              </InterRegular>
+              <InterRegular style={styles.cart_item_text}>
+                Subtotal: ₹
+                {data.linked_lens.effective_price * data.linked_lens.quantity}
+              </InterRegular>
+            </View>
+            <View>
+              <TouchableOpacity
+                style={styles.view_rx_btn}
+                onPress={() => setLensPowerData(data.linked_lens.eye_power)}
+              >
+                <InterRegular style={styles.view_rx_text}>View Rx</InterRegular>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
       </View>
@@ -456,10 +512,12 @@ const OrderDetails = ({ route }) => {
                         Dues: ₹
                         {orderData.payment_total - orderData.payment_completed}
                       </InterRegular>
-                      <TouchableOpacity style={styles.button}>
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => setShowDuesModal(true)}
+                      >
                         <InterRegular
                           style={{ ...styles.text_medium, color: "white" }}
-                          onPress={() => setShowDuesModal(true)}
                         >
                           Update
                         </InterRegular>
@@ -570,60 +628,6 @@ const OrderDetails = ({ route }) => {
               )}
             </ScrollView>
           </View>
-          {showDuesModal && (
-            <CustomModal
-              bodyStyles={{
-                width: "30%",
-                minHeight: 240,
-              }}
-              heading={"Edit dues"}
-              onClose={() => setShowDuesModal(false)}
-              body={
-                <View style={{ paddingHorizontal: "4%", paddingTop: 10 }}>
-                  <InterRegular style={styles.text_medium}>
-                    Ammount Paid
-                  </InterRegular>
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TextInput
-                      keyboardType="numeric"
-                      style={{ ...styles.text_input, width: "60%" }}
-                      value={paymentCompleted.toString()}
-                      onChangeText={(txt) => {
-                        setPaymentCompleted(parseInt(txt) || 0);
-                      }}
-                    />
-                    <InterRegular
-                      style={{
-                        fontSize: 22,
-                        color: text_color,
-                        marginLeft: "3%",
-                      }}
-                    >
-                      out of ₹{orderData.payment_total}
-                    </InterRegular>
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      ...styles.button,
-                      width: "100%",
-                      marginTop: 25,
-                    }}
-                    onPress={() => handleDuesUpdate()}
-                  >
-                    <InterRegular
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                      }}
-                    >
-                      Save
-                    </InterRegular>
-                  </TouchableOpacity>
-                </View>
-              }
-            />
-          )}
         </>
       ) : (
         <View
@@ -640,6 +644,167 @@ const OrderDetails = ({ route }) => {
             Loading...
           </InterRegular>
         </View>
+      )}
+      {!!showDuesModal && (
+        <CustomModal
+          bodyStyles={{
+            width: "30%",
+            minHeight: 240,
+          }}
+          heading={"Edit dues"}
+          onClose={() => setShowDuesModal(false)}
+          body={
+            <View style={{ paddingHorizontal: "4%", paddingTop: 10 }}>
+              <InterRegular style={styles.text_medium}>
+                Ammount Paid
+              </InterRegular>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <TextInput
+                  keyboardType="numeric"
+                  style={{ ...styles.text_input, width: "60%" }}
+                  value={paymentCompleted.toString()}
+                  onChangeText={(txt) => {
+                    setPaymentCompleted(parseInt(txt) || 0);
+                  }}
+                />
+                <InterRegular
+                  style={{
+                    fontSize: 22,
+                    color: text_color,
+                    marginLeft: "3%",
+                  }}
+                >
+                  out of ₹{orderData.payment_total}
+                </InterRegular>
+              </View>
+              <TouchableOpacity
+                style={{
+                  ...styles.button,
+                  width: "100%",
+                  marginTop: 25,
+                }}
+                onPress={() => handleDuesUpdate()}
+              >
+                <InterRegular
+                  style={{
+                    color: "white",
+                    fontSize: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  Save
+                </InterRegular>
+              </TouchableOpacity>
+            </View>
+          }
+        />
+      )}
+      {!!lensPowerData && (
+        <CustomModal
+          bodyStyles={{
+            width: "30%",
+            alignItems: "center",
+          }}
+          heading={"Lens Power"}
+          onClose={() => {
+            setLensPowerData(null);
+          }}
+          body={
+            <View style={styles.table}>
+              <TableRow
+                left={<InterRegular style={styles.table_text}>Rx</InterRegular>}
+                middle={
+                  <InterRegular style={styles.table_text}>Left</InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>Right</InterRegular>
+                }
+                heading
+              />
+              <TableRow
+                left={
+                  <InterRegular style={styles.table_text}>Sphere</InterRegular>
+                }
+                middle={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.sphere[0]}
+                  </InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.sphere[1]}
+                  </InterRegular>
+                }
+              />
+              <TableRow
+                left={
+                  <InterRegular style={styles.table_text}>
+                    Cylinder
+                  </InterRegular>
+                }
+                middle={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.cylinder[0]}
+                  </InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.cylinder[1]}
+                  </InterRegular>
+                }
+              />
+              <TableRow
+                left={
+                  <InterRegular style={styles.table_text}>Axis</InterRegular>
+                }
+                middle={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.axis[0]}
+                  </InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.axis[1]}
+                  </InterRegular>
+                }
+              />
+              <TableRow
+                left={
+                  <InterRegular style={styles.table_text}>
+                    Pupil Distance
+                  </InterRegular>
+                }
+                middle={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.pupil_distance[0]}
+                  </InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.pupil_distance[1]}
+                  </InterRegular>
+                }
+              />
+              <TableRow
+                left={
+                  <InterRegular style={styles.table_text}>
+                    Near Addition
+                  </InterRegular>
+                }
+                middle={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.near_addition[0]}
+                  </InterRegular>
+                }
+                right={
+                  <InterRegular style={styles.table_text}>
+                    {lensPowerData.near_addition[1]}
+                  </InterRegular>
+                }
+              />
+            </View>
+          }
+        />
       )}
     </View>
   );
@@ -708,5 +873,29 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingVertical: 8,
+  },
+  table: {
+    backgroundColor: app_bg,
+    borderRadius: 12,
+    width: "100%",
+  },
+  table_text: { fontSize: 18 },
+  table_cell: {
+    width: "33%",
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: 60,
+  },
+  view_rx_btn: {
+    backgroundColor: "white",
+    borderWidth: 1.5,
+    borderColor: customer_primary,
+    borderRadius: 8,
+  },
+  view_rx_text: {
+    fontSize: 17,
+    color: customer_primary,
+    paddingVertical: 6,
+    paddingHorizontal: "2%",
   },
 });

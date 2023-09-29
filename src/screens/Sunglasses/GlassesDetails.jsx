@@ -338,11 +338,19 @@ const GlassesDetails = ({ route, navigation }) => {
                 />
                 <AdditionalField
                   label={"Weight"}
-                  value={glassesData.sunglasses.weight + " grams"}
+                  value={
+                    !!glassesData.sunglasses.weight
+                      ? `${glassesData.sunglasses.weight} grams`
+                      : ""
+                  }
                 />
                 <AdditionalField
                   label={"Width"}
-                  value={glassesData.sunglasses.width + " cms"}
+                  value={
+                    !!glassesData.sunglasses.width
+                      ? `${glassesData.sunglasses.width} cms`
+                      : ""
+                  }
                 />
                 <AdditionalField
                   label={"Dimensions"}

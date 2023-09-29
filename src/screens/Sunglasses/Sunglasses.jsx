@@ -47,7 +47,6 @@ const Sunglasses = ({ navigation }) => {
           item.id_label.toLowerCase().includes(searchValLower)
       );
       setSearchedRecords(_temp);
-      setSearchedRecords(data);
     }
   };
 

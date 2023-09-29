@@ -39,7 +39,10 @@ const Dashboard = () => {
 
   const [showSalesPeopleModal, setShowSalesPeopleModal] = useState(false);
   const [salesData, setSalesData] = useState([]);
-  const [totalSales, setTotalSales] = useState(0);
+
+  const [productSalesSum, setProductSalesSum] = useState(0);
+  const [couponDiscountSum, setCouponDiscountSum] = useState(0);
+  const [netRevenue, setNetRevenue] = useState(0);
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -187,7 +190,9 @@ const Dashboard = () => {
 
     const response2 = await supabase
       .from("orders")
-      .select("mode_of_payment,sales_person,payment_total")
+      .select(
+        "mode_of_payment,sales_person,payment_total,bill_coupon_discount,bill_products_total,bill_products_savings"
+      )
       .gt("created_at", startDate)
       .lte("created_at", endDate);
 
@@ -207,6 +212,8 @@ const Dashboard = () => {
       cardQty = 0;
 
     let totalSales = 0,
+      productsTotal = 0,
+      netCouponDiscount = 0,
       tempSalesData = {};
 
     orders.forEach((order) => {
@@ -231,8 +238,13 @@ const Dashboard = () => {
           else tempSalesData[salesPerson.name] = order.payment_total;
         }
       });
+
+      productsTotal += order.bill_products_total - order.bill_products_savings;
+      netCouponDiscount += order.bill_coupon_discount;
       totalSales += order.payment_total;
     });
+
+    console.log("net dis", netCouponDiscount);
 
     setTotalPayments(orders.length);
     setPaymentsDistribution([
@@ -263,7 +275,9 @@ const Dashboard = () => {
       };
     });
 
-    setTotalSales(totalSales);
+    setProductSalesSum(productsTotal);
+    setCouponDiscountSum(netCouponDiscount);
+    setNetRevenue(totalSales);
     setSalesData(tempSalesData2);
   };
 
@@ -399,6 +413,56 @@ const Dashboard = () => {
             <SalesCard text="Lens Sales" value={lensSales} />
             <SalesCard text="Sunglasses Sales" value={glassesSales} />
             <SalesCard text="Accessories Sales" value={accessorySales} />
+            <View
+              style={{
+                ...styles.big_card,
+                backgroundColor: gradient_start,
+                elevation: 2,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <InterMedium style={styles.net_sales_text}>
+                  Net Product Sales (with discount)
+                </InterMedium>
+                <InterMedium style={styles.net_sales_text}>
+                  ₹{productSalesSum}
+                </InterMedium>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <InterMedium style={styles.net_sales_text}>
+                  Total Coupon Discount
+                </InterMedium>
+                <InterMedium style={styles.net_sales_text}>
+                  ₹{couponDiscountSum}
+                </InterMedium>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <InterMedium style={styles.net_sales_text}>
+                  Total Revenue
+                </InterMedium>
+                <InterMedium style={styles.net_sales_text}>
+                  ₹{netRevenue}
+                </InterMedium>
+              </View>
+            </View>
           </View>
 
           <View style={styles.big_card}>
@@ -517,7 +581,7 @@ const Dashboard = () => {
                   >
                     <InterRegular style={{ fontSize: 18 }}>Total:</InterRegular>
                     <InterMedium style={{ fontSize: 20, marginLeft: 10 }}>
-                      ₹{totalSales}
+                      ₹{netRevenue}
                     </InterMedium>
                   </View>
                 </View>
@@ -612,5 +676,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 10,
     borderRadius: 10,
+  },
+  net_sales_text: {
+    fontSize: 22,
+    marginVertical: 10,
   },
 });

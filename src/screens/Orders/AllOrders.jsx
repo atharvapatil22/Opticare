@@ -28,24 +28,45 @@ const AllOrders = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [orders, setOrders] = useState([]);
+  const [searchedRecords, setSearchedRecords] = useState([]);
 
   useEffect(() => {
     fetchAllOrders();
   }, []);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchValue]);
+
+  const handleSearch = () => {
+    if (searchValue.trim().length === 0) setSearchedRecords(orders);
+    else {
+      const searchValLower = searchValue.toLowerCase();
+      const _temp = orders.filter(
+        (item) =>
+          item.order_number.toLowerCase().includes(searchValLower) ||
+          item.customer_number.toLowerCase().includes(searchValLower) ||
+          item.customer_name.toLowerCase().includes(searchValLower)
+      );
+      setSearchedRecords(_temp);
+    }
+  };
 
   const fetchAllOrders = async () => {
     // __add pagination
     const { data, error } = await supabase
       .from("orders")
       .select(
-        "id,order_number,created_at,items_total,items_completed,payment_total,payment_completed,customer_name"
-      );
+        "id,order_number,created_at,items_total,items_completed,payment_total,payment_completed,customer_name,customer_number"
+      )
+      .order("created_at", { ascending: false });
     if (error) {
       // __api_error
       console.log("api_error");
     } else {
       // __api_success
       setOrders(data);
+      setSearchedRecords(data);
     }
   };
 
@@ -156,7 +177,7 @@ const AllOrders = ({ navigation }) => {
           style={styles.searchbar}
           onChangeText={setSearchValue}
           value={searchValue}
-          placeholder="Type here to search ..."
+          placeholder="Search by Order number / Customer name / Customer mobile"
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
@@ -168,7 +189,7 @@ const AllOrders = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllOrders} />
         }
       >
-        {orders.length === 0 ? (
+        {searchedRecords.length === 0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -183,7 +204,7 @@ const AllOrders = ({ navigation }) => {
           </View>
         ) : (
           <View style={styles.grid_container}>
-            {orders.map((item) => (
+            {searchedRecords.map((item) => (
               <FlatCard key={item.id} data={item} />
             ))}
           </View>

@@ -85,6 +85,9 @@ const SpecsStepper = ({ route, navigation }) => {
   }, []);
 
   const initalizeValues = () => {
+    const _weight = specsData.spectacles.weight;
+    const _width = specsData.spectacles.width;
+
     setIdLabel(specsData.id_label);
     setProductName(specsData.name);
     setBrand(specsData.brand);
@@ -97,8 +100,8 @@ const SpecsStepper = ({ route, navigation }) => {
 
     setColor(specsData.spectacles.color);
     setMaterial(specsData.spectacles.material);
-    setWeight(specsData.spectacles.weight.toString());
-    setWidth(specsData.spectacles.width.toString());
+    setWeight(!!_weight ? _weight.toString() : "");
+    setWidth(!!_width ? _width.toString() : "");
     setDimensions(specsData.spectacles.dimensions);
     setSize(specsData.spectacles.size);
     setWarranty(specsData.spectacles.warranty);
