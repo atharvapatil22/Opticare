@@ -61,12 +61,17 @@ const GlassesDetails = ({ route, navigation }) => {
       .select("*,sunglasses(*)")
       .eq("id", glassesId);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      setSnackMessage("Error while fetching sunglasses details");
+      console.log(
+        `API ERROR => Error while fetching sunglasses details \n`,
+        error
+      );
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      setSnackMessage("Successfully fetched sunglasses details");
+      console.log(`API SUCCESS => Fetched sunglasses details \n`, data[0]);
+      setShowSnackbar(true);
       setGlassesData(data[0]);
-      console.log("Successfully fetched glasses: ", data);
     }
   };
 

@@ -57,12 +57,14 @@ const LensesDetails = ({ route, navigation }) => {
       .select("*,lenses(*)")
       .eq("id", lensId);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      setSnackMessage("Error while fetching lenses details");
+      console.log(`API ERROR => Error while fetching lenses details \n`, error);
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      setSnackMessage("Successfully fetched lenses details");
+      console.log(`API SUCCESS => Fetched lenses details \n`, data[0]);
+      setShowSnackbar(true);
       setLensData(data[0]);
-      console.log("Successfully fetched lenses: ", data);
     }
   };
 
@@ -105,12 +107,6 @@ const LensesDetails = ({ route, navigation }) => {
   };
 
   const addLensestoCart = () => {
-    if (lensData.stock_available < 1) {
-      // __alert
-      console.log("Out of stock");
-      return;
-    }
-
     let itemInCart = 0;
     // Check if item is already in cart
     const cartLenses = store.orderItems.filter(

@@ -23,6 +23,8 @@ import SalesPeopleModal from "../components/SalesPeopleModal";
 import { BarChart } from "react-native-gifted-charts";
 import SelectDropdown from "react-native-select-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import PageLoader from "../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 const moment = require("moment");
 
 const Dashboard = () => {
@@ -44,6 +46,10 @@ const Dashboard = () => {
   const [couponDiscountSum, setCouponDiscountSum] = useState(0);
   const [netRevenue, setNetRevenue] = useState(0);
 
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [timeRange, setTimeRange] = useState("Previous Month");
@@ -80,6 +86,7 @@ const Dashboard = () => {
   }, [timeRange]);
 
   const getProductsAnalytics = async () => {
+    setProductsLoading(true);
     const { data, error } = await supabase
       .from("orderItems")
       .select("category,price,discount,quantity,linked_lens")
@@ -87,11 +94,13 @@ const Dashboard = () => {
       .lte("created_at", endDate);
 
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      console.log(`API ERROR => Error while fetching order items! \n`, error);
+      setSnackMessage("Error while fetching order items!");
+      setShowSnackbar(true);
+      setProductsLoading(false);
       return;
     }
-    // __api_success
+    console.log("API SUCCESS => Fetched order items ");
 
     let specsTotalSales = 0,
       glassesTotalSales = 0,
@@ -174,19 +183,25 @@ const Dashboard = () => {
         color: chart4,
       },
     ]);
+    setProductsLoading(false);
   };
 
   const getOrderAnalytics = async () => {
+    setOrdersLoading(true);
     const response = await supabase
       .from("salesPeople")
       .select("*")
       .eq("is_active", true);
 
     if (response.error) {
-      // __api_error
-      console.log("api_error", response.error);
+      console.log(`API ERROR => Error while fetching salesPeople! \n`, error);
+      setSnackMessage("Error while fetching salesPeople!");
+      setShowSnackbar(true);
+      setOrdersLoading(false);
       return;
     }
+
+    console.log("API SUCCESS => Fetched salesPeople ");
 
     const response2 = await supabase
       .from("orders")
@@ -197,12 +212,13 @@ const Dashboard = () => {
       .lte("created_at", endDate);
 
     if (response2.error) {
-      // __api_error
-      console.log("api_error", response2.error);
+      console.log(`API ERROR => Error while fetching orders! \n`, error);
+      setSnackMessage("Error while fetching orders!");
+      setShowSnackbar(true);
+      setOrdersLoading(false);
       return;
     }
-    // __api_success
-    // console.log("data", data);
+    console.log("API SUCCESS => Fetched orders ");
 
     const activeSalespeople = response.data;
     const orders = response2.data;
@@ -279,6 +295,8 @@ const Dashboard = () => {
     setCouponDiscountSum(netCouponDiscount);
     setNetRevenue(totalSales);
     setSalesData(tempSalesData2);
+
+    setOrdersLoading(false);
   };
 
   const SalesCard = ({ text, value }) => {
@@ -408,6 +426,26 @@ const Dashboard = () => {
               </TouchableOpacity>
             </View>
           </View>
+          {(ordersLoading || productsLoading) && (
+            <PageLoader text={"Generating analytics"} />
+          )}
+          <Portal>
+            <Snackbar
+              visible={showSnackbar}
+              onDismiss={() => setShowSnackbar(false)}
+              duration={4000}
+              style={{
+                marginBottom: 30,
+                marginHorizontal: "20%",
+              }}
+              action={{
+                label: "OK",
+                onPress: () => setShowSnackbar(false),
+              }}
+            >
+              {snackMessage}
+            </Snackbar>
+          </Portal>
           <View style={styles.grid_container}>
             <SalesCard text="Spectacles Sales" value={specsSales} />
             <SalesCard text="Lens Sales" value={lensSales} />

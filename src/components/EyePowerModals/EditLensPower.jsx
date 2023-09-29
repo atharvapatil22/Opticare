@@ -4,32 +4,50 @@ import { supabase } from "../../supabase/client";
 import CustomModal from "../CustomModal";
 import { FontAwesome } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
-import { app_bg, customer_primary, grey2, text_color } from "../../constants";
+import {
+  app_bg,
+  customer_primary,
+  grey1,
+  grey2,
+  text_color,
+} from "../../constants";
 import { TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import Button from "../Button";
 import { useDispatch } from "react-redux";
 import { editLensPower } from "../../redux/actions";
 import { InterMedium, InterRegular } from "../StyledText/StyledText";
+import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 
 const EditLensPower = ({ data, onClose, onAddRecord }) => {
   const [searchValue, setSearchValue] = useState("");
   const [searchedRecord, setSearchedRecord] = useState(null);
   const [recordNotFound, setRecordNotFound] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const dispatch = useDispatch();
 
   const handleSearch = async () => {
+    setRecordNotFound(false);
+    setLoading(true);
     const { data, error } = await supabase
       .from("eyePower")
       .select("power_details,id")
       .eq("customer_number", searchValue);
+    setLoading(false);
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      setSnackMessage("Error while searching eye power record!");
+      console.log(
+        `API ERROR => Error while searching eye power record! \n`,
+        error
+      );
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      console.log("API SUCCESS => Searched eye power record ", data);
       if (data.length === 0) {
         setRecordNotFound(true);
+        setSearchedRecord(null);
         console.log("no record exists");
       } else {
         console.log("rec found", data[0]);
@@ -88,6 +106,23 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
             paddingBottom: 60,
           }}
         >
+          <Portal>
+            <Snackbar
+              visible={showSnackbar}
+              onDismiss={() => setShowSnackbar(false)}
+              duration={4000}
+              style={{
+                marginBottom: 30,
+                marginHorizontal: "20%",
+              }}
+              action={{
+                label: "OK",
+                onPress: () => setShowSnackbar(false),
+              }}
+            >
+              {snackMessage}
+            </Snackbar>
+          </Portal>
           {/* If Editing eye power */}
           {!!data.linkedLens.eye_power && (
             <>
@@ -234,12 +269,14 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
               onChangeText={setSearchValue}
             />
             <TouchableOpacity
+              disabled={loading}
               onPress={handleSearch}
               style={{
                 ...styles.edit_modal_btn,
                 padding: "2%",
                 borderRadius: 100,
                 width: "10%",
+                backgroundColor: loading ? grey1 : customer_primary,
               }}
             >
               <FontAwesome name="search" size={24} color="white" />
@@ -249,7 +286,11 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
                 onClose();
                 onAddRecord();
               }}
-              style={{ ...styles.edit_modal_btn }}
+              disabled={loading}
+              style={{
+                ...styles.edit_modal_btn,
+                backgroundColor: loading ? grey1 : customer_primary,
+              }}
             >
               <InterRegular
                 style={{
@@ -261,6 +302,21 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
               </InterRegular>
             </TouchableOpacity>
           </View>
+          {loading && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 45,
+              }}
+            >
+              <InterRegular style={{ fontSize: 22, marginRight: 15 }}>
+                Searching
+              </InterRegular>
+              <ActivityIndicator color={customer_primary} size={30} />
+            </View>
+          )}
           {!!recordNotFound && (
             <InterRegular
               style={{
@@ -393,7 +449,6 @@ const windowHeight = Dimensions.get("window").height;
 
 const styles = StyleSheet.create({
   edit_modal_btn: {
-    backgroundColor: customer_primary,
     paddingHorizontal: "3%",
     paddingVertical: 6,
     borderRadius: 8,

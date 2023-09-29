@@ -13,11 +13,13 @@ import {
   app_bg,
   customer_primary,
   gradient_start,
+  grey1,
   grey2,
   text_color,
 } from "../../constants";
 import { supabase } from "../../supabase/client";
 import { InterMedium, InterRegular } from "../StyledText/StyledText";
+import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 
 const AddPowerRecord = ({ onClose }) => {
   const [customerName, setCustomerName] = useState("");
@@ -50,6 +52,10 @@ const AddPowerRecord = ({ onClose }) => {
     NEAR_RIGHT: "NEAR_RIGHT",
   };
 
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [showLoader, setShowLoader] = useState(false);
+
   const editExistingRecord = async () => {
     const eyeRecord = {
       customer_name: customerName,
@@ -61,18 +67,26 @@ const AddPowerRecord = ({ onClose }) => {
         near_addition: [nearLeft, nearRight],
       },
     };
+    setShowLoader(true);
     const { data, error } = await supabase
       .from("eyePower")
       .update(eyeRecord)
       .eq("customer_number", customerNumber)
       .select();
+    setShowLoader(false);
 
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      setSnackMessage("Error while editing eye power record!");
+      console.log(
+        `API ERROR => Error while editing eye power record! \n`,
+        error
+      );
+      setShowSnackbar(true);
     } else {
-      // __api_success
-      console.log("Successfully edited eye power record for ", customerNumber);
+      console.log(
+        "API SUCCESS => Edited eye power record for ",
+        customerNumber
+      );
       onClose();
       Alert.alert(
         "Success!",
@@ -100,17 +114,18 @@ const AddPowerRecord = ({ onClose }) => {
       },
     };
 
+    setShowLoader(true);
+
     const { data, error } = await supabase
       .from("eyePower")
       .insert([eyeRecord])
       .select();
+    setShowLoader(false);
     if (error) {
-      // __api_error
-      console.log("api_error", error);
       if (error.code == "23505") {
-        console.log("record exists");
+        console.log("eye power record already exists");
         Alert.alert(
-          "Error!",
+          "Alert!",
           `Eye power record already exists for ${customerNumber}. Would you like to update it`,
           [
             { text: "Yes", onPress: () => editExistingRecord() },
@@ -118,11 +133,18 @@ const AddPowerRecord = ({ onClose }) => {
           ],
           { cancelable: false }
         );
+      } else {
+        setSnackMessage("Error while creating eye power record!");
+        console.log(
+          `API ERROR => Error while creating eye power record! \n`,
+          error
+        );
+        setShowSnackbar(true);
       }
     } else {
-      // __api_success
-      console.log("Successfully added eye power record! ");
+      console.log(`API SUCCESS => Created new eye power record! \n`, data);
       onClose();
+
       Alert.alert(
         "Success!",
         "Successfully added eye power record!",
@@ -320,6 +342,23 @@ const AddPowerRecord = ({ onClose }) => {
               alignItems: "center",
             }}
           >
+            <Portal>
+              <Snackbar
+                visible={showSnackbar}
+                onDismiss={() => setShowSnackbar(false)}
+                duration={4000}
+                style={{
+                  marginBottom: 30,
+                  marginHorizontal: "20%",
+                }}
+                action={{
+                  label: "OK",
+                  onPress: () => setShowSnackbar(false),
+                }}
+              >
+                {snackMessage}
+              </Snackbar>
+            </Portal>
             <View style={{ width: "48%" }}>
               <InterRegular style={styles.label}>Customer name</InterRegular>
               <TextInput
@@ -474,20 +513,28 @@ const AddPowerRecord = ({ onClose }) => {
                   />
                 </View>
                 <TouchableOpacity
+                  disabled={showLoader}
                   onPress={saveEyeRecord}
                   style={{
-                    backgroundColor: customer_primary,
+                    backgroundColor: showLoader ? grey1 : customer_primary,
                     alignSelf: "flex-end",
                     paddingHorizontal: "2%",
                     paddingVertical: "1%",
                     marginRight: "10%",
                     marginBottom: 50,
                     borderRadius: 12,
+                    flexDirection: "row",
                   }}
                 >
                   <InterRegular style={{ fontSize: 24, color: "white" }}>
                     Save
                   </InterRegular>
+                  {!!showLoader && (
+                    <ActivityIndicator
+                      color="white"
+                      style={{ marginLeft: 15 }}
+                    />
+                  )}
                 </TouchableOpacity>
               </>
             )}

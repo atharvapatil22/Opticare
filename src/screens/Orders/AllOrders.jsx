@@ -23,12 +23,15 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import { Portal, Snackbar } from "react-native-paper";
 
 const AllOrders = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState("");
   const [refreshing, setRefreshing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [searchedRecords, setSearchedRecords] = useState([]);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
 
   useEffect(() => {
     fetchAllOrders();
@@ -54,17 +57,20 @@ const AllOrders = ({ navigation }) => {
 
   const fetchAllOrders = async () => {
     // __add pagination
+    setRefreshing(true);
     const { data, error } = await supabase
       .from("orders")
       .select(
         "id,order_number,created_at,items_total,items_completed,payment_total,payment_completed,customer_name,customer_number"
       )
       .order("created_at", { ascending: false });
+    setRefreshing(false);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log("API ERROR => Error in fetch all orders \n", error);
+      setSnackMessage("Error while fetching orders!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      console.log("API SUCCESS => Fetched all orders \n");
       setOrders(data);
       setSearchedRecords(data);
     }
@@ -183,13 +189,30 @@ const AllOrders = ({ navigation }) => {
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
         <Button text="Filters" variant="white" rounded onPress={() => {}} />
       </View>
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
       <ScrollView
         style={{ width: "100%", height: "100%" }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllOrders} />
         }
       >
-        {searchedRecords.length === 0 ? (
+        {searchedRecords.length === 0 && !refreshing && (
           <View
             style={{
               justifyContent: "center",
@@ -202,13 +225,12 @@ const AllOrders = ({ navigation }) => {
               No orders found!
             </InterRegular>
           </View>
-        ) : (
-          <View style={styles.grid_container}>
-            {searchedRecords.map((item) => (
-              <FlatCard key={item.id} data={item} />
-            ))}
-          </View>
         )}
+        <View style={styles.grid_container}>
+          {searchedRecords.map((item) => (
+            <FlatCard key={item.id} data={item} />
+          ))}
+        </View>
       </ScrollView>
     </View>
   );

@@ -51,12 +51,17 @@ const AccessoryDetails = ({ route, navigation }) => {
       .select("*,accessories(*)")
       .eq("id", accessoryId);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      setSnackMessage("Error while fetching accessory details");
+      console.log(
+        `API ERROR => Error while fetching accessory details \n`,
+        error
+      );
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      setSnackMessage("Successfully fetched accessory details");
+      console.log(`API SUCCESS => Fetched accessory details \n`, data[0]);
+      setShowSnackbar(true);
       setAccessoryData(data[0]);
-      console.log("Successfully fetched accessory: ", data);
     }
   };
 

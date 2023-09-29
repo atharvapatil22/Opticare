@@ -61,12 +61,17 @@ const SpecsDetails = ({ route, navigation }) => {
       .select("*,spectacles(*)")
       .eq("id", specsId);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      setSnackMessage("Error while fetching spectacles details");
+      console.log(
+        `API ERROR => Error while fetching spectacles details \n`,
+        error
+      );
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      setSnackMessage("Successfully fetched specs details");
+      console.log(`API SUCCESS => Fetched specs details \n`, data[0]);
+      setShowSnackbar(true);
       setSpecsData(data[0]);
-      console.log("Successfully fetched specs: ", data);
     }
   };
 

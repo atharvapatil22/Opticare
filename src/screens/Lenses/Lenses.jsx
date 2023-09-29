@@ -59,10 +59,12 @@ const Lenses = ({ navigation }) => {
   };
 
   const fetchAllLenses = async () => {
+    setRefreshing(true);
     const { data, error } = await supabase
       .from("products")
       .select("id,id_label,name,price,discount,lenses(type,material)")
       .eq("category", productCategories.LENSES);
+    setRefreshing(false);
     if (error) {
       console.log("API ERROR => Error in fetch all lenses \n", error);
       setSnackMessage("Error while fetching lenses!");
@@ -177,7 +179,7 @@ const Lenses = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllLenses} />
         }
       >
-        {searchedRecords.length === 0 ? (
+        {searchedRecords.length === 0 && !refreshing && (
           <View
             style={{
               justifyContent: "center",
@@ -190,14 +192,13 @@ const Lenses = ({ navigation }) => {
               No lenses found!
             </InterRegular>
           </View>
-        ) : (
-          <View style={styles.grid_container}>
-            {searchedRecords.map((item) => (
-              <FlatCard key={item.id} data={item} />
-            ))}
-            <View style={{ width: "100%", height: 150 }} />
-          </View>
         )}
+        <View style={styles.grid_container}>
+          {searchedRecords.map((item) => (
+            <FlatCard key={item.id} data={item} />
+          ))}
+          <View style={{ width: "100%", height: 150 }} />
+        </View>
       </ScrollView>
     </View>
   );

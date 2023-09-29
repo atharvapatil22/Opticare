@@ -51,17 +51,18 @@ const Sunglasses = ({ navigation }) => {
   };
 
   const fetchAllGlasses = async () => {
+    setRefreshing(true);
     const { data, error } = await supabase
       .from("products")
       .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.SUNGLASSES);
+    setRefreshing(false);
     if (error) {
       console.log("API ERROR => Error in fetch all sunglasses \n", error);
       setSnackMessage("Error while fetching sunglasses!");
       setShowSnackbar(true);
     } else {
       console.log("API SUCCESS => Fetched all sunglasses \n", data);
-
       setGlasses(data);
       setSearchedRecords(data);
     }
@@ -127,7 +128,7 @@ const Sunglasses = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllGlasses} />
         }
       >
-        {searchedRecords.length === 0 ? (
+        {searchedRecords.length === 0 && !refreshing && (
           <View
             style={{
               justifyContent: "center",
@@ -140,21 +141,20 @@ const Sunglasses = ({ navigation }) => {
               No sunglasses found!
             </InterRegular>
           </View>
-        ) : (
-          <View style={styles.grid_container}>
-            {searchedRecords.map((item) => (
-              <ProductCard
-                data={item}
-                key={item.id}
-                onPress={() => {
-                  navigation.navigate("Sunglasses Details", { id: item.id });
-                }}
-                type={"sunglasses"}
-              />
-            ))}
-            <View style={{ width: "100%", height: 150 }} />
-          </View>
         )}
+        <View style={styles.grid_container}>
+          {searchedRecords.map((item) => (
+            <ProductCard
+              data={item}
+              key={item.id}
+              onPress={() => {
+                navigation.navigate("Sunglasses Details", { id: item.id });
+              }}
+              type={"sunglasses"}
+            />
+          ))}
+          <View style={{ width: "100%", height: 150 }} />
+        </View>
       </ScrollView>
     </View>
   );

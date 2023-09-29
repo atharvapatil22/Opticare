@@ -51,10 +51,12 @@ const Spectacles = ({ navigation }) => {
   };
 
   const fetchAllSpecs = async () => {
+    setRefreshing(true);
     const { data, error } = await supabase
       .from("products")
       .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.SPECTACLES);
+    setRefreshing(false);
     if (error) {
       console.log("API ERROR => Error in fetch all specs \n", error);
       setSnackMessage("Error while fetching specs!");
@@ -126,7 +128,7 @@ const Spectacles = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={fetchAllSpecs} />
         }
       >
-        {searchedRecords.length === 0 ? (
+        {searchedRecords.length === 0 && !refreshing && (
           <View
             style={{
               justifyContent: "center",
@@ -139,21 +141,20 @@ const Spectacles = ({ navigation }) => {
               No spectacles found!
             </InterRegular>
           </View>
-        ) : (
-          <View style={styles.grid_container}>
-            {searchedRecords.map((item) => (
-              <ProductCard
-                data={item}
-                key={item.id}
-                onPress={() => {
-                  navigation.navigate("Spectacles Details", { id: item.id });
-                }}
-                type={"spectacles"}
-              />
-            ))}
-            <View style={{ width: "100%", height: 150 }} />
-          </View>
         )}
+        <View style={styles.grid_container}>
+          {searchedRecords.map((item) => (
+            <ProductCard
+              data={item}
+              key={item.id}
+              onPress={() => {
+                navigation.navigate("Spectacles Details", { id: item.id });
+              }}
+              type={"spectacles"}
+            />
+          ))}
+          <View style={{ width: "100%", height: 150 }} />
+        </View>
       </ScrollView>
     </View>
   );

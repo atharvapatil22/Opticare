@@ -22,6 +22,7 @@ import Button from "./Button";
 import { useDispatch } from "react-redux";
 import { addCartItem } from "../redux/actions";
 import { InterRegular } from "./StyledText/StyledText";
+import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 
 const LensSelector = ({
   setShowLensSelector,
@@ -37,6 +38,10 @@ const LensSelector = ({
 }) => {
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+
   const [modalState, setModalState] = useState("Default");
   const [singleLenses, setSingleLenses] = useState([]);
   const [bifocalLenses, setBifocalLenses] = useState([]);
@@ -47,15 +52,24 @@ const LensSelector = ({
   }, []);
 
   const fetchAllLenses = async () => {
+    setLoading(true);
     const { data, error } = await supabase
       .from("products")
       .select("id,name,price,discount,lenses(type,features)")
       .eq("category", productCategories.LENSES);
+    setLoading(false);
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log(
+        "API ERROR => Error while fetching lenses for lens selector \n",
+        error
+      );
+      setSnackMessage("Error while fetching lens selector options!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
+      console.log(
+        "API SUCCESS => Fetched all lenses for lens selector \n",
+        data
+      );
       let svLenses = [];
       let bpLenses = [];
       data.forEach((item) => {
@@ -160,6 +174,23 @@ const LensSelector = ({
     >
       <View style={styles.modal_bg}>
         <View style={styles.modal_body}>
+          <Portal>
+            <Snackbar
+              visible={showSnackbar}
+              onDismiss={() => setShowSnackbar(false)}
+              duration={4000}
+              style={{
+                marginBottom: 30,
+                marginHorizontal: "20%",
+              }}
+              action={{
+                label: "OK",
+                onPress: () => setShowSnackbar(false),
+              }}
+            >
+              {snackMessage}
+            </Snackbar>
+          </Portal>
           <View
             style={{
               flexDirection: "row",
@@ -177,7 +208,6 @@ const LensSelector = ({
               <Ionicons name="close" size={36} color="black" />
             </TouchableOpacity>
           </View>
-
           <View
             style={{
               borderBottomWidth: 1,
@@ -185,7 +215,21 @@ const LensSelector = ({
               marginTop: 20,
             }}
           />
-          {modalState === "Default" ? (
+          {loading ? (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 75,
+              }}
+            >
+              <InterRegular style={{ fontSize: 22, marginRight: 15 }}>
+                Loading options
+              </InterRegular>
+              <ActivityIndicator color={customer_primary} size={30} />
+            </View>
+          ) : modalState === "Default" ? (
             <ScrollView>
               {!!linkedSingle && (
                 <TouchableOpacity

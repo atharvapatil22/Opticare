@@ -24,6 +24,8 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
+import PageLoader from "../../components/PageLoader";
 
 const OrderDetails = ({ route }) => {
   const { id: orderId } = route.params;
@@ -36,27 +38,35 @@ const OrderDetails = ({ route }) => {
   const [salesPersonName, setSalesPersonName] = useState("");
   const [lensPowerData, setLensPowerData] = useState(null);
 
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [updatingDues, setUpdatingDues] = useState(false);
+  const [pageLoaderText, setPageLoaderText] = useState("");
+
   useEffect(() => {
     fetchOrderDetails();
   }, []);
 
   const fetchOrderDetails = async () => {
+    setPageLoaderText("Fetching order details");
     const { data, error } = await supabase
       .from("orders")
       .select("*,orderItems(*)")
       .eq("id", orderId);
+    setPageLoaderText("");
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log("API ERROR => Error while fetching order details \n", error);
+      setSnackMessage("Error while fetching order details!");
+      setShowSnackbar(true);
     } else {
+      console.log("API SUCCESS => Fetched order details \n", data);
+
       getSalesPersonName(data[0].sales_person);
-      // __api_success
       setOrderData(data[0]);
       setPaymentCompleted(data[0].payment_completed);
       setCreationDate(new Date(data[0].created_at));
       if (!!data[0].delivered_at)
         setDeliveryDate(new Date(data[0].delivered_at));
-      console.log("Successfully fetched order: ", data);
     }
   };
 
@@ -86,18 +96,21 @@ const OrderDetails = ({ route }) => {
     ) {
       payload["delivered_at"] = new Date();
     }
+    setUpdatingDues(true);
     const { data, error } = await supabase
       .from("orders")
       .update(payload)
       .eq("id", orderData.id)
       .select();
-
+    setUpdatingDues(false);
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      console.log("API ERROR => Error while updating dues \n", error);
+      setSnackMessage("Error while updating dues!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
-      console.log("edited 'payment completed' field", data);
+      console.log("API SUCCESS => Updated order dues");
+      setSnackMessage("Successfully updated dues");
+      setShowSnackbar(true);
       fetchOrderDetails();
       setShowDuesModal(false);
     }
@@ -166,6 +179,7 @@ const OrderDetails = ({ route }) => {
         }
       });
 
+      setPageLoaderText("Updating item status");
       const response = await supabase
         .from("orderItems")
         .update({ is_delivered: true })
@@ -173,11 +187,16 @@ const OrderDetails = ({ route }) => {
         .select();
 
       if (response.error) {
-        // __api_error
-        console.log("api_error", response.error);
+        setPageLoaderText("");
+
+        console.log(
+          "API ERROR => Error while updating order items \n",
+          response.error
+        );
+        setSnackMessage("Error while updating order items!");
+        setShowSnackbar(true);
       } else {
-        // __api_success
-        console.log("marked item as completed");
+        console.log("API SUCCESS => Updated order items \n");
 
         let payload = { items_completed: orderData.items_completed + 1 };
         // If this marks the completion of the order, then enter delivery date also
@@ -194,12 +213,20 @@ const OrderDetails = ({ route }) => {
           .eq("id", orderData.id)
           .select();
 
+        setPageLoaderText("");
+
         if (response2.error) {
-          // __api_error
-          console.log("api_error", response2.error);
+          console.log(
+            "API ERROR => Error while updating order details \n",
+            response2.error
+          );
+          setSnackMessage("Error while updating order details!");
+          setShowSnackbar(true);
         } else {
-          // __api_success
-          console.log("updated completed items in order");
+          console.log("API SUCCESS => Updated order details \n");
+          setSnackMessage("Marked item as completed");
+          setShowSnackbar(true);
+
           fetchOrderDetails();
         }
       }
@@ -343,7 +370,25 @@ const OrderDetails = ({ route }) => {
     <View
       style={{ backgroundColor: app_bg, height: "100%", flexDirection: "row" }}
     >
-      {!!orderData ? (
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!pageLoaderText && <PageLoader text={pageLoaderText} />}
+      {!!orderData && (
         <>
           <View style={styles.section}>
             <ScrollView>
@@ -629,21 +674,6 @@ const OrderDetails = ({ route }) => {
             </ScrollView>
           </View>
         </>
-      ) : (
-        <View
-          style={{
-            alignItems: "center",
-          }}
-        >
-          <InterRegular
-            style={{
-              fontSize: 30,
-              marginTop: 250,
-            }}
-          >
-            Loading...
-          </InterRegular>
-        </View>
       )}
       {!!showDuesModal && (
         <CustomModal
@@ -652,7 +682,9 @@ const OrderDetails = ({ route }) => {
             minHeight: 240,
           }}
           heading={"Edit dues"}
-          onClose={() => setShowDuesModal(false)}
+          onClose={() => {
+            if (!updatingDues) setShowDuesModal(false);
+          }}
           body={
             <View style={{ paddingHorizontal: "4%", paddingTop: 10 }}>
               <InterRegular style={styles.text_medium}>
@@ -678,10 +710,14 @@ const OrderDetails = ({ route }) => {
                 </InterRegular>
               </View>
               <TouchableOpacity
+                disabled={updatingDues}
                 style={{
                   ...styles.button,
                   width: "100%",
                   marginTop: 25,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 onPress={() => handleDuesUpdate()}
               >
@@ -694,6 +730,12 @@ const OrderDetails = ({ route }) => {
                 >
                   Save
                 </InterRegular>
+                {updatingDues && (
+                  <ActivityIndicator
+                    color={"white"}
+                    style={{ marginLeft: 15 }}
+                  />
+                )}
               </TouchableOpacity>
             </View>
           }

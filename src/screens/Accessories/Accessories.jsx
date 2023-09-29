@@ -50,10 +50,12 @@ const Accessories = ({ navigation }) => {
   };
 
   const fetchAllAccessories = async () => {
+    setRefreshing(true);
     const { data, error } = await supabase
       .from("products")
       .select("id,id_label,name,price,discount,featured_image")
       .eq("category", productCategories.ACCESSORIES);
+    setRefreshing(false);
     if (error) {
       console.log("API ERROR => Error in fetch all accessories \n", error);
       setSnackMessage("Error while fetching accessories!");
@@ -128,7 +130,7 @@ const Accessories = ({ navigation }) => {
           />
         }
       >
-        {searchedRecords.length === 0 ? (
+        {searchedRecords.length === 0 && !refreshing && (
           <View
             style={{
               justifyContent: "center",
@@ -141,21 +143,20 @@ const Accessories = ({ navigation }) => {
               No accessories found!
             </InterRegular>
           </View>
-        ) : (
-          <View style={styles.grid_container}>
-            {searchedRecords.map((item) => (
-              <ProductCard
-                data={item}
-                key={item.id}
-                onPress={() => {
-                  navigation.navigate("Accessory Details", { id: item.id });
-                }}
-                type={"accessory"}
-              />
-            ))}
-            <View style={{ width: "100%", height: 150 }} />
-          </View>
         )}
+        <View style={styles.grid_container}>
+          {searchedRecords.map((item) => (
+            <ProductCard
+              data={item}
+              key={item.id}
+              onPress={() => {
+                navigation.navigate("Accessory Details", { id: item.id });
+              }}
+              type={"accessory"}
+            />
+          ))}
+          <View style={{ width: "100%", height: 150 }} />
+        </View>
       </ScrollView>
     </View>
   );

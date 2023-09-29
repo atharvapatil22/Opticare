@@ -28,6 +28,8 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 
 const OrderCheckout = ({ route, navigation }) => {
   const { billingInfo } = route.params;
@@ -43,7 +45,10 @@ const OrderCheckout = ({ route, navigation }) => {
     billingInfo.productsDiscounted - globalData.couponDiscount
   );
   const [currentStep, setCurrentStep] = useState(0);
-  const [disableCTA, setDisableCTA] = useState(false);
+  const [showPageLoader, setShowPageLoader] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+
   useEffect(() => {
     fetchAllSalesPeople();
   }, []);
@@ -76,13 +81,15 @@ const OrderCheckout = ({ route, navigation }) => {
       .from("orderItems")
       .insert(_items)
       .select();
+    setShowPageLoader(false);
 
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      console.log(`API ERROR => Error while creating order Items! \n`, error);
+      setSnackMessage("Error while creating order items!");
+      setShowSnackbar(true);
     } else {
-      // __api_success
-      console.log("success Order Items created", data);
+      dispatch(clearCart2());
+      console.log(`API SUCCESS => Order Items created! \n`, data);
       Alert.alert(
         "Success!",
         "Order placed successfully",
@@ -90,7 +97,6 @@ const OrderCheckout = ({ route, navigation }) => {
           {
             text: "OK",
             onPress: () => {
-              dispatch(clearCart2());
               navigation.goBack();
             },
           },
@@ -122,10 +128,15 @@ const OrderCheckout = ({ route, navigation }) => {
       .in("id", cartProductIds);
 
     if (error) {
-      // __api_error
-      console.log("api_error");
+      console.log(
+        `API ERROR => During Stock validation: Error while fetching products! \n`,
+        error
+      );
+      setSnackMessage("Error in stock validation: Could not fetch products");
+      setShowSnackbar(true);
       return false;
     }
+    console.log(`API SUCCESS => Stock validation: Fetched Product Details`);
 
     // 3] Append the stock info to existing cartItem objects
     let cartItemsPlus = [];
@@ -222,21 +233,29 @@ const OrderCheckout = ({ route, navigation }) => {
       .select();
 
     if (response2.error) {
-      // __api_error
-      console.log("api_error2", response2.error);
+      console.log(
+        `API ERROR => During Stock validation: Error while upserting products! \n`,
+        error
+      );
+      setSnackMessage(
+        "Stock Validation Error: Could not update product stockQ"
+      );
+      setShowSnackbar(true);
       return false;
     } else {
-      // __api_success
-      console.log("Successfully Decremented stock!", response2.data);
+      console.log(
+        "API SUCCESS => Stock validation: Updated product stock values"
+      );
+
       return true;
     }
   };
 
   const placeOrder = async () => {
-    setDisableCTA(true);
+    setShowPageLoader(true);
     const isValid = await validateProductStock();
     if (!isValid) {
-      setDisableCTA(false);
+      setShowPageLoader(false);
       return;
     }
 
@@ -307,11 +326,12 @@ const OrderCheckout = ({ route, navigation }) => {
       .select();
 
     if (error) {
-      // __api_error
-      console.log("api_error", error);
+      console.log(`API ERROR => Error while creating order Record! \n`, error);
+      setSnackMessage("Error while creating order Record!");
+      setShowSnackbar(true);
+      setShowPageLoader(false);
     } else {
-      // __api_success
-      console.log("success Order Object created", data);
+      console.log(`API SUCCESS => Order Record created\n`, data);
       insertOrderItems(orderItems, data[0].id);
     }
   };
@@ -324,6 +344,24 @@ const OrderCheckout = ({ route, navigation }) => {
         backgroundColor: app_bg,
       }}
     >
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!showPageLoader && <PageLoader text={"Creating order"} />}
       <View style={{ width: "67%", paddingHorizontal: "2%" }}>
         <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
           {/* Customer Information */}
@@ -558,7 +596,7 @@ const OrderCheckout = ({ route, navigation }) => {
       >
         <CartSummary
           screen={"OrderCheckout"}
-          disableCTA={currentStep < 3 || disableCTA}
+          disableCTA={currentStep < 3}
           handleCTA={placeOrder}
           billingInfo={billingInfo}
         />
