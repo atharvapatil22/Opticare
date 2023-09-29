@@ -29,11 +29,13 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
 
 const AccessoryStepper = ({ route, navigation }) => {
   const { editing, accessoryData } = route.params;
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     "Primary Details",
@@ -115,6 +117,7 @@ const AccessoryStepper = ({ route, navigation }) => {
   };
 
   const saveToDatabase = async () => {
+    setShowPageLoader(true);
     let imageUrls = [];
 
     // 1] Handle case if any images need to be deleted from Cloudinary
@@ -175,22 +178,24 @@ const AccessoryStepper = ({ route, navigation }) => {
         accessoryFields,
         accessoryData.id,
         accessoryData.accessories.id,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
     // If creating new product
     else
       createProductAPI(
         productFields,
         accessoryFields,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
   };
 
@@ -337,6 +342,11 @@ const AccessoryStepper = ({ route, navigation }) => {
       colors={[gradient_start, gradient_end]}
       style={styles.gradient_container}
     >
+      {!!showPageLoader && (
+        <PageLoader
+          text={!!editing ? "Updating accessory details" : "Creating accessory"}
+        />
+      )}
       <Portal>
         <Snackbar
           visible={showSnackbar}
@@ -354,6 +364,7 @@ const AccessoryStepper = ({ route, navigation }) => {
           {snackMessage}
         </Snackbar>
       </Portal>
+
       <View
         style={{
           backgroundColor: "white",

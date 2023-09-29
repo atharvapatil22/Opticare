@@ -33,6 +33,8 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 
 const GlassesDetails = ({ route, navigation }) => {
   const { id: glassesId } = route.params;
@@ -41,7 +43,10 @@ const GlassesDetails = ({ route, navigation }) => {
   const dispatch = useDispatch();
 
   const carouselRef = useRef(null);
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [glassesData, setGlassesData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [showLensSelector, setShowLensSelector] = useState(false);
@@ -66,10 +71,19 @@ const GlassesDetails = ({ route, navigation }) => {
   };
 
   const deleteGlasses = async () => {
+    setShowPageLoader(true);
     // __delete images from cloudinary
 
-    deleteProductAPI(glassesId, "sunglasses", glassesData.name, () =>
-      navigation.goBack()
+    deleteProductAPI(
+      glassesId,
+      "sunglasses",
+      glassesData.name,
+      navigation,
+      (snackMsg) => {
+        setSnackMessage(snackMsg);
+        setShowSnackbar(true);
+      },
+      () => setShowPageLoader(false)
     );
   };
 
@@ -150,8 +164,6 @@ const GlassesDetails = ({ route, navigation }) => {
     }
   };
 
-  const handleCTA = () => {};
-
   return (
     <ScrollView
       contentContainerStyle={{
@@ -180,6 +192,24 @@ const GlassesDetails = ({ route, navigation }) => {
         />
       )}
       <BackButton onPress={() => navigation.goBack()} />
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!showPageLoader && <PageLoader text={"Deleting sunglasses"} />}
       {!!glassesData ? (
         <>
           <View style={{}}>

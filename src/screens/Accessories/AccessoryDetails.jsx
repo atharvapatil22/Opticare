@@ -24,6 +24,8 @@ import {
   InterRegular,
   InterMedium,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 
 const AccessoryDetails = ({ route, navigation }) => {
   const { id: accessoryId } = route.params;
@@ -33,6 +35,9 @@ const AccessoryDetails = ({ route, navigation }) => {
 
   const carouselRef = useRef(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [showPageLoader, setShowPageLoader] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [accessoryData, setAccessoryData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
 
@@ -56,10 +61,19 @@ const AccessoryDetails = ({ route, navigation }) => {
   };
 
   const deleteAccessory = async () => {
+    setShowPageLoader(true);
     // __delete images from cloudinary
 
-    deleteProductAPI(accessoryId, "accessory", accessoryData.name, () =>
-      navigation.goBack()
+    deleteProductAPI(
+      accessoryId,
+      "accessory",
+      accessoryData.name,
+      navigation,
+      (snackMsg) => {
+        setSnackMessage(snackMsg);
+        setShowSnackbar(true);
+      },
+      () => setShowPageLoader(false)
     );
   };
 
@@ -140,6 +154,24 @@ const AccessoryDetails = ({ route, navigation }) => {
       }
     >
       <BackButton onPress={() => navigation.goBack()} />
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!showPageLoader && <PageLoader text={"Deleting accessory"} />}
       {!!accessoryData ? (
         <>
           <View style={{}}>

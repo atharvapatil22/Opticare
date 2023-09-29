@@ -34,6 +34,8 @@ import {
   InterRegular,
   InterSemiBold,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 
 const SpecsDetails = ({ route, navigation }) => {
   const { id: specsId } = route.params;
@@ -41,7 +43,10 @@ const SpecsDetails = ({ route, navigation }) => {
   const store = useSelector((state) => state.globalData);
 
   const carouselRef = useRef(null);
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [specsData, setSpecsData] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [showLensSelector, setShowLensSelector] = useState(false);
@@ -66,10 +71,19 @@ const SpecsDetails = ({ route, navigation }) => {
   };
 
   const deleteSpecs = async () => {
+    setShowPageLoader(true);
     // __delete images from cloudinary
 
-    deleteProductAPI(specsId, "spectacles", specsData.name, () =>
-      navigation.goBack()
+    deleteProductAPI(
+      specsId,
+      "spectacles",
+      specsData.name,
+      navigation,
+      (snackMsg) => {
+        setSnackMessage(snackMsg);
+        setShowSnackbar(true);
+      },
+      () => setShowPageLoader(false)
     );
   };
 
@@ -139,6 +153,24 @@ const SpecsDetails = ({ route, navigation }) => {
         />
       )}
       <BackButton onPress={() => navigation.goBack()} />
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!showPageLoader && <PageLoader text={"Deleting spectacles"} />}
       {!!specsData ? (
         <>
           <View style={{}}>

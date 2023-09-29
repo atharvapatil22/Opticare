@@ -30,11 +30,13 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
 
 const LensesStepper = ({ route, navigation }) => {
   const { editing, lensesData } = route.params;
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const steps = ["Primary Details", "Technical Information", "Pricing"];
 
@@ -118,6 +120,7 @@ const LensesStepper = ({ route, navigation }) => {
   };
 
   const saveToDatabase = async () => {
+    setShowPageLoader(true);
     let imageUrl = null;
 
     // If preview image was added / edited
@@ -155,22 +158,24 @@ const LensesStepper = ({ route, navigation }) => {
         lensFields,
         lensesData.id,
         lensesData.lenses.id,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
     // If creating new product
     else
       createProductAPI(
         productFields,
         lensFields,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
   };
 
@@ -311,6 +316,11 @@ const LensesStepper = ({ route, navigation }) => {
       colors={[gradient_start, gradient_end]}
       style={styles.gradient_container}
     >
+      {!!showPageLoader && (
+        <PageLoader
+          text={!!editing ? "Updating lenses details" : "Creating lenses"}
+        />
+      )}
       <Portal>
         <Snackbar
           visible={showSnackbar}

@@ -4,16 +4,18 @@ import { supabase } from "../supabase/client";
 export const createProductAPI = async (
   productFields,
   categoryFields,
-  _callback,
-  _showSnack
+  navigation,
+  _showSnack,
+  _hideLoader
 ) => {
   const response1 = await supabase
     .from("products")
     .insert([productFields])
     .select();
   if (response1.error) {
+    _hideLoader();
     console.log(
-      `API ERROR => Error while products object: \n`,
+      `API ERROR => Error while creating products object: \n`,
       response1.error
     );
     _showSnack(`Error while creating product record!`);
@@ -25,6 +27,7 @@ export const createProductAPI = async (
       .insert([{ ...categoryFields, product_id: response1.data[0].id }])
       .select();
 
+    _hideLoader();
     if (response2.error) {
       console.log(
         `API ERROR => Error while creating ${productFields.category}: \n`,
@@ -39,7 +42,7 @@ export const createProductAPI = async (
       Alert.alert(
         "Success!",
         `New ${productFields.category} were successfully created: ${response1.data[0].name}`,
-        [{ text: "OK", onPress: _callback() }],
+        [{ text: "OK", onPress: () => navigation.goBack() }],
         { cancelable: false }
       );
     }
@@ -51,8 +54,9 @@ export const editProductAPI = async (
   categoryFields,
   productId,
   categoryId,
-  _callback,
-  _showSnack
+  navigation,
+  _showSnack,
+  _hideLoader
 ) => {
   const response1 = await supabase
     .from("products")
@@ -61,6 +65,7 @@ export const editProductAPI = async (
     .select();
 
   if (response1.error) {
+    _hideLoader();
     console.log(
       `API ERROR => Error while editing products object: \n`,
       response1.error
@@ -77,6 +82,7 @@ export const editProductAPI = async (
       .update(categoryFields)
       .eq("id", categoryId)
       .select();
+    _hideLoader();
 
     if (response2.error) {
       console.log(
@@ -93,7 +99,7 @@ export const editProductAPI = async (
       Alert.alert(
         "Success!",
         `${productFields.category} Details successfully updated.`,
-        [{ text: "OK", onPress: _callback() }],
+        [{ text: "OK", onPress: () => navigation.goBack() }],
         { cancelable: false }
       );
     }
@@ -104,15 +110,18 @@ export const deleteProductAPI = async (
   productId,
   category,
   name,
-  _callback
+  navigation,
+  _showSnack,
+  _hideLoader
 ) => {
   const { data, error } = await supabase
     .from("products")
     .delete()
     .eq("id", productId);
+  _hideLoader();
   if (error) {
-    // __api_error
-    console.log("api_error");
+    console.log(`API ERROR => Error in Delete product API`, error);
+    _showSnack(`Error while deleting product`);
   } else {
     console.log(
       `API SUCCESS => Successfully deleted product with id: `,
@@ -122,7 +131,7 @@ export const deleteProductAPI = async (
     Alert.alert(
       "Success!",
       `Deleted ${category}: ` + name,
-      [{ text: "OK", onPress: () => _callback() }],
+      [{ text: "OK", onPress: () => navigation.goBack() }],
       { cancelable: false }
     );
   }

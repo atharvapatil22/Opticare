@@ -31,6 +31,8 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
+import { Portal, Snackbar } from "react-native-paper";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
@@ -38,7 +40,10 @@ const LensesDetails = ({ route, navigation }) => {
   const store = useSelector((state) => state.globalData);
   const dispatch = useDispatch();
 
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
   const [lensData, setLensData] = useState(null);
   const [showPreviewImage, setShowPreviewImage] = useState(false);
 
@@ -62,10 +67,19 @@ const LensesDetails = ({ route, navigation }) => {
   };
 
   const deleteLenses = async () => {
+    setShowPageLoader(true);
     // __delete images from cloudinary
 
-    deleteProductAPI(lensId, "lenses", lensData.name, () =>
-      navigation.goBack()
+    deleteProductAPI(
+      lensId,
+      "lenses",
+      lensData.name,
+      navigation,
+      (snackMsg) => {
+        setSnackMessage(snackMsg);
+        setShowSnackbar(true);
+      },
+      () => setShowPageLoader(false)
     );
   };
 
@@ -151,6 +165,24 @@ const LensesDetails = ({ route, navigation }) => {
       }
     >
       <BackButton onPress={() => navigation.goBack()} />
+      <Portal>
+        <Snackbar
+          visible={showSnackbar}
+          onDismiss={() => setShowSnackbar(false)}
+          duration={4000}
+          style={{
+            marginBottom: 30,
+            marginHorizontal: "20%",
+          }}
+          action={{
+            label: "OK",
+            onPress: () => setShowSnackbar(false),
+          }}
+        >
+          {snackMessage}
+        </Snackbar>
+      </Portal>
+      {!!showPageLoader && <PageLoader text={"Deleting lenses"} />}
       {!!lensData ? (
         <>
           {store.userLevel === "ADMIN" && (

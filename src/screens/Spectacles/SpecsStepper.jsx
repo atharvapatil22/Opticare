@@ -36,11 +36,13 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
+import PageLoader from "../../components/PageLoader";
 
 const SpecsStepper = ({ route, navigation }) => {
   const { editing, specsData } = route.params;
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [showPageLoader, setShowPageLoader] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const steps = [
     "Primary Details",
@@ -148,6 +150,7 @@ const SpecsStepper = ({ route, navigation }) => {
   };
 
   const saveToDatabase = async () => {
+    setShowPageLoader(true);
     let imageUrls = [];
 
     // 1] Handle case if any images need to be deleted from Cloudinary
@@ -218,22 +221,24 @@ const SpecsStepper = ({ route, navigation }) => {
         specsFields,
         specsData.id,
         specsData.spectacles.id,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
     // If creating new product
     else
       createProductAPI(
         productFields,
         specsFields,
-        () => navigation.goBack(),
+        navigation,
         (snackMsg) => {
           setSnackMessage(snackMsg);
           setShowSnackbar(true);
-        }
+        },
+        () => setShowPageLoader(false)
       );
   };
 
@@ -416,6 +421,13 @@ const SpecsStepper = ({ route, navigation }) => {
       colors={[gradient_start, gradient_end]}
       style={styles.gradient_container}
     >
+      {!!showPageLoader && (
+        <PageLoader
+          text={
+            !!editing ? "Updating spectacles details" : "Creating spectacles"
+          }
+        />
+      )}
       <Portal>
         <Snackbar
           visible={showSnackbar}
