@@ -25,6 +25,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PageLoader from "../components/PageLoader";
 import { Portal, Snackbar } from "react-native-paper";
+import CustomModal from "../components/CustomModal";
 const moment = require("moment");
 
 const Dashboard = () => {
@@ -56,6 +57,9 @@ const Dashboard = () => {
   // options -> HIDE,START,END
   const [showDatePicker, setShowDatePicker] = useState("HIDE");
 
+  const [ordersList, setOrdersList] = useState([]);
+  const [showOrdersModal, setShowOrdersModal] = useState(false);
+
   const chartConfig = {
     backgroundGradientFrom: "white",
     backgroundGradientFromOpacity: 1,
@@ -75,23 +79,28 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (timeRange === "Previous Month") {
-      setStartDate(
-        moment().subtract(1, "month").toISOString().substring(0, 10)
-      );
-      setEndDate(moment().toISOString().substring(0, 10));
+      setStartDate(moment().subtract(1, "month"));
+      setEndDate(moment());
     } else if (timeRange === "Previous Year") {
-      setStartDate(moment().subtract(1, "year").toISOString().substring(0, 10));
-      setEndDate(moment().toISOString().substring(0, 10));
+      setStartDate(moment().subtract(1, "year"));
+      setEndDate(moment());
     }
   }, [timeRange]);
 
   const getProductsAnalytics = async () => {
+    const formattedStartDate = startDate.toISOString().substring(0, 10);
+
+    const formattedEndDate = moment(endDate)
+      .add("1", "day")
+      .toISOString()
+      .substring(0, 10);
+
     setProductsLoading(true);
     const { data, error } = await supabase
       .from("orderItems")
       .select("category,price,discount,quantity,linked_lens")
-      .gt("created_at", startDate)
-      .lte("created_at", endDate);
+      .gt("created_at", formattedStartDate)
+      .lte("created_at", formattedEndDate);
 
     if (error) {
       console.log(`API ERROR => Error while fetching order items! \n`, error);
@@ -203,13 +212,20 @@ const Dashboard = () => {
 
     console.log("API SUCCESS => Fetched salesPeople ");
 
+    const formattedStartDate = startDate.toISOString().substring(0, 10);
+    const formattedEndDate = moment(endDate)
+      .add("1", "day")
+      .toISOString()
+      .substring(0, 10);
+
     const response2 = await supabase
       .from("orders")
       .select(
-        "mode_of_payment,sales_person,payment_total,bill_coupon_discount,bill_products_total,bill_products_savings"
+        "mode_of_payment,sales_person,payment_total,bill_coupon_discount,bill_products_total,bill_products_savings,order_number,customer_name"
       )
-      .gt("created_at", startDate)
-      .lte("created_at", endDate);
+      .gt("created_at", formattedStartDate)
+      .lte("created_at", formattedEndDate)
+      .order("created_at");
 
     if (response2.error) {
       console.log(`API ERROR => Error while fetching orders! \n`, error);
@@ -219,6 +235,13 @@ const Dashboard = () => {
       return;
     }
     console.log("API SUCCESS => Fetched orders ");
+
+    setOrdersList(
+      response2.data.map((order) => ({
+        order_number: order.order_number,
+        customer_name: order.customer_name,
+      }))
+    );
 
     const activeSalespeople = response.data;
     const orders = response2.data;
@@ -405,7 +428,7 @@ const Dashboard = () => {
                 onPress={() => setShowDatePicker("START")}
               >
                 <InterRegular style={{ fontSize: 20, marginRight: 6 }}>
-                  {startDate}
+                  {!!startDate && startDate.toISOString().substring(0, 10)}
                 </InterRegular>
                 <Feather name="calendar" size={28} color={customer_primary} />
               </TouchableOpacity>
@@ -420,7 +443,7 @@ const Dashboard = () => {
                 onPress={() => setShowDatePicker("END")}
               >
                 <InterRegular style={{ fontSize: 20, marginRight: 6 }}>
-                  {endDate}
+                  {!!endDate && endDate.toISOString().substring(0, 10)}
                 </InterRegular>
                 <Feather name="calendar" size={28} color={customer_primary} />
               </TouchableOpacity>
@@ -626,6 +649,20 @@ const Dashboard = () => {
               </View>
             )}
           </View>
+
+          {ordersList.length !== 0 && (
+            <TouchableOpacity
+              onPress={() => setShowOrdersModal(true)}
+              style={{
+                marginTop: 20,
+                alignItems: "center",
+              }}
+            >
+              <InterRegular style={{ fontSize: 20, color: "blue" }}>
+                View orders
+              </InterRegular>
+            </TouchableOpacity>
+          )}
         </ScrollView>
       </View>
       <LinearGradient
@@ -661,11 +698,44 @@ const Dashboard = () => {
           testID="dateTimePicker"
           value={new Date()}
           onChange={(event, selectedDate) => {
-            const formattedDate = selectedDate.toISOString().substring(0, 10);
             setShowDatePicker("HIDE");
-            if (showDatePicker === "START") setStartDate(formattedDate);
-            else if (showDatePicker === "END") setEndDate(formattedDate);
+            if (showDatePicker === "START") setStartDate(selectedDate);
+            else if (showDatePicker === "END") setEndDate(selectedDate);
           }}
+        />
+      )}
+      {showOrdersModal && (
+        <CustomModal
+          bodyStyles={{
+            width: "30%",
+            height: "50%",
+          }}
+          heading={"Orders used for calculation"}
+          onClose={() => setShowOrdersModal(false)}
+          body={
+            <>
+              <ScrollView style={{ height: "100%", paddingHorizontal: "4%" }}>
+                {ordersList.map((order) => {
+                  return (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginVertical: 4,
+                      }}
+                    >
+                      <InterRegular style={{ fontSize: 18 }}>
+                        {order.order_number}
+                      </InterRegular>
+                      <InterRegular style={{ fontSize: 18 }}>
+                        {order.customer_name}
+                      </InterRegular>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </>
+          }
         />
       )}
     </View>
