@@ -146,66 +146,68 @@ const SalesPeopleModal = ({ onClose }) => {
       heading={"Edit Sales people"}
       onClose={onClose}
       body={
-        <View style={{ paddingHorizontal: "4%" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginVertical: 12,
-            }}
-          >
-            <InterMedium style={{ width: columnWidths[0], fontSize: 20 }}>
-              Name
-            </InterMedium>
-            <InterMedium
+        <>
+          <ScrollView style={{ paddingHorizontal: "4%" }}>
+            <View
               style={{
-                width: columnWidths[1],
-                fontSize: 20,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginVertical: 12,
               }}
             >
-              Is active
-            </InterMedium>
-            <View style={{ width: columnWidths[2] }} />
-          </View>
-          <ScrollView>
-            {salesPeople.map((person, index) => (
-              <TableRow key={index} data={person} />
-            ))}
-            {!!addingNew ? (
-              <View style={styles.person_row}>
-                <TextInput
-                  style={{
-                    ...styles.person_textinput,
-                    width: columnWidths[0],
-                  }}
-                  value={newName}
-                  onChangeText={setNewName}
-                />
-                <View style={{ width: columnWidths[1] }}>
-                  <Checkbox
-                    style={{ width: 28, height: 28 }}
-                    value={newActive}
-                    onValueChange={setNewActive}
+              <InterMedium style={{ width: columnWidths[0], fontSize: 20 }}>
+                Name
+              </InterMedium>
+              <InterMedium
+                style={{
+                  width: columnWidths[1],
+                  fontSize: 20,
+                }}
+              >
+                Is active
+              </InterMedium>
+              <View style={{ width: columnWidths[2] }} />
+            </View>
+            <>
+              {salesPeople.map((person, index) => (
+                <TableRow key={index} data={person} />
+              ))}
+              {!!addingNew ? (
+                <View style={styles.person_row}>
+                  <TextInput
+                    style={{
+                      ...styles.person_textinput,
+                      width: columnWidths[0],
+                    }}
+                    value={newName}
+                    onChangeText={setNewName}
+                  />
+                  <View style={{ width: columnWidths[1] }}>
+                    <Checkbox
+                      style={{ width: 28, height: 28 }}
+                      value={newActive}
+                      onValueChange={setNewActive}
+                    />
+                  </View>
+                  <Button
+                    style={{ width: columnWidths[2] }}
+                    text={"Save"}
+                    variant={"aqua"}
+                    disabled={disableCTA}
+                    onPress={addNewRecord}
                   />
                 </View>
+              ) : (
                 <Button
-                  style={{ width: columnWidths[2] }}
-                  text={"Save"}
+                  style={{ width: "20%", marginBottom: 50 }}
+                  text={"+  Add new"}
                   variant={"aqua"}
-                  disabled={disableCTA}
-                  onPress={addNewRecord}
+                  onPress={() => setAddingNew(true)}
                 />
-              </View>
-            ) : (
-              <Button
-                style={{ width: "20%" }}
-                text={"+  Add new"}
-                variant={"aqua"}
-                onPress={() => setAddingNew(true)}
-              />
-            )}
+              )}
+            </>
           </ScrollView>
-        </View>
+        </>
       }
     />
   );
