@@ -246,29 +246,33 @@ const Dashboard = () => {
     const activeSalespeople = response.data;
     const orders = response2.data;
 
-    let upiQty = 0,
-      cashQty = 0,
-      cardQty = 0;
-
     let totalSales = 0,
       productsTotal = 0,
       netCouponDiscount = 0,
       tempSalesData = {};
 
+    let totalPaymentsRevenue = 0,
+      upiRevenue = 0,
+      cashRevenue = 0,
+      cardRevenue = 0;
+
     orders.forEach((order) => {
       switch (order.mode_of_payment) {
         case "UPI":
-          upiQty += 1;
+          upiRevenue += order.payment_total;
           break;
         case "Credit card":
-          cardQty += 1;
+          cardRevenue += order.payment_total;
+
           break;
         case "Cash":
-          cashQty += 1;
+          cashRevenue += order.payment_total;
+
           break;
         default:
           break;
       }
+      totalPaymentsRevenue += order.payment_total;
 
       activeSalespeople.forEach((salesPerson) => {
         if (order.sales_person === salesPerson.id) {
@@ -285,21 +289,21 @@ const Dashboard = () => {
 
     console.log("net dis", netCouponDiscount);
 
-    setTotalPayments(orders.length);
+    setTotalPayments(totalPaymentsRevenue);
     setPaymentsDistribution([
       {
         name: "UPI",
-        quantity: upiQty,
+        quantity: upiRevenue,
         color: chart3,
       },
       {
         name: "Cash",
-        quantity: cashQty,
+        quantity: cashRevenue,
         color: chart2,
       },
       {
         name: "Card",
-        quantity: cardQty,
+        quantity: cardRevenue,
         color: chart1,
       },
     ]);
@@ -349,7 +353,7 @@ const Dashboard = () => {
     );
   };
 
-  const PieIndex = ({ data, total, style }) => {
+  const PieIndex = ({ data, total, style, showValue }) => {
     return (
       <View
         style={{
@@ -373,7 +377,10 @@ const Dashboard = () => {
               }}
             />
             <InterRegular style={{ fontSize: 18, marginLeft: 10 }}>
-              {item.name} {((item.quantity / total) * 100).toFixed(1)}%
+              {item.name}{" "}
+              {!!showValue
+                ? `₹${item.quantity}`
+                : `${((item.quantity / total) * 100).toFixed(1)} %`}
             </InterRegular>
           </View>
         ))}
@@ -552,6 +559,7 @@ const Dashboard = () => {
                   style={{ width: "35%" }}
                   data={salesDistributionData}
                   total={totalProductSales}
+                  showPercentage
                 />
               </View>
             )}
@@ -559,7 +567,7 @@ const Dashboard = () => {
 
           <View style={styles.big_card}>
             <InterMedium style={styles.card_title}>
-              Payment Modes ({totalPayments})
+              Payment Modes (Total : ₹{totalPayments})
             </InterMedium>
             {paymentsDistribution.length != 0 && (
               <View
@@ -583,6 +591,7 @@ const Dashboard = () => {
                   style={{ width: "35%" }}
                   data={paymentsDistribution}
                   total={totalPayments}
+                  showValue
                 />
               </View>
             )}
