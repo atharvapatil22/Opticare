@@ -1,8 +1,9 @@
+import { productCategories } from "../constants";
 import {
   ADD_CART_ITEM,
   ADD_COUPON_DISCOUNT,
   CLEAR_CART2,
-  EDIT_LENS_POWER,
+  EDIT_LENS_POWER_AND_PRICE,
   UPDATE_ITEM_QUANTITY2,
   USER_LEVEL_SET,
 } from "./types";
@@ -63,8 +64,9 @@ const reducer = (state = initialState, action) => {
         couponDiscount: 0,
       };
 
-    case EDIT_LENS_POWER:
-      const { power } = action.payload;
+    case EDIT_LENS_POWER_AND_PRICE:
+      const { power, new_price } = action.payload;
+
       product_id = action.payload.product_id;
 
       // Find Index
@@ -72,6 +74,14 @@ const reducer = (state = initialState, action) => {
         (obj) => obj.product_id == product_id
       );
       new_state.orderItems[item_to_update].linkedLens.eye_power = power;
+      if (!!new_price) {
+        new_state.orderItems[item_to_update].linkedLens.price = new_price;
+        if (
+          new_state.orderItems[item_to_update].category ===
+          productCategories.LENSES
+        )
+          new_state.orderItems[item_to_update].price = new_price;
+      }
       return new_state;
 
     case ADD_COUPON_DISCOUNT:

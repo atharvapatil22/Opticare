@@ -1,5 +1,5 @@
-import { View, Text, TextInput, ScrollView } from "react-native";
-import React, { useState } from "react";
+import { View, TextInput, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
 import { supabase } from "../../supabase/client";
 import CustomModal from "../CustomModal";
 import { FontAwesome } from "@expo/vector-icons";
@@ -15,7 +15,7 @@ import { TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import Button from "../Button";
 import { useDispatch } from "react-redux";
-import { editLensPower } from "../../redux/actions";
+import { editLensPowerandPrice } from "../../redux/actions";
 import { InterMedium, InterRegular } from "../StyledText/StyledText";
 import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 
@@ -26,7 +26,12 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
   const [loading, setLoading] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
+  const [lensPrice, setLensPrice] = useState("0");
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    setLensPrice(data.linkedLens.price.toString());
+  }, []);
 
   const handleSearch = async () => {
     setRecordNotFound(false);
@@ -58,12 +63,12 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
   };
 
   const linkPowerToLens = () => {
-    dispatch(
-      editLensPower({
-        product_id: data.product_id,
-        power: searchedRecord.power_details,
-      })
-    );
+    const payload = {
+      product_id: data.product_id,
+      power: searchedRecord.power_details,
+    };
+    if (data.linkedLens.price != lensPrice) payload["new_price"] = lensPrice;
+    dispatch(editLensPowerandPrice(payload));
     onClose();
   };
 
@@ -430,8 +435,48 @@ const EditLensPower = ({ data, onClose, onAddRecord }) => {
                   />
                 )}
               </View>
+              <InterMedium
+                style={{
+                  fontSize: 18,
+                  color: grey2,
+                  borderTopWidth: 1,
+                  borderColor: grey2,
+                  paddingTop: 20,
+                }}
+              >
+                Modify Price
+              </InterMedium>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: 10,
+                }}
+              >
+                <View style={{ width: "48%" }}>
+                  <InterRegular style={{ fontSize: 18 }}>
+                    Single Lens
+                  </InterRegular>
+                  <TextInput
+                    style={styles.text_input}
+                    keyboardType="numeric"
+                    onChangeText={(txt) => {
+                      setLensPrice(txt.replace(/\D/g, ""));
+                    }}
+                    value={lensPrice}
+                  />
+                </View>
+                <View style={{ width: "48%" }}>
+                  <InterRegular style={{ fontSize: 18 }}>Pair</InterRegular>
+                  <InterRegular style={{ ...styles.text_input, color: grey2 }}>
+                    {lensPrice * 2}
+                  </InterRegular>
+                </View>
+              </View>
               <Button
-                text="Confirm Power"
+                style={{ marginTop: 35 }}
+                text="Confirm Power & Price"
                 variant="aqua"
                 onPress={linkPowerToLens}
               />
@@ -460,7 +505,7 @@ const styles = StyleSheet.create({
     backgroundColor: app_bg,
     borderRadius: 12,
     width: "100%",
-    marginBottom: 50,
+    marginBottom: 20,
     marginTop: 30,
   },
   table_cell: {
@@ -470,4 +515,13 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   table_text: { fontSize: 18 },
+  text_input: {
+    borderWidth: 1,
+    borderColor: grey2,
+    borderRadius: 8,
+    fontSize: 20,
+    paddingVertical: 8,
+    paddingHorizontal: "4%",
+    fontFamily: "Inter-Regular",
+  },
 });

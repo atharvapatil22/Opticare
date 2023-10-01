@@ -2,7 +2,7 @@ import {
   ADD_CART_ITEM,
   ADD_COUPON_DISCOUNT,
   CLEAR_CART2,
-  EDIT_LENS_POWER,
+  EDIT_LENS_POWER_AND_PRICE,
   UPDATE_ITEM_QUANTITY2,
   USER_LEVEL_SET,
 } from "./types";
@@ -38,9 +38,9 @@ export const clearCart2 = (payload) => {
   };
 };
 
-export const editLensPower = (payload) => {
+export const editLensPowerandPrice = (payload) => {
   return {
-    type: EDIT_LENS_POWER,
+    type: EDIT_LENS_POWER_AND_PRICE,
     payload: payload,
   };
 };
