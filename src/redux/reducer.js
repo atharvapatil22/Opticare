@@ -2,6 +2,7 @@ import { productCategories } from "../constants";
 import {
   ADD_CART_ITEM,
   ADD_COUPON_DISCOUNT,
+  ADMIN_CREDS_SET,
   CLEAR_CART2,
   EDIT_LENS_POWER_AND_PRICE,
   UPDATE_ITEM_QUANTITY2,
@@ -10,6 +11,7 @@ import {
 
 const initialState = {
   userLevel: "CUSTOMER",
+  adminCreds: {},
   orderItems: [],
   couponDiscount: 0,
 };
@@ -24,6 +26,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         userLevel: action.payload,
+      };
+    case ADMIN_CREDS_SET:
+      return {
+        ...state,
+        adminCreds: action.payload,
       };
 
     case ADD_CART_ITEM:

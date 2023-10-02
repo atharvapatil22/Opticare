@@ -1,6 +1,7 @@
 import {
   ADD_CART_ITEM,
   ADD_COUPON_DISCOUNT,
+  ADMIN_CREDS_SET,
   CLEAR_CART2,
   EDIT_LENS_POWER_AND_PRICE,
   UPDATE_ITEM_QUANTITY2,
@@ -14,6 +15,13 @@ export const setUserLevel = (userLevel) => {
       userLevel === "CUSTOMER" || userLevel === "ADMIN"
         ? userLevel
         : "CUSTOMER",
+  };
+};
+
+export const setAdminCreds = (adminCreds) => {
+  return {
+    type: ADMIN_CREDS_SET,
+    payload: adminCreds,
   };
 };
 

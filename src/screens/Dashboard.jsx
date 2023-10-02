@@ -18,7 +18,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { supabase } from "../supabase/client";
 import { PieChart } from "react-native-chart-kit";
-import { Feather, Entypo } from "@expo/vector-icons";
+import { Feather, Entypo, Octicons, FontAwesome } from "@expo/vector-icons";
 import SalesPeopleModal from "../components/SalesPeopleModal";
 import { BarChart } from "react-native-gifted-charts";
 import SelectDropdown from "react-native-select-dropdown";
@@ -26,6 +26,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import PageLoader from "../components/PageLoader";
 import { Portal, Snackbar } from "react-native-paper";
 import CustomModal from "../components/CustomModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 const moment = require("moment");
 
 const Dashboard = () => {
@@ -41,6 +42,8 @@ const Dashboard = () => {
   const [paymentsDistribution, setPaymentsDistribution] = useState([]);
 
   const [showSalesPeopleModal, setShowSalesPeopleModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+
   const [salesData, setSalesData] = useState([]);
 
   const [productSalesSum, setProductSalesSum] = useState(0);
@@ -680,25 +683,82 @@ const Dashboard = () => {
           paddingVertical: 16,
         }}
       >
-        <TouchableOpacity
-          style={{
-            backgroundColor: "white",
-            paddingVertical: 15,
-            paddingHorizontal: "5%",
-            alignItems: "center",
-            borderRadius: 10,
-            flexDirection: "row",
-          }}
-          onPress={() => setShowSalesPeopleModal(true)}
-        >
-          <Feather name="edit-3" size={26} color={text_color} />
-          <InterRegular style={{ fontSize: 18, marginLeft: "3%" }}>
-            Edit Sales people
-          </InterRegular>
-        </TouchableOpacity>
+        <View style={{ backgroundColor: "white", borderRadius: 10 }}>
+          <View style={styles.sidebar_section}>
+            <View
+              style={{
+                backgroundColor: gradient_start,
+                borderRadius: 300,
+                height: 75,
+                width: 75,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Octicons name="person" size={30} color={customer_primary} />
+            </View>
+            <View style={{ marginLeft: "5%" }}>
+              <InterMedium style={{ ...styles.sidebar_text, fontSize: 24 }}>
+                Admin
+              </InterMedium>
+              <InterRegular style={styles.sidebar_text}>
+                admin@opticare
+              </InterRegular>
+            </View>
+          </View>
+          <View style={{ ...styles.sidebar_section, paddingVertical: 10 }}>
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexDirection: "row",
+                width: "100%",
+                paddingVertical: 15,
+              }}
+              onPress={() => setShowChangePasswordModal(true)}
+            >
+              <InterRegular style={styles.sidebar_text}>
+                Change password
+              </InterRegular>
+              <FontAwesome name="lock" size={28} color="black" />
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              ...styles.sidebar_section,
+              paddingVertical: 10,
+              borderBottomWidth: 0,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                alignItems: "center",
+                flexDirection: "row",
+                width: "100%",
+                paddingVertical: 15,
+                justifyContent: "space-between",
+              }}
+              onPress={() => setShowSalesPeopleModal(true)}
+            >
+              <InterRegular style={styles.sidebar_text}>
+                Edit Sales people
+              </InterRegular>
+              <Feather name="edit-3" size={26} color={text_color} />
+            </TouchableOpacity>
+          </View>
+        </View>
       </LinearGradient>
       {!!showSalesPeopleModal && (
         <SalesPeopleModal onClose={() => setShowSalesPeopleModal(false)} />
+      )}
+      {showChangePasswordModal && (
+        <ChangePasswordModal
+          onClose={() => setShowChangePasswordModal(false)}
+          showSnack={(msg) => {
+            setSnackMessage(msg);
+            setShowSnackbar(true);
+          }}
+        />
       )}
       {showDatePicker !== "HIDE" && (
         <DateTimePicker
@@ -795,5 +855,14 @@ const styles = StyleSheet.create({
   net_sales_text: {
     fontSize: 22,
     marginVertical: 10,
+  },
+  sidebar_text: { fontSize: 20 },
+  sidebar_section: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: "4%",
+    paddingVertical: 25,
+    borderBottomWidth: 1,
+    borderColor: grey2,
   },
 });

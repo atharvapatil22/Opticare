@@ -13,7 +13,7 @@ import { StyleSheet } from "react-native";
 import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 import { supabase } from "../supabase/client";
 import { useDispatch } from "react-redux";
-import { setUserLevel } from "../redux/actions";
+import { setAdminCreds, setUserLevel } from "../redux/actions";
 import { FontAwesome } from "@expo/vector-icons";
 
 const AdminLogin = () => {
@@ -63,6 +63,9 @@ const AdminLogin = () => {
       setShowSnackbar(true);
       return;
     } else {
+      dispatch(
+        setAdminCreds({ email: data[0].email, password: data[0].password })
+      );
       dispatch(setUserLevel("ADMIN"));
     }
   };
