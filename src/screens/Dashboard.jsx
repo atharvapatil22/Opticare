@@ -287,8 +287,6 @@ const Dashboard = () => {
       totalSales += order.payment_total;
     });
 
-    console.log("net dis", netCouponDiscount);
-
     setTotalPayments(totalPaymentsRevenue);
     setPaymentsDistribution([
       {

@@ -12,6 +12,7 @@ import GlassesNavigator from "./ProductNavigators/GlassesNavigator";
 import LensesNavigator from "./ProductNavigators/LensesNavigator";
 import AccessoryNavigator from "./ProductNavigators/AccessoryNavigator";
 import OrdersNavigator from "./OrdersNavigator";
+import AdminLogin from "../screens/AdminLogin";
 
 const MainNavigator = () => {
   const Drawer = createDrawerNavigator();
@@ -40,7 +41,7 @@ const MainNavigator = () => {
 
   return (
     <Drawer.Navigator
-      initialRouteName={isAdmin ? "Dashboard" : "SpecsNavigator"}
+      initialRouteName={isAdmin ? "OrdersNavigator" : "SpecsNavigator"}
       screenOptions={({ route }) => ({
         headerTitle: getHeaderTitle(route),
         headerTitleAlign: "center",
@@ -54,8 +55,9 @@ const MainNavigator = () => {
     >
       {isAdmin ? (
         <>
-          <Drawer.Screen name="Dashboard" component={Dashboard} />
           <Drawer.Screen name="OrdersNavigator" component={OrdersNavigator} />
+          <Drawer.Screen name="Dashboard" component={Dashboard} />
+
           <Drawer.Screen name="SpecsNavigator" component={SpecsNavigator} />
           <Drawer.Screen name="GlassesNavigator" component={GlassesNavigator} />
           <Drawer.Screen name="LensesNavigator" component={LensesNavigator} />
@@ -74,6 +76,7 @@ const MainNavigator = () => {
             component={AccessoryNavigator}
           />
           <Drawer.Screen name="CartNavigator" component={CartNavigator} />
+          <Drawer.Screen name="AdminLogin" component={AdminLogin} />
         </>
       )}
     </Drawer.Navigator>

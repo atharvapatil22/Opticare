@@ -1,18 +1,14 @@
 import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { gradient_end } from "../constants";
-import { Pressable, StyleSheet, Text, Image } from "react-native";
+import { StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useDispatch } from "react-redux";
-import { setUserLevel } from "../redux/actions";
 import { InterRegular } from "../components/StyledText/StyledText";
 
 const CustomerDrawer = (props) => {
   const dispatch = useDispatch();
 
-  const handleAdminLogin = () => {
-    dispatch(setUserLevel("ADMIN"));
-  };
   return (
     <DrawerContentScrollView {...props}>
       <DrawerItem
@@ -105,18 +101,28 @@ const CustomerDrawer = (props) => {
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
       />
-      <Pressable onPress={handleAdminLogin}>
+      <TouchableOpacity
+        onPress={() => {
+          props.navigation.navigate("AdminLogin");
+        }}
+        style={{
+          marginTop: 410,
+          flexDirection: "row",
+          alignItems: "center",
+          marginLeft: "6%",
+          paddingVertical: 8,
+        }}
+      >
+        <FontAwesome name="lock" size={24} color="black" />
         <InterRegular
           style={{
             fontSize: 20,
-            color: "blue",
             marginLeft: "3%",
-            marginTop: 420,
           }}
         >
-          Admin Login
+          Admin
         </InterRegular>
-      </Pressable>
+      </TouchableOpacity>
     </DrawerContentScrollView>
   );
 };

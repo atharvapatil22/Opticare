@@ -1,10 +1,11 @@
 import React from "react";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { gradient_end, grey1 } from "../constants";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { Image, TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { setUserLevel } from "../redux/actions";
 import { InterRegular } from "../components/StyledText/StyledText";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const AdminDrawer = (props) => {
   const dispatch = useDispatch();
@@ -16,14 +17,14 @@ const AdminDrawer = (props) => {
       <InterRegular style={styles.section_title}>Operations</InterRegular>
       <DrawerItem
         focused={props.state.index === 0}
-        label={"Dashboard"}
-        onPress={() => props.navigation.navigate("Dashboard")}
+        label={"Orders"}
+        onPress={() => props.navigation.navigate("OrdersNavigator")}
         icon={({ focused }) => (
           <Image
             source={
               focused
-                ? require("../assets/dashboard.png")
-                : require("../assets/dashboard_inactive.png")
+                ? require("../assets/orders.png")
+                : require("../assets/orders_inactive.png")
             }
             style={{ width: 30, height: 30 }}
           />
@@ -34,14 +35,14 @@ const AdminDrawer = (props) => {
       />
       <DrawerItem
         focused={props.state.index === 1}
-        label={"Orders"}
-        onPress={() => props.navigation.navigate("OrdersNavigator")}
+        label={"Dashboard"}
+        onPress={() => props.navigation.navigate("Dashboard")}
         icon={({ focused }) => (
           <Image
             source={
               focused
-                ? require("../assets/orders.png")
-                : require("../assets/orders_inactive.png")
+                ? require("../assets/dashboard.png")
+                : require("../assets/dashboard_inactive.png")
             }
             style={{ width: 30, height: 30 }}
           />
@@ -133,18 +134,26 @@ const AdminDrawer = (props) => {
         activeBackgroundColor={gradient_end}
         labelStyle={styles.label}
       />
-      <Pressable onPress={handleLogout}>
+      <TouchableOpacity
+        onPress={handleLogout}
+        style={{
+          marginTop: 250,
+          flexDirection: "row",
+          alignItems: "center",
+          marginLeft: "6%",
+          paddingVertical: 8,
+        }}
+      >
+        <MaterialIcons name="logout" size={24} color="black" />
         <InterRegular
           style={{
             fontSize: 20,
-            color: "blue",
             marginLeft: "3%",
-            marginTop: 250,
           }}
         >
           Logout
         </InterRegular>
-      </Pressable>
+      </TouchableOpacity>
     </DrawerContentScrollView>
   );
 };
