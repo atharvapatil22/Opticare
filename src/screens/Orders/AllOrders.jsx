@@ -187,7 +187,7 @@ const AllOrders = ({ navigation }) => {
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
-        <Button text="Filters" variant="white" rounded onPress={() => {}} />
+        {/* <Button text="Filters" variant="white" rounded onPress={() => {}} /> */}
       </View>
       <Portal>
         <Snackbar
