@@ -33,6 +33,7 @@ import {
 } from "../../components/StyledText/StyledText";
 import PageLoader from "../../components/PageLoader";
 import { Portal, Snackbar } from "react-native-paper";
+import ImageView from "react-native-image-viewing";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
@@ -384,27 +385,17 @@ const LensesDetails = ({ route, navigation }) => {
           </InterRegular>
         </View>
       )}
-      {!!showPreviewImage && (
-        <View
-          style={{
-            position: "absolute",
-            zIndex: 100,
-            width: window.width,
-            height: window.height,
-            backgroundColor: "black",
-          }}
-        >
-          <Image
-            source={{
-              uri: lensData.lenses.preview_image,
-            }}
-            style={{
-              width: "100%",
-              aspectRatio: "16/9",
-            }}
-          />
-        </View>
-      )}
+
+      <ImageView
+        images={[
+          {
+            uri: lensData.lenses.preview_image,
+          },
+        ]}
+        imageIndex={0}
+        visible={showPreviewImage}
+        onRequestClose={() => setShowPreviewImage(false)}
+      />
     </ScrollView>
   );
 };

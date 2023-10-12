@@ -24,7 +24,7 @@ import { BarChart } from "react-native-gifted-charts";
 import SelectDropdown from "react-native-select-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import PageLoader from "../components/PageLoader";
-import { Portal, Snackbar } from "react-native-paper";
+import { ActivityIndicator, Portal, Snackbar } from "react-native-paper";
 import CustomModal from "../components/CustomModal";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 const moment = require("moment");
@@ -43,6 +43,13 @@ const Dashboard = () => {
 
   const [showSalesPeopleModal, setShowSalesPeopleModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [productsCount, setProductsCount] = useState({
+    frames: 0,
+    lenses: 0,
+    sunglasses: 0,
+    accessories: 0,
+  });
+  const [prodCountLoader, setProdCountLoader] = useState(false);
 
   const [salesData, setSalesData] = useState([]);
 
@@ -75,6 +82,10 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    getProductsCount();
+  }, []);
+
+  useEffect(() => {
     if (!startDate || !endDate) return;
     getProductsAnalytics();
     getOrderAnalytics();
@@ -89,6 +100,57 @@ const Dashboard = () => {
       setEndDate(moment());
     }
   }, [timeRange]);
+
+  const getProductsCount = async () => {
+    setProdCountLoader(true);
+    const { data, error } = await supabase
+      .from("products")
+      .select("category,id");
+
+    if (error) {
+      console.log(
+        `API ERROR => Error while fetching products count! \n`,
+        error
+      );
+      setSnackMessage("Error while fetching products count!");
+      setShowSnackbar(true);
+
+      return;
+    }
+
+    console.log("API SUCCESS => Fetched products count ");
+
+    let specsCount = 0,
+      glassesCount = 0,
+      lensesCount = 0,
+      accessoriesCount = 0;
+
+    data.forEach((prod) => {
+      switch (prod.category) {
+        case productCategories.SPECTACLES:
+          specsCount += 1;
+          break;
+        case productCategories.SUNGLASSES:
+          glassesCount += 1;
+          break;
+        case productCategories.LENSES:
+          lensesCount += 1;
+          break;
+        case productCategories.ACCESSORIES:
+          accessoriesCount += 1;
+          break;
+        default:
+          break;
+      }
+    });
+    setProductsCount({
+      frames: specsCount,
+      lenses: lensesCount,
+      sunglasses: glassesCount,
+      accessories: accessoriesCount,
+    });
+    setProdCountLoader(false);
+  };
 
   const getProductsAnalytics = async () => {
     const formattedStartDate = startDate.toISOString().substring(0, 10);
@@ -747,6 +809,43 @@ const Dashboard = () => {
             </TouchableOpacity>
           </View>
         </View>
+        <InterMedium
+          style={{
+            fontSize: 20,
+            color: customer_primary,
+            marginTop: 18,
+            marginBottom: 10,
+          }}
+        >
+          My store
+        </InterMedium>
+        {prodCountLoader ? (
+          <ActivityIndicator color="white" size={"large"} />
+        ) : (
+          <View style={styles.grid_container}>
+            {Object.keys(productsCount).map((category, index) => {
+              return (
+                <View key={index} style={styles.small_card}>
+                  <InterRegular
+                    style={{ fontSize: 16, color: grey2, marginTop: 10 }}
+                  >
+                    Total {category}
+                  </InterRegular>
+                  <InterRegular
+                    style={{
+                      fontSize: 28,
+                      color: text_color,
+                      marginTop: 8,
+                      marginBottom: 12,
+                    }}
+                  >
+                    {productsCount[category]}
+                  </InterRegular>
+                </View>
+              );
+            })}
+          </View>
+        )}
       </LinearGradient>
       {!!showSalesPeopleModal && (
         <SalesPeopleModal onClose={() => setShowSalesPeopleModal(false)} />
@@ -782,9 +881,10 @@ const Dashboard = () => {
           body={
             <>
               <ScrollView style={{ height: "100%", paddingHorizontal: "4%" }}>
-                {ordersList.map((order) => {
+                {ordersList.map((order, index) => {
                   return (
                     <View
+                      key={index}
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
