@@ -8,13 +8,7 @@ import {
   RefreshControl,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import {
-  app_bg,
-  grey_3,
-  grey1,
-  productCategories,
-  grey2,
-} from "../../constants";
+import { app_bg, grey_3, grey1, productCategories } from "../../constants";
 import Button from "../../components/Button";
 import { supabase } from "../../supabase/client";
 import ProductCard from "../../components/ProductCard";
@@ -32,8 +26,6 @@ const Sunglasses = ({ navigation }) => {
 
   const [glasses, setGlasses] = useState([]);
 
-  const [priceFromFilter, setPriceFromFilter] = useState("");
-  const [priceToFilter, setPriceToFilter] = useState("");
   const [genderFilters, setGenderFilters] = useState([]);
   const [sizeFilters, setSizeFilters] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -89,37 +81,13 @@ const Sunglasses = ({ navigation }) => {
 
       setSearchValue("");
       setTotalFilters(0);
-      setPriceFromFilter("");
-      setPriceToFilter("");
       setGenderFilters([]);
       setSizeFilters([]);
     }
   };
 
   const applyFilters = (_callback) => {
-    const priceFrom = parseInt(priceFromFilter);
-    const priceTo = parseInt(priceToFilter);
-    let priceFilterValid = true;
-
-    if (!!priceFrom && !!priceTo && priceFrom > priceTo) {
-      priceFilterValid = false;
-      setSnackMessage(
-        "Price Filter error: Price From cannot be greater than Price To"
-      );
-      setPriceFromFilter("");
-      setPriceToFilter("");
-      setShowSnackbar(true);
-    }
-
     const _temp = glasses.filter((item) => {
-      const item_effective_price = item.price * ((100 - item.discount) / 100);
-
-      if (priceFilterValid && !!priceFrom && item_effective_price < priceFrom)
-        return false;
-
-      if (priceFilterValid && !!priceTo && item_effective_price > priceTo)
-        return false;
-
       if (
         genderFilters.length !== 0 &&
         !genderFilters.includes(item.sunglasses.gender)
@@ -136,14 +104,12 @@ const Sunglasses = ({ navigation }) => {
     });
 
     let _total = 0;
-    _total += priceFilterValid && (!!priceFrom || !!priceTo) ? 1 : 0;
     _total += genderFilters.length === 0 ? 0 : 1;
     _total += sizeFilters.length === 0 ? 0 : 1;
 
     setFilteredRecords(_temp);
     setTotalFilters(_total);
     if (searchValue.trim().length === 0) setSearchedRecords(_temp);
-    // else handleSearch();
     else {
       const searchValLower = searchValue.toLowerCase();
       const _temp2 = _temp.filter(
@@ -157,23 +123,12 @@ const Sunglasses = ({ navigation }) => {
   };
 
   const clearFilters = () => {
-    setPriceFromFilter("");
-    setPriceToFilter("");
     setGenderFilters([]);
     setSizeFilters([]);
     setTotalFilters(0);
     setFilteredRecords(glasses);
-    if (searchValue.trim().length === 0) setSearchedRecords(glasses);
-    // else handleSearch();
-    else {
-      const searchValLower = searchValue.toLowerCase();
-      const _temp = glasses.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchValLower) ||
-          item.id_label.toLowerCase().includes(searchValLower)
-      );
-      setSearchedRecords(_temp);
-    }
+    if (searchValue.trim().length !== 0) handleSearch();
+    else setSearchedRecords(glasses);
 
     setShowFilters(false);
   };
@@ -198,43 +153,6 @@ const Sunglasses = ({ navigation }) => {
           onClear={clearFilters}
           body={
             <>
-              <View style={styles.filter_section}>
-                <InterMedium style={styles.filter_section_title}>
-                  Price
-                </InterMedium>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 14,
-                  }}
-                >
-                  <View style={{ width: "48%", alignItems: "center" }}>
-                    <TextInput
-                      value={priceFromFilter}
-                      onChangeText={(txt) => {
-                        setPriceFromFilter(txt.replace(/\D/g, ""));
-                      }}
-                      style={styles.filter_input}
-                      keyboardType="numeric"
-                    />
-                    <InterRegular value style={styles.fliter_label}>
-                      From
-                    </InterRegular>
-                  </View>
-                  <View style={{ width: "48%", alignItems: "center" }}>
-                    <TextInput
-                      value={priceToFilter}
-                      onChangeText={(txt) => {
-                        setPriceToFilter(txt.replace(/\D/g, ""));
-                      }}
-                      style={styles.filter_input}
-                      keyboardType="numeric"
-                    />
-                    <InterRegular style={styles.fliter_label}>To</InterRegular>
-                  </View>
-                </View>
-              </View>
               <View style={styles.filter_section}>
                 <InterMedium style={styles.filter_section_title}>
                   Gender
@@ -515,13 +433,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   fliter_label: { fontSize: 18, marginLeft: 10 },
-  filter_input: {
-    borderWidth: 1,
-    width: "100%",
-    borderColor: grey2,
-    fontSize: 20,
-    paddingVertical: 8,
-    paddingHorizontal: "8%",
-    borderRadius: 8,
-  },
 });

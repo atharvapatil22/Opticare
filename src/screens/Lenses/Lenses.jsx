@@ -27,26 +27,14 @@ import {
   InterMedium,
   InterRegular,
 } from "../../components/StyledText/StyledText";
-import FiltersModal from "../../components/FiltersModal";
-import Checkbox from "expo-checkbox";
 
 const Lenses = ({ navigation }) => {
-  const [lenses, setLenses] = useState([]);
-
   const [searchValue, setSearchValue] = useState("");
+  const [lenses, setLenses] = useState([]);
   const [searchedRecords, setSearchedRecords] = useState([]);
-
-  const [priceFromFilter, setPriceFromFilter] = useState("");
-  const [priceToFilter, setPriceToFilter] = useState("");
-  const [typeFilters, setTypeFilters] = useState([]);
-  const [showFilters, setShowFilters] = useState(false);
-  const [totalFilters, setTotalFilters] = useState(0);
-  const [filteredRecords, setFilteredRecords] = useState([]);
-
   const [refreshing, setRefreshing] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
-
   const store = useSelector((state) => state.globalData);
 
   useEffect(() => {
@@ -58,10 +46,10 @@ const Lenses = ({ navigation }) => {
   }, [searchValue]);
 
   const handleSearch = () => {
-    if (searchValue.trim().length === 0) setSearchedRecords(filteredRecords);
+    if (searchValue.trim().length === 0) setSearchedRecords(lenses);
     else {
       const searchValLower = searchValue.toLowerCase();
-      const _temp = filteredRecords.filter(
+      const _temp = lenses.filter(
         (item) =>
           item.name.toLowerCase().includes(searchValLower) ||
           item.id_label.toLowerCase().includes(searchValLower)
@@ -84,85 +72,8 @@ const Lenses = ({ navigation }) => {
     } else {
       console.log("API SUCCESS => Fetched all lenses \n", data);
       setLenses(data);
-      setFilteredRecords(data);
       setSearchedRecords(data);
-
-      setSearchValue("");
-      setTotalFilters(0);
-      setPriceFromFilter("");
-      setPriceToFilter("");
-      setTypeFilters([]);
     }
-  };
-
-  const applyFilters = (_callback) => {
-    const priceFrom = parseInt(priceFromFilter);
-    const priceTo = parseInt(priceToFilter);
-    let priceFilterValid = true;
-
-    if (!!priceFrom && !!priceTo && priceFrom > priceTo) {
-      priceFilterValid = false;
-      setSnackMessage(
-        "Price Filter error: Price From cannot be greater than Price To"
-      );
-      setPriceFromFilter("");
-      setPriceToFilter("");
-      setShowSnackbar(true);
-    }
-
-    const _temp = lenses.filter((item) => {
-      const item_effective_price = item.price * ((100 - item.discount) / 100);
-      if (priceFilterValid && !!priceFrom && item_effective_price < priceFrom)
-        return false;
-
-      if (priceFilterValid && !!priceTo && item_effective_price > priceTo)
-        return false;
-
-      if (typeFilters.length !== 0 && !typeFilters.includes(item.lenses.type))
-        return false;
-
-      return true;
-    });
-
-    let _total = 0;
-    _total += priceFilterValid && (!!priceFrom || !!priceTo) ? 1 : 0;
-    _total += typeFilters.length === 0 ? 0 : 1;
-
-    setFilteredRecords(_temp);
-    setTotalFilters(_total);
-    if (searchValue.trim().length === 0) setSearchedRecords(_temp);
-    // else handleSearch();
-    else {
-      const searchValLower = searchValue.toLowerCase();
-      const _temp2 = _temp.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchValLower) ||
-          item.id_label.toLowerCase().includes(searchValLower)
-      );
-      setSearchedRecords(_temp2);
-    }
-    _callback();
-  };
-
-  const clearFilters = () => {
-    setPriceFromFilter("");
-    setPriceToFilter("");
-    setTypeFilters([]);
-    setTotalFilters(0);
-    setFilteredRecords(lenses);
-    if (searchValue.trim().length === 0) setSearchedRecords(lenses);
-    // else handleSearch();
-    else {
-      const searchValLower = searchValue.toLowerCase();
-      const _temp = lenses.filter(
-        (item) =>
-          item.name.toLowerCase().includes(searchValLower) ||
-          item.id_label.toLowerCase().includes(searchValLower)
-      );
-      setSearchedRecords(_temp);
-    }
-
-    setShowFilters(false);
   };
 
   const FlatCard = ({ data }) => {
@@ -220,102 +131,6 @@ const Lenses = ({ navigation }) => {
       >
         Shopping for Lenses
       </InterMedium>
-      {showFilters && (
-        <FiltersModal
-          onClose={() => {
-            applyFilters(() => setShowFilters(false));
-          }}
-          onClear={clearFilters}
-          body={
-            <>
-              <View style={styles.filter_section}>
-                <InterMedium style={styles.filter_section_title}>
-                  Price
-                </InterMedium>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: 14,
-                  }}
-                >
-                  <View style={{ width: "48%", alignItems: "center" }}>
-                    <TextInput
-                      value={priceFromFilter}
-                      onChangeText={(txt) => {
-                        setPriceFromFilter(txt.replace(/\D/g, ""));
-                      }}
-                      style={styles.filter_input}
-                      keyboardType="numeric"
-                    />
-                    <InterRegular value style={styles.fliter_label}>
-                      From
-                    </InterRegular>
-                  </View>
-                  <View style={{ width: "48%", alignItems: "center" }}>
-                    <TextInput
-                      value={priceToFilter}
-                      onChangeText={(txt) => {
-                        setPriceToFilter(txt.replace(/\D/g, ""));
-                      }}
-                      style={styles.filter_input}
-                      keyboardType="numeric"
-                    />
-                    <InterRegular style={styles.fliter_label}>To</InterRegular>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.filter_section}>
-                <InterMedium style={styles.filter_section_title}>
-                  Type
-                </InterMedium>
-                <View style={styles.checkbox_wrapper}>
-                  <Checkbox
-                    style={{ width: 26, height: 26 }}
-                    value={typeFilters.includes("Single Vision")}
-                    onValueChange={(val) => {
-                      if (val)
-                        setTypeFilters(
-                          [...typeFilters].concat("Single Vision")
-                        );
-                      else {
-                        setTypeFilters(
-                          typeFilters.filter((item) => item != "Single Vision")
-                        );
-                      }
-                    }}
-                  />
-                  <InterRegular style={styles.fliter_label}>
-                    Single Vision
-                  </InterRegular>
-                </View>
-                <View style={styles.checkbox_wrapper}>
-                  <Checkbox
-                    style={{ width: 26, height: 26 }}
-                    value={typeFilters.includes("Bifocal / Progressive")}
-                    onValueChange={(val) => {
-                      if (val)
-                        setTypeFilters(
-                          [...typeFilters].concat("Bifocal / Progressive")
-                        );
-                      else {
-                        setTypeFilters(
-                          typeFilters.filter(
-                            (item) => item != "Bifocal / Progressive"
-                          )
-                        );
-                      }
-                    }}
-                  />
-                  <InterRegular style={styles.fliter_label}>
-                    Bifocal / Progressive
-                  </InterRegular>
-                </View>
-              </View>
-            </>
-          }
-        />
-      )}
       <Portal>
         <Snackbar
           visible={showSnackbar}
@@ -346,12 +161,7 @@ const Lenses = ({ navigation }) => {
           placeholderTextColor={grey_3}
         />
         <Button text="SEARCH" variant="aqua" rounded onPress={() => {}} />
-        <Button
-          text={"Filters" + (totalFilters !== 0 ? ` (${totalFilters})` : "")}
-          variant="white"
-          rounded
-          onPress={() => setShowFilters(true)}
-        />
+        <Button text="Filters" variant="white" rounded onPress={() => {}} />
         {store.userLevel === "ADMIN" && (
           <Button
             text="+ ADD NEW"
@@ -420,29 +230,5 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     paddingHorizontal: 20,
     // height: "100%",
-  },
-  checkbox_wrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  filter_section: {
-    marginTop: 20,
-    borderBottomWidth: 0.8,
-    borderColor: grey1,
-    paddingBottom: 20,
-  },
-  filter_section_title: {
-    fontSize: 20,
-  },
-  fliter_label: { fontSize: 18, marginLeft: 10 },
-  filter_input: {
-    borderWidth: 1,
-    width: "100%",
-    borderColor: grey2,
-    fontSize: 20,
-    paddingVertical: 8,
-    paddingHorizontal: "8%",
-    borderRadius: 8,
   },
 });
