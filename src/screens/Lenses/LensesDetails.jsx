@@ -386,16 +386,18 @@ const LensesDetails = ({ route, navigation }) => {
         </View>
       )}
 
-      <ImageView
-        images={[
-          {
-            uri: lensData.lenses.preview_image,
-          },
-        ]}
-        imageIndex={0}
-        visible={showPreviewImage}
-        onRequestClose={() => setShowPreviewImage(false)}
-      />
+      {showPreviewImage && !!lensData.lenses.preview_image && (
+        <ImageView
+          images={[
+            {
+              uri: lensData.lenses.preview_image,
+            },
+          ]}
+          imageIndex={0}
+          visible={showPreviewImage}
+          onRequestClose={() => setShowPreviewImage(false)}
+        />
+      )}
     </ScrollView>
   );
 };
