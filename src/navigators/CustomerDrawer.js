@@ -5,6 +5,7 @@ import { gradient_end } from "../constants";
 import { StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useDispatch } from "react-redux";
 import { InterRegular } from "../components/StyledText/StyledText";
+import { setUserLevel } from "../redux/actions";
 
 const CustomerDrawer = (props) => {
   const dispatch = useDispatch();
@@ -103,7 +104,8 @@ const CustomerDrawer = (props) => {
       />
       <TouchableOpacity
         onPress={() => {
-          props.navigation.navigate("AdminLogin");
+          // props.navigation.navigate("AdminLogin");
+          dispatch(setUserLevel("ADMIN"));
         }}
         style={{
           marginTop: 410,

@@ -746,7 +746,7 @@ const Dashboard = () => {
         }}
       >
         <View style={{ backgroundColor: "white", borderRadius: 10 }}>
-          <View style={styles.sidebar_section}>
+          {/* <View style={styles.sidebar_section}>
             <View
               style={{
                 backgroundColor: gradient_start,
@@ -767,8 +767,8 @@ const Dashboard = () => {
                 admin@opticare
               </InterRegular>
             </View>
-          </View>
-          <View style={{ ...styles.sidebar_section, paddingVertical: 10 }}>
+          </View> */}
+          {/* <View style={{ ...styles.sidebar_section, paddingVertical: 10 }}>
             <TouchableOpacity
               style={{
                 alignItems: "center",
@@ -784,7 +784,7 @@ const Dashboard = () => {
               </InterRegular>
               <FontAwesome name="lock" size={28} color="black" />
             </TouchableOpacity>
-          </View>
+          </View> */}
           <View
             style={{
               ...styles.sidebar_section,
