@@ -105,7 +105,7 @@ const Dashboard = () => {
     setProdCountLoader(true);
     const { data, error } = await supabase
       .from("products")
-      .select("category,id");
+      .select("category,id,stock_available");
 
     if (error) {
       console.log(
@@ -128,16 +128,16 @@ const Dashboard = () => {
     data.forEach((prod) => {
       switch (prod.category) {
         case productCategories.SPECTACLES:
-          specsCount += 1;
+          specsCount += prod.stock_available;
           break;
         case productCategories.SUNGLASSES:
-          glassesCount += 1;
+          glassesCount += prod.stock_available;
           break;
         case productCategories.LENSES:
-          lensesCount += 1;
+          lensesCount += prod.stock_available;
           break;
         case productCategories.ACCESSORIES:
-          accessoriesCount += 1;
+          accessoriesCount += prod.stock_available;
           break;
         default:
           break;
