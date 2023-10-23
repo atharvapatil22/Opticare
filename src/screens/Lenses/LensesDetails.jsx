@@ -1,6 +1,6 @@
 import {
   View,
-  Text,
+  Modal,
   ScrollView,
   StyleSheet,
   Dimensions,
@@ -33,7 +33,7 @@ import {
 } from "../../components/StyledText/StyledText";
 import PageLoader from "../../components/PageLoader";
 import { Portal, Snackbar } from "react-native-paper";
-import ImageView from "react-native-image-viewing";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const LensesDetails = ({ route, navigation }) => {
   const { id: lensId } = route.params;
@@ -387,16 +387,26 @@ const LensesDetails = ({ route, navigation }) => {
       )}
 
       {showPreviewImage && !!lensData.lenses.preview_image && (
-        <ImageView
-          images={[
-            {
-              uri: lensData.lenses.preview_image,
-            },
-          ]}
-          imageIndex={0}
-          visible={showPreviewImage}
+        <Modal
+          visible={true}
+          transparent={true}
           onRequestClose={() => setShowPreviewImage(false)}
-        />
+        >
+          <ImageViewer
+            imageUrls={[
+              {
+                url: lensData.lenses.preview_image,
+                props: {
+                  // headers: ...
+                },
+              },
+            ]}
+            maxOverflow={0}
+            index={0}
+            renderIndicator={() => {}}
+            enableSwipeDown
+          />
+        </Modal>
       )}
     </ScrollView>
   );
