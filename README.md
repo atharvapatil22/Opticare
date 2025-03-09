@@ -1,17 +1,42 @@
-Mobile application for a retail eyeware store. App allows customers to customize spectacles with lenses, has robust cart functionality, admin panel for managing orders and products and viewing sales analytics. The android and iOS apps were built with React Native and backend with Supabase. 
+# Opticare
 
-Sample Screenshots:
+### Description
 
-![Store Home](https://github.com/atharvapatil22/Opticare/assets/55489070/d422ee48-5171-4377-a03d-6f5a91de5bac)
-![Search](https://github.com/atharvapatil22/Opticare/assets/55489070/d55bd521-be68-4674-bc45-db7d2641037c)
-![iPad Pro 11_ - 46](https://github.com/atharvapatil22/Opticare/assets/55489070/82af0419-3047-45d2-912b-8f1a55415dd8)
-![iPad Pro 11_ - 49](https://github.com/atharvapatil22/Opticare/assets/55489070/5f42dd64-669f-4251-b27c-de6ffc6f7717)
-![iPad Pro 11_ - 68](https://github.com/atharvapatil22/Opticare/assets/55489070/dafce71d-6e79-49d6-b42e-d591a73fd6de)
+This React Native application was developed to enhance the in-store experience at Saikrupa Optical (Karad, India). The business was going through a technology upgradation process to enhance customer engagement through in-store devices that allow customers to browse the entire range of products, try various frame and lens configurations, and get an accurate estimate of the overall price. The company also desired to go paperless by digitizing key information about sales history, customer records etc.
+Opticare enables both customers and sales staff to efficiently navigate product offerings and enjoy a seamless digital shopping experience. Built using React Native and powered by Supabase, the app is provides features such as real-time inventory management, modular product pricing, cart functionality, and order tracking
+
+### Preview
+
+![Untitled design(2)](https://github.com/user-attachments/assets/76075660-b1ad-4343-8843-d104cdb10c13)
 
 
-Admin Panel Screenshots:
+### Key Features
 
-![iPad Pro 11_ - 39](https://github.com/atharvapatil22/Opticare/assets/55489070/70dc386e-b5a9-48f8-a048-453fc1f43058)
-![iPad Pro 11_ - 16](https://github.com/atharvapatil22/Opticare/assets/55489070/690c1c81-683d-45f8-8642-bdcaf6916548)
-![iPad Pro 11_ - 70](https://github.com/atharvapatil22/Opticare/assets/55489070/d65d7384-05ab-431b-9966-4378dd79daab)
-![iPad Pro 11_ - 27](https://github.com/atharvapatil22/Opticare/assets/55489070/aebb6f57-9b8f-4f83-9656-aec58c3effc8)
+- Authentication – Secure login and authentication for staff roles
+- Product Listings – Browse and filter optical products with detailed specifications
+- Modular Pricing – Supports dynamic pricing for customizable products
+- Cart & Checkout – Seamless cart management and order processing
+- Order History – View past purchases and track order details
+- Sales Dashboard – Real time charts and graphs for sales insights
+- Real-time Updates – Powered by SupabaseAPI for instant data sync
+
+## Built With
+
+![React Native](https://img.shields.io/badge/React%20Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+
+![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
+
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+
+![React Navigation](https://img.shields.io/badge/React%20Navigation-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+
+![Redux](https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white)
+
+![React Native Paper](https://img.shields.io/badge/React%20Native%20Paper-0081CB?style=for-the-badge&logo=material-design&logoColor=white)
+
+
+## Future Improvements
+
+- Barcode Scanning – To enhance product lookup efficiency.
+- Wishlist Feature – Allow users to save products for future reference.
+- Admin Panel Enhancements – More control over product and order management.
